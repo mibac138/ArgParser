@@ -102,7 +102,7 @@ class NamedParserRegistry : ParserRegistry {
 
     fun associateParserWithName(type: Class<*>, name: String) {
         val parser = getParserForType(type)
-        registerParser(parser, name)
+        nameToParserMap[name] = parser
     }
 
     private fun getParserForElement(element: NamedSyntaxElement<*>): Parser {

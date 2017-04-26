@@ -11,7 +11,7 @@ import java.util.regex.Pattern
  * Created by mibac138 on 09-04-2017.
  */
 class NamedParserWrapper(private val parser: Parser, private val name: String) : PrecheckedParser<Any>(), NamedParser {
-    private val pattern: Pattern = "[^ ]*".toNamedPattern(name)
+    private val pattern: Pattern = "[^ ]*".toParserPattern()
 
     override fun getSupportedTypes(): Set<Class<*>>
             = parser.getSupportedTypes()
@@ -31,6 +31,6 @@ fun Parser.toNamedParser(name: String): NamedParser {
     return NamedParserWrapper(this, name)
 }
 
-fun String.toNamedPattern(name: String, flags: Int = 0): Pattern {
-    return Pattern.compile("--($name)(?:=|: ?)($this+)", flags)
+fun String.toParserPattern(flags: Int = 0): Pattern {
+    return Pattern.compile("--([a-zA-Z]+)(?:=|: ?)($this+)", flags)
 }

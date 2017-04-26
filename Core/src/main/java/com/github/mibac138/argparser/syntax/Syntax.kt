@@ -19,3 +19,7 @@ interface SyntaxElement<T> {
 interface CustomSyntaxElement<T> : SyntaxElement<T> {
     fun getParser(): Parser
 }
+
+fun SyntaxElement<*>.getSize(): Int {
+    return if (this is SyntaxContainer) getContent().size else 1
+}

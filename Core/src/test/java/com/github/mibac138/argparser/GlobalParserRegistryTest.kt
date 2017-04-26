@@ -29,6 +29,10 @@ class GlobalParserRegistryTest {
         assertTrue(Collections.disjoint(registry.getSupportedTypes(), parser.getSupportedTypes()))
     }
 
+    @Test fun test() {
+        println(registry.parse("15 hi!".asReader(), SyntaxBuilder.start().appendType(String::class.java).appendType(Int::class.java).build()))
+    }
+
     @Test fun testRemove() {
         val parser = parserOf(Date::class.java)
 
@@ -99,7 +103,7 @@ class GlobalParserRegistryTest {
 
     @Test fun testCustomParser() {
         val parser = parserOf(Boolean::class.java)
-        val syntax = SyntaxBuilder.start().appendComplex<Boolean>().ofType(Boolean::class.java).withCustomParser(parser).build().build()
+        val syntax = SyntaxBuilder.start().appendType(Boolean::class.java).build()//SyntaxBuilder.start().appendComplex<Boolean>().ofType(Boolean::class.java).withCustomParser(parser).build().build()
 
         registry.parse("hi".asReader(), syntax)
 
