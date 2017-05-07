@@ -1,5 +1,6 @@
 package com.github.mibac138.argparser
 
+import com.github.mibac138.argparser.parser.SequenceParser
 import com.github.mibac138.argparser.reader.asReader
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

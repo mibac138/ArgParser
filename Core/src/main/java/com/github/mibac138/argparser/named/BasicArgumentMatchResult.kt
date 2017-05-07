@@ -28,13 +28,7 @@ import com.github.mibac138.argparser.reader.ArgumentReader
 /**
  * Created by mibac138 on 03-05-2017.
  */
-open class BasicArgumentMatchResult(private val name: String, private val value: ArgumentReader) : ArgumentMatchResult {
-    override fun getName(): String
-            = name
-
-    override fun getValue(): ArgumentReader
-            = value
-
+open class BasicArgumentMatchResult(override val name: String, override val value: ArgumentReader) : ArgumentMatchResult {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other?.javaClass != javaClass) return false

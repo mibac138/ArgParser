@@ -1,6 +1,7 @@
 package com.github.mibac138.argparser
 
 import com.github.mibac138.argparser.exception.ParserInvalidInputException
+import com.github.mibac138.argparser.parser.BooleanParser
 import com.github.mibac138.argparser.reader.asReader
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

@@ -1,9 +1,9 @@
 package example;
 
-import com.github.mibac138.argparser.Parser;
-import com.github.mibac138.argparser.SimpleParserRegistry;
 import com.github.mibac138.argparser.binder.Binder;
 import com.github.mibac138.argparser.binder.Binding;
+import com.github.mibac138.argparser.parser.Parser;
+import com.github.mibac138.argparser.parser.SimpleParserRegistry;
 import com.github.mibac138.argparser.reader.ArgumentReader;
 
 import static com.github.mibac138.argparser.reader.ArgumentReaderUtil.asReader;

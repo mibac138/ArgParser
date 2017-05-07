@@ -22,10 +22,10 @@
 
 package com.github.mibac138.argparser.syntax
 
-import com.github.mibac138.argparser.Parser
+import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 
-class ParserComponent(val parser: Parser) : SyntaxComponent {
+data class ParserComponent(val parser: Parser) : SyntaxComponent {
     override val id: Class<out SyntaxComponent>
         get() = ParserComponent::class.java
 }

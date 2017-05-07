@@ -1,8 +1,8 @@
 package com.github.mibac138.argparser.syntax
 
-import com.github.mibac138.argparser.BooleanParser
-import com.github.mibac138.argparser.IntParser
-import com.github.mibac138.argparser.SequenceParser
+import com.github.mibac138.argparser.parser.BooleanParser
+import com.github.mibac138.argparser.parser.IntParser
+import com.github.mibac138.argparser.parser.SequenceParser
 import com.github.mibac138.argparser.syntax.dsl.syntaxElement
 import org.junit.Test
 import kotlin.test.assertEquals

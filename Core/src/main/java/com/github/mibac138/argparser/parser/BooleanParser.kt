@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.github.mibac138.argparser
+package com.github.mibac138.argparser.parser
 
 import com.github.mibac138.argparser.exception.ParserInvalidInputException
 import com.github.mibac138.argparser.reader.ArgumentReader
@@ -56,7 +56,7 @@ class BooleanParser : Parser {
         if (this === other) return true
         if (other?.javaClass != javaClass) return false
 
-        other as BooleanParser
+        other as com.github.mibac138.argparser.parser.BooleanParser
 
         if (values != other.values) return false
 

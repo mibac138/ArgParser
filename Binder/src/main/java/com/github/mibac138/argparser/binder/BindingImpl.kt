@@ -22,9 +22,9 @@
 
 package com.github.mibac138.argparser.binder
 
-import com.github.mibac138.argparser.Parser
 import com.github.mibac138.argparser.exception.ParserException
 import com.github.mibac138.argparser.named.name
+import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.getSize
@@ -72,7 +72,7 @@ class BindingImpl internal constructor(private val boundMethod: BoundMethod) : B
 
     fun syntaxChanged() {
         syntax = boundMethod.syntax
-        for ((i, element) in syntax.iterator().withIndex()) {
+        syntax.iterator().withIndex().forEach { (i, element) ->
             val name = element.name
 
             if (name != null) argsMap[name] = IndexedValue(i, element)

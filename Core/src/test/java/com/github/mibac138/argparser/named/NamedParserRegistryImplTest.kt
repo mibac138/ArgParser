@@ -1,9 +1,9 @@
 package com.github.mibac138.argparser.named
 
-import com.github.mibac138.argparser.BooleanParser
-import com.github.mibac138.argparser.Parser
 import com.github.mibac138.argparser.exception.ParserException
 import com.github.mibac138.argparser.exception.ParserInvalidInputException
+import com.github.mibac138.argparser.parser.BooleanParser
+import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.asReader
 import com.github.mibac138.argparser.syntax.SyntaxElement
@@ -17,8 +17,8 @@ import kotlin.test.assertTrue
 /**
  * Created by mibac138 on 03-05-2017.
  */
-class NamedParserRegistryTest {
-    private val parser = NamedParserRegistry()
+class NamedParserRegistryImplTest {
+    private val parser = NamedParserRegistryImpl()
 
     @Test fun test() {
         parser.registerParser(BooleanParser())
@@ -101,8 +101,8 @@ class NamedParserRegistryTest {
     }
 
     @Test fun testEquality() {
-        val a = NamedParserRegistry()
-        val b = NamedParserRegistry()
+        val a = NamedParserRegistryImpl()
+        val b = NamedParserRegistryImpl()
 
         assertEquals(a, b)
         assertEquals(a.hashCode(), b.hashCode())

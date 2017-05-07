@@ -1,8 +1,6 @@
-# ArgParser Binder: Simplify using ArgParser
+# ArgParser Binder: Simpler ArgParser
 
-<a href='https://travis-ci.org/ReactiveX/RxJava/builds'><img src='https://travis-ci.org/ReactiveX/RxJava.svg?branch=2.x'></a>
-[![codecov.io](http://codecov.io/github/ReactiveX/RxJava/coverage.svg?branch=2.x)](https://codecov.io/gh/ReactiveX/RxJava/branch/2.x)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.reactivex.rxjava2/rxjava/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.reactivex.rxjava2/rxjava)
+[![Build Status](https://travis-ci.org/mibac138/ArgParser.svg?branch=master)](https://travis-ci.org/mibac138/ArgParser) 
 
 Binder is a layer on top of ArgParser to make working with it easier and more comfy
 
@@ -10,11 +8,13 @@ Binder is a layer on top of ArgParser to make working with it easier and more co
 
 The first step is to add Binder to your project:
 
-```groovy
-compile "io.reactivex.rxjava2:rxjava:2.x.y"
-```
+// TODO //
 
-The second is to 
+
+The second is to bind your method(s). You have several options at this point:
+- bind a specific method (`Binder.bind(object, object.class.getMethod("name", /* params */))`),
+- bind a specific method using Kotlin (`Binder.bind(object::method)`),
+- or bind the whole class (`Binder.bind(object)`, every method meant to be bound must be annotated with `@BindMethod`)
 
 ## Communication
 
@@ -22,58 +22,8 @@ The second is to
 
 ## Full Documentation
 
-- [Wiki](https://github.com/ReactiveX/RxJava/wiki)
-- [Javadoc](http://reactivex.io/RxJava/2.x/javadoc/)
+- [Javadoc]()
 
-## Binaries
-
-Binaries and dependency information for Maven, Ivy, Gradle and others can be found at [http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cio.reactivex.rxjava2).
-
-Example for Gradle:
-
-```groovy
-compile 'io.reactivex.rxjava2:rxjava:x.y.z'
-```
-
-and for Maven:
-
-```xml
-<dependency>
-    <groupId>io.reactivex.rxjava2</groupId>
-    <artifactId>rxjava</artifactId>
-    <version>x.y.z</version>
-</dependency>
-```
-and for Ivy:
-
-```xml
-<dependency org="io.reactivex.rxjava2" name="rxjava" rev="x.y.z" />
-```
-
-Snapshots are available via [JFrog](https://oss.jfrog.org/webapp/#/home):
-
-```groovy
-repositories {
-    maven { url 'https://oss.jfrog.org/libs-snapshot' }
-}
-
-dependencies {
-    compile 'io.reactivex.rxjava2:rxjava:2.0.0-DP0-SNAPSHOT'
-}
-```
-
-## Build
-
-To build:
-
-```
-$ git clone git@github.com:ReactiveX/RxJava.git
-$ cd RxJava/
-$ git checkout -b 2.x
-$ ./gradlew build
-```
-
-Further details on building can be found on the [Getting Started](https://github.com/ReactiveX/RxJava/wiki/Getting-Started) page of the wiki.
 
 ## Bugs and Feedback
 

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.github.mibac138.argparser
+package com.github.mibac138.argparser.parser
 
 import com.github.mibac138.argparser.exception.ParserException
 import com.github.mibac138.argparser.exception.ParserInternalException
@@ -51,9 +51,7 @@ class SimpleParserRegistry : ParserRegistry {
     }
 
     override fun registerParser(parser: Parser) {
-        for (clazz in parser.getSupportedTypes()) {
-            classToParserMap.put(clazz, parser)
-        }
+        parser.getSupportedTypes().forEach { clazz -> classToParserMap.put(clazz, parser) }
     }
 
     override fun removeParser(parser: Parser) {
@@ -66,6 +64,10 @@ class SimpleParserRegistry : ParserRegistry {
 
             classToParserMap.remove(clazz)
         }
+    }
+
+    override fun removeAllParsers() {
+        classToParserMap.clear()
     }
 
     override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): List<*> {

@@ -20,48 +20,19 @@
  * SOFTWARE.
  */
 
-package com.github.mibac138.argparser
+package com.github.mibac138.argparser.parser
 
 import com.github.mibac138.argparser.reader.ArgumentReader
-import com.github.mibac138.argparser.reader.readUntilChar
 import com.github.mibac138.argparser.syntax.SyntaxElement
 
 /**
- *
+ * Created by mibac138 on 05-04-2017.
  */
-interface Parser {
-    fun getSupportedTypes(): Set<Class<*>>
-    fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Any
-}
+interface ParserRegistry : Parser {
+    override fun getSupportedTypes(): Set<Class<*>>
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Any
 
-fun <T> parseOrDefault(syntax: SyntaxElement<*>, action: () -> T): T {
-    try {
-        return action()
-    } catch (e: Exception) {
-        @Suppress("UNCHECKED_CAST")
-        if (!syntax.required && syntax.defaultValue != null)
-            return syntax.defaultValue as T
-        else
-            throw e
-    }
-}
-
-
-fun <T> ArgumentReader.readUntilCharOrDefault(syntax: SyntaxElement<*>, action: (String) -> T, char: Char = ' '): T {
-    mark()
-    try {
-        val output = action(readUntilChar(char))
-        removeMark()
-
-        return output
-    } catch (e: Exception) {
-        if (!syntax.required && syntax.defaultValue != null) {
-            removeMark()
-            @Suppress("UNCHECKED_CAST")
-            return syntax.defaultValue as T
-        }
-
-        reset()
-        throw e
-    }
+    fun registerParser(parser: Parser)
+    fun removeParser(parser: Parser)
+    fun removeAllParsers()
 }

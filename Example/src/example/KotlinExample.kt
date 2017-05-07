@@ -1,6 +1,6 @@
 package example
 
-import com.github.mibac138.argparser.SimpleParserRegistry
+import com.github.mibac138.argparser.parser.SimpleParserRegistry
 import com.github.mibac138.argparser.reader.asReader
 import com.github.mibac138.argparser.syntax.dsl.element
 import com.github.mibac138.argparser.syntax.dsl.syntaxContainer

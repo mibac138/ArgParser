@@ -22,30 +22,8 @@
 
 package com.github.mibac138.argparser.syntax
 
-class SyntaxContainerImpl<T>(private val base: SyntaxElement<T>, override val content: List<SyntaxElement<*>>) :
+data class SyntaxContainerImpl<T>(private val base: SyntaxElement<T>, override val content: List<SyntaxElement<*>>) :
         SyntaxContainer<T>, SyntaxElement<T> by base {
 
     constructor(base: SyntaxElement<T>, vararg content: SyntaxElement<*>) : this(base, arrayListOf(*content))
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other?.javaClass != javaClass) return false
-
-        other as SyntaxContainerImpl<*>
-
-        if (base != other.base) return false
-        if (content != other.content) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = base.hashCode()
-        result = 31 * result + content.hashCode()
-        return result
-    }
-
-    override fun toString(): String {
-        return "SyntaxContainerImpl(base=$base, content=$content)"
-    }
 }

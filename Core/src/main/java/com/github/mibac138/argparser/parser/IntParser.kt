@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.github.mibac138.argparser
+package com.github.mibac138.argparser.parser
 
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.syntax.SyntaxElement
@@ -28,10 +28,20 @@ import com.github.mibac138.argparser.syntax.SyntaxElement
 /**
  * Created by mibac138 on 05-04-2017.
  */
-interface ParserRegistry : Parser {
-    override fun getSupportedTypes(): Set<Class<*>>
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Any
+class IntParser : Parser {
+    override fun getSupportedTypes(): Set<Class<*>> = setOf(Int::class.java, Int::class.javaObjectType)
 
-    fun registerParser(parser: Parser)
-    fun removeParser(parser: Parser)
+    /**
+     * Reads text until hits space and tries to parse it as a [Int] then.
+     * In case it fails text from [input] is reverted
+     *
+     * @throws NumberFormatException
+     */
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Int {
+        return input.readUntilCharOrDefault(syntax, { Integer.parseInt(it) })
+    }
+
+    override fun toString(): String {
+        return "IntParser()"
+    }
 }

@@ -2,6 +2,7 @@ package com.github.mibac138.argparser
 
 import com.github.mibac138.argparser.exception.ParserInternalException
 import com.github.mibac138.argparser.exception.ParserInvalidInputException
+import com.github.mibac138.argparser.parser.PrecheckedParser
 import com.github.mibac138.argparser.reader.asReader
 import com.github.mibac138.argparser.reader.skipChar
 import com.github.mibac138.argparser.reader.skipUntilChar

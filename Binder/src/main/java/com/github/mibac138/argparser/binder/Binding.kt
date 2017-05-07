@@ -22,8 +22,8 @@
 
 package com.github.mibac138.argparser.binder
 
-import com.github.mibac138.argparser.Parser
 import com.github.mibac138.argparser.exception.ParserException
+import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.reader.ArgumentReader
 
 /**

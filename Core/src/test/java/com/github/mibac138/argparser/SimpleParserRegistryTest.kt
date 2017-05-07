@@ -2,6 +2,9 @@ package com.github.mibac138.argparser
 
 import com.github.mibac138.argparser.exception.ParserException
 import com.github.mibac138.argparser.exception.ParserInvalidInputException
+import com.github.mibac138.argparser.parser.Parser
+import com.github.mibac138.argparser.parser.SimpleParserRegistry
+import com.github.mibac138.argparser.parser.readUntilCharOrDefault
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.asReader
 import com.github.mibac138.argparser.syntax.EmptySyntaxContainer

@@ -28,7 +28,7 @@ import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 
 
-class NameComponent(val name: String) : SyntaxComponent {
+data class NameComponent(val name: String) : SyntaxComponent {
     override val id: Class<out SyntaxComponent>
         get() = NameComponent::class.java
 }

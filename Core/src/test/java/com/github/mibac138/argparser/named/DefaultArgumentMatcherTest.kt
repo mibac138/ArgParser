@@ -24,13 +24,13 @@ class DefaultArgumentMatcherTest {
         val matcher = DefaultArgumentMatcher(Pattern.compile("--([a-zA-Z]+)(?:=|: ?)"))
         var match = matcher.match("--test: Hello!".asReader())!!
 
-        assertEquals("test", match.getName())
-        assertEquals("Hello!", match.getValue().readAll())
+        assertEquals("test", match.name)
+        assertEquals("Hello!", match.value.readAll())
 
         match = matcher.match("--name=Mike".asReader())!!
 
-        assertEquals("name", match.getName())
-        assertEquals("Mike", match.getValue().readAll())
+        assertEquals("name", match.name)
+        assertEquals("Mike", match.value.readAll())
     }
 
     private fun ArgumentReader.readAll(): String {

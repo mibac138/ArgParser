@@ -1,9 +1,9 @@
 package com.github.mibac138.argparser.binder
 
-import com.github.mibac138.argparser.IntParser
-import com.github.mibac138.argparser.SequenceParser
-import com.github.mibac138.argparser.SimpleParserRegistry
-import com.github.mibac138.argparser.named.NamedParserRegistry
+import com.github.mibac138.argparser.named.NamedParserRegistryImpl
+import com.github.mibac138.argparser.parser.IntParser
+import com.github.mibac138.argparser.parser.SequenceParser
+import com.github.mibac138.argparser.parser.SimpleParserRegistry
 import com.github.mibac138.argparser.reader.asReader
 import org.junit.Assert.assertFalse
 import org.junit.Test
@@ -42,7 +42,7 @@ class BindingTest {
     @Test fun invokeNamed() {
         val binding = Binder.bind(Tester()::method)
 
-        val parser = NamedParserRegistry()
+        val parser = NamedParserRegistryImpl()
         parser.registerParser(SequenceParser())
         parser.registerParser(IntParser())
 
@@ -60,7 +60,7 @@ class BindingTest {
     @Test(expected = IllegalArgumentException::class) fun invokeNamedWithInvalidInput() {
         val binding = Binder.bind(UnnamedTester()::method)
 
-        val parser = NamedParserRegistry()
+        val parser = NamedParserRegistryImpl()
         parser.registerParser(SequenceParser())
         parser.registerParser(IntParser())
 

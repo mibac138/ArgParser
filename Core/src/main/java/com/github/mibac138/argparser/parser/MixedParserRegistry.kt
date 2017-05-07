@@ -20,29 +20,12 @@
  * SOFTWARE.
  */
 
-package com.github.mibac138.argparser.named
+package com.github.mibac138.argparser.parser
 
-import com.github.mibac138.argparser.reader.ArgumentReader
+import com.github.mibac138.argparser.named.NamedParserRegistry
 
-interface ArgumentMatcher {
-    /**
-     * Result of argument matching.
-     */
-    interface ArgumentMatchResult {
-        /**
-         * Represents found name (used for identification purposes)
-         */
-        val name: String
+/**
+ * Created by mibac138 on 07-05-2017.
+ */
+interface MixedParserRegistry : OrderedParserRegistry, NamedParserRegistry
 
-        /**
-         * Represents input which parser can use
-         */
-        val value: ArgumentReader
-    }
-
-    /**
-     * Tries to find a match in the given [reader]. If the attempt
-     * failed returns null.
-     */
-    fun match(reader: ArgumentReader): ArgumentMatchResult?
-}
