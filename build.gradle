@@ -68,6 +68,10 @@ subprojects {
         }
     }
 
+    task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+
+    }
+
     task javadocJar(type: Jar, dependsOn: dokka) {
         classifier = 'javadoc'
         from javadoc.destinationDir

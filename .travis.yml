@@ -11,7 +11,7 @@ cache:
     directories:
         - $HOME/.gradle/
 after_success:
-  - ./gradlew dokka
+  - ./gradlew dokkaJavadoc
   - ./scripts/javadoc.sh
 after_deploy:
   - ./gradlew bintrayUpload
