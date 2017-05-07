@@ -1,7 +1,5 @@
-echo -e "Repo:   $TRAVIS_REPO_SLUG\n"
-echo -e "Pull:   $TRAVIS_PULL_REQUEST\n"
-echo -e "Branch: $TRAVIS_BRANCH\n"
-
+#!/usr/bin/env bash
+set -v
 
 if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
 
@@ -22,5 +20,5 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
   git push -fq origin gh-pages > /dev/null
 
   echo -e "Published Javadoc to gh-pages.\n"
-  
+
 fi
