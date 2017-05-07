@@ -1,4 +1,4 @@
-# ArgParser Binder: Simpler ArgParser
+# ArgParser Binder: Simple and comfy
 
 [![Build Status](https://travis-ci.org/mibac138/ArgParser.svg?branch=master)](https://travis-ci.org/mibac138/ArgParser) 
 
@@ -8,8 +8,9 @@ Binder is a layer on top of ArgParser to make working with it easier and more co
 
 The first step is to add Binder to your project:
 
+```groovy
 // TODO //
-
+```
 
 The second is to bind your method(s). You have several options at this point:
 - bind a specific method (`Binder.bind(object, object.class.getMethod("name", /* params */))`),
@@ -19,10 +20,11 @@ The second is to bind your method(s). You have several options at this point:
 ## Communication
 
 - [GitHub Issues](https://github.com/mibac138/ArgParser/issues)
+- [Discord](https://discord.gg/9wxjQuv)
 
 ## Full Documentation
 
-- [Javadoc](mibac138.github.com/argparser)
+- [Javadoc](mibac138.github.com/argparser/javadoc/binder)
 
 
 ## Bugs and Feedback

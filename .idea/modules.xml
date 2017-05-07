@@ -3,9 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ArgParser.iml" filepath="$PROJECT_DIR$/ArgParser.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Binder/Binder.iml" filepath="$PROJECT_DIR$/Binder/Binder.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Core/Core.iml" filepath="$PROJECT_DIR$/Core/Core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Example/Example.iml" filepath="$PROJECT_DIR$/Example/Example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/binder/Binder.iml" filepath="$PROJECT_DIR$/binder/Binder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/Core.iml" filepath="$PROJECT_DIR$/core/Core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/example/Example.iml" filepath="$PROJECT_DIR$/example/Example.iml" />
     </modules>
   </component>
 </project>
