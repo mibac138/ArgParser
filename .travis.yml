@@ -13,5 +13,5 @@ cache:
 after_success:
   - ./gradlew dokka
   - ./scripts/javadoc.sh
-deploy:
+after_deploy:
   - ./gradlew bintrayUpload
