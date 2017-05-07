@@ -152,6 +152,26 @@ class CommonArgumentReaderTest(private val producer: (String) -> ArgumentReader)
         assertEquals(READER_TEXT[2], reader.next())
     }
 
+    @Test fun testEquality() {
+        val first = producer("Hello world!")
+        val second = producer("Hello world!")
+
+        // Because of using StringReader (which doesn't override equals) we can't test this
+        if (first is ReaderArgumentReader)
+            return
+
+        assertEquals(first, second)
+        assertEquals(first.hashCode(), second.hashCode())
+        assertEquals(first.toString(), second.toString())
+
+        first.skip(4)
+        second.skip(4)
+
+        assertEquals(first, second)
+        assertEquals(first.hashCode(), second.hashCode())
+        assertEquals(first.toString(), second.toString())
+    }
+
     private fun ArgumentReader.readAll() {
         while (hasNext())
             next()

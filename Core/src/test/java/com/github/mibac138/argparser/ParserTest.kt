@@ -1,5 +1,6 @@
 package com.github.mibac138.argparser
 
+import com.github.mibac138.argparser.syntax.SyntaxComponent
 import com.github.mibac138.argparser.syntax.SyntaxElement
 
 /**
@@ -8,27 +9,29 @@ import com.github.mibac138.argparser.syntax.SyntaxElement
 abstract class ParserTest {
     protected fun <T> defElement(default: T): SyntaxElement<T> {
         return object : SyntaxElement<T> {
-            override fun isRequired(): Boolean
-                    = false
+            override val required: Boolean
+                get() = false
+            override val defaultValue: T?
+                get() = default
+            override val outputType: Class<T>
+                get() = TODO()
 
-            override fun getDefaultValue(): T?
-                    = default
-
-            override fun getOutputType(): Class<T>
-                    = TODO()
+            override fun <T : SyntaxComponent> get(clazz: Class<T>): T? = null
         }
     }
 
     protected fun reqElement(): SyntaxElement<*> {
         return object : SyntaxElement<Any> {
-            override fun isRequired(): Boolean
-                    = true
+            override val required: Boolean
+                get() = true
 
-            override fun getDefaultValue(): Any?
-                    = TODO()
+            override val defaultValue: Any?
+                get() = TODO()
 
-            override fun getOutputType(): Class<Any>
-                    = TODO()
+            override val outputType: Class<Any>
+                get() = TODO()
+
+            override fun <T : SyntaxComponent> get(clazz: Class<T>): T? = null
         }
     }
 }

@@ -22,4 +22,30 @@ class IntQueueTest {
         assertEquals(6 - 5, queue.remove())
         assertEquals(5 - 5, queue.remove())
     }
+
+    @Test fun testAddRemoveAndSize() {
+        queue.add(1)
+        assertEquals(1, queue.size())
+        queue.remove()
+        assertEquals(0, queue.size())
+    }
+
+    @Test fun testPoll() {
+        assertEquals(null, queue.poll())
+        queue.add(1)
+        assertEquals(1, queue.poll())
+    }
+
+    @Test fun testEquality() {
+        val second = IntQueue()
+        assertEquals(second, queue)
+        assertEquals(second.hashCode(), queue.hashCode())
+        assertEquals(second.toString(), queue.toString())
+
+        queue.add(4)
+        second.add(4)
+        assertEquals(second, queue)
+        assertEquals(second.hashCode(), queue.hashCode())
+        assertEquals(second.toString(), queue.toString())
+    }
 }

@@ -83,13 +83,15 @@ class StringArgumentReaderTest {
 
     @Test fun testReadUntilSpace() {
         val reader = StringArgumentReader("Hey! Hi! Hello!")
-        assertEquals("Hey!", reader.readUntilSpace())
-        assertEquals("Hi!", reader.readUntilSpace())
-        assertEquals("Hello!", reader.readUntilSpace())
+        assertEquals("Hey!", reader.readUntilChar(' '))
+        reader.skipChar(' ')
+        assertEquals("Hi!", reader.readUntilChar(' '))
+        reader.skipChar(' ')
+        assertEquals("Hello!", reader.readUntilChar(' '))
     }
 
     @Test fun testSpacelessReadUntilSpace() {
-        assertEquals(READER_TEXT, reader.readUntilSpace())
+        assertEquals(READER_TEXT, reader.readUntilChar(' '))
     }
 
     @Test fun testSkipSpaces() {
@@ -102,19 +104,19 @@ class StringArgumentReaderTest {
 
         val reader = StringArgumentReader("    Hey!   Hi!     Hello!")
 
-        reader.skipSpaces()
+        reader.skipChar(' ')
         assertEquals("Hey!   Hi!     Hello!", reader.readAvailable())
         reader.skip("Hey!".length)
 
-        reader.skipSpaces()
+        reader.skipChar(' ')
         assertEquals("Hi!     Hello!", reader.readAvailable())
         reader.skip("Hi!".length)
 
-        reader.skipSpaces()
+        reader.skipChar(' ')
         assertEquals("Hello!", reader.readAvailable())
 
         // Verify not overskipping
-        reader.skipSpaces()
+        reader.skipChar(' ')
         assertEquals("Hello!", reader.readAvailable())
     }
 
@@ -123,13 +125,13 @@ class StringArgumentReaderTest {
 
         repeat(3) {
             reader.mark()
-            val original = reader.readUntilSpace()
+            val original = reader.readUntilChar(' ')
             reader.reset()
             try {
-                reader.readUntilSpace { throw Exception() }
+                reader.readUntilChar(' ') { throw Exception() }
             } catch (e: Exception) {
             } finally {
-                assertEquals(original, reader.readUntilSpace())
+                assertEquals(original, reader.readUntilChar(' '))
             }
         }
     }
@@ -137,5 +139,21 @@ class StringArgumentReaderTest {
     @Test fun testAsReader() {
         assertEquals("1234567890", "1234567890".asReader().read("1234567890".length))
         assertEquals("1234567890", 1234567890.asReader().read("1234567890".length))
+    }
+
+    @Test fun testEquality() {
+        val first = StringArgumentReader("Hello world!")
+        val second = StringArgumentReader("Hello world!")
+
+        assertEquals(first, second)
+        assertEquals(first.hashCode(), second.hashCode())
+        assertEquals(first.toString(), second.toString())
+
+        first.skip(4)
+        second.skip(4)
+
+        assertEquals(first, second)
+        assertEquals(first.hashCode(), second.hashCode())
+        assertEquals(first.toString(), second.toString())
     }
 }

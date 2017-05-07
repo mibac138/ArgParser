@@ -1,6 +1,7 @@
 package com.github.mibac138.argparser
 
 import com.github.mibac138.argparser.reader.asReader
+import com.github.mibac138.argparser.syntax.EmptySyntaxContainer
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -22,11 +23,17 @@ class ParserExtensionsTest : ParserTest() {
     }
 
     @Test(expected = NumberFormatException::class) fun readUntilSpaceOrDefaultException() {
-        "".asReader().readUntilSpaceOrDefault(reqElement(), String::toInt)
+        "".asReader().readUntilCharOrDefault(reqElement(), String::toInt)
     }
 
     @Test fun readUntilSpaceOrDefaultWithDefault() {
-        assertEquals(3, "".asReader().readUntilSpaceOrDefault(defElement(3), String::toInt))
+        assertEquals(3, "".asReader().readUntilCharOrDefault(defElement(3), String::toInt))
+    }
+
+    @Test fun readUntilCharOrDefault() {
+        assertEquals("321", "1234".asReader().readUntilCharOrDefault(EmptySyntaxContainer, {
+            it.reversed()
+        }, '4'))
     }
 
     private fun exception(): Boolean {

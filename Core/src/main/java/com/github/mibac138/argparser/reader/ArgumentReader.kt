@@ -1,4 +1,36 @@
+/*
+ * Copyright (c) 2017 Michał Bączkowski
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+@file:JvmName("ArgumentReaderUtil")
+
 package com.github.mibac138.argparser.reader
+
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.Reader
+import java.nio.charset.Charset
+import java.util.regex.MatchResult
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * Interface for reading arguments. Can be implemented to read
@@ -70,20 +102,22 @@ interface ArgumentReader {
 
 /**
  * Reads the reader until hits a space
- * If possible, use [readUntilSpace] with
+ * If possible, use [readUntilChar] with
  * action as argument instead of this function
  * as it reverts read text in case your
  * code threw an exception
  */
-fun ArgumentReader.readUntilSpace(): String {
+fun ArgumentReader.readUntilChar(targetChar: Char = ' ', inclusive: Boolean = true): String {
     val s = StringBuilder()
 
-    skipSpaces()
     while (hasNext()) {
         mark()
         val char = next()
-        if (char == ' ') {
-            reset()
+
+        if (char == targetChar) {
+            if (inclusive) reset()
+            else removeMark()
+
             return s.toString()
         } else {
             s.append(char)
@@ -101,10 +135,10 @@ fun ArgumentReader.readUntilSpace(): String {
  * is reverted (you will be able to read it again) and exception
  * is passed on
  */
-fun <T> ArgumentReader.readUntilSpace(action: (String) -> T): T {
+fun <T> ArgumentReader.readUntilChar(targetChar: Char = ' ', inclusive: Boolean = true, action: (String) -> T): T {
     mark()
     try {
-        val output = action(readUntilSpace())
+        val output = action(readUntilChar(targetChar, inclusive))
         removeMark()
 
         return output
@@ -114,27 +148,91 @@ fun <T> ArgumentReader.readUntilSpace(action: (String) -> T): T {
     }
 }
 
-/**
- * Reads until has a non-space character
- */
-fun ArgumentReader.skipSpaces(): ArgumentReader {
+fun ArgumentReader.skipChar(targetChar: Char) {
     while (hasNext()) {
         mark()
         val char = next()
-        if (char != ' ') {
+        if (char != targetChar) {
             reset()
             break
         }
 
         removeMark()
     }
+}
 
-    return this
+fun ArgumentReader.skipUntilChar(targetChar: Char, inclusive: Boolean = true) {
+    while (hasNext()) {
+        mark()
+        val char = next()
+        if (char == targetChar) {
+            if (inclusive) removeMark()
+            else reset()
+
+            break
+        }
+
+        removeMark()
+    }
+}
+
+fun ArgumentReader.matchPattern(pattern: Pattern, readStep: Int = 30): MatchResult?
+        = this.matchMatcher(pattern.matcher(""), readStep)
+
+
+fun ArgumentReader.matchMatcher(matcher: Matcher, readStep: Int = 30): MatchResult? {
+    mark()
+
+    val output: Pair<Matcher, String>
+    try {
+        var read: String = ""
+        var available = getAvailableCount()
+
+        do {
+            read += read(Math.min(readStep, available))
+            matcher.reset(read)
+            available = getAvailableCount()
+        } while (!matcher.hitEnd() && available != 0)
+
+        output = Pair(matcher, read)
+    } catch(e: Exception) {
+        reset()
+        throw e
+    }
+
+    if (!output.first.find() || output.first.start() != 0) {
+        reset()
+        matcher.reset()
+        return null
+    }
+
+    // Revert if matcher took too much text
+    if (output.first.end() != output.second.length) {
+        reset()
+        skip(output.first.end())
+    }
+
+    removeMark()
+    return output.first.toMatchResult()
 }
 
 /**
- * Returns your object as a reader [[StringArgumentReader] using `toString() on your object`]
+ * Returns your object as a argument reader
  */
-fun <T> T.asReader(): ArgumentReader {
+fun Any?.asReader(): ArgumentReader {
+    if (this == null) return EmptyArgumentReader
+    if (this is InputStream) return this.asReader()
+    if (this is Reader) return this.asReader()
+
     return StringArgumentReader(this.toString())
+}
+
+fun InputStream?.asReader(charset: Charset = Charsets.UTF_8): ArgumentReader {
+    if (this == null) return EmptyArgumentReader
+    return InputStreamReader(this, charset).asReader()
+}
+
+fun Reader?.asReader(): ArgumentReader {
+    if (this == null) return EmptyArgumentReader
+    return ReaderArgumentReader(this)
 }

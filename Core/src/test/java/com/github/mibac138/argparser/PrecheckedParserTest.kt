@@ -3,8 +3,8 @@ package com.github.mibac138.argparser
 import com.github.mibac138.argparser.exception.ParserInternalException
 import com.github.mibac138.argparser.exception.ParserInvalidInputException
 import com.github.mibac138.argparser.reader.asReader
-import com.github.mibac138.argparser.reader.readUntilSpace
-import com.github.mibac138.argparser.reader.skipSpaces
+import com.github.mibac138.argparser.reader.skipChar
+import com.github.mibac138.argparser.reader.skipUntilChar
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import org.junit.Assert.*
 import org.junit.Test
@@ -66,8 +66,7 @@ class PrecheckedParserTest : ParserTest() {
         // If an error occurs PrecheckedParser should revert read text
         assertEquals(reader.getLength(), reader.getAvailableCount())
 
-        reader.readUntilSpace()
-        reader.skipSpaces()
+        reader.skipUntilChar(' ')
 
         assertTrue(parser.parse(reader, reqElement()))
 
@@ -81,10 +80,14 @@ class PrecheckedParserTest : ParserTest() {
 
         assertEquals(reader.getLength() - "maybe yes".length, reader.getAvailableCount())
 
-        reader.readUntilSpace()
-        reader.skipSpaces()
+        reader.skipChar(' ')
+        reader.skipUntilChar(' ')
 
         assertFalse(parser.parse(reader, reqElement()))
+    }
+
+    @Test fun testToString() {
+        assertFalse(parser.toString().isNullOrBlank())
     }
 
 
@@ -96,13 +99,13 @@ class PrecheckedParserTest : ParserTest() {
         override fun getSupportedTypes(): Set<Class<*>> = setOf(Boolean::class.java)
 
         override fun getPattern(): Pattern
-                = Pattern.compile("(yes|no)")
+                = Pattern.compile("^(yes|no)")
 
         override fun parse(matcher: Matcher, element: SyntaxElement<*>): Boolean {
             val result = matcher.toMatchResult().group(0)
 
-            if (result.equals("yes", true)) return true
-            if (result.equals("no", true)) return false
+            if (result.equals("yes", ignoreCase = true)) return true
+            if (result.equals("no", ignoreCase = true)) return false
 
             throw ParserInvalidInputException()
         }

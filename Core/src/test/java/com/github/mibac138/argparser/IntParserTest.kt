@@ -2,8 +2,8 @@ package com.github.mibac138.argparser
 
 import com.github.mibac138.argparser.reader.asReader
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
+import kotlin.test.assertFalse
 
 /**
  * Created by mibac138 on 06-04-2017.
@@ -12,7 +12,7 @@ class IntParserTest : ParserTest() {
     private val parser = IntParser()
 
     @Test fun supportedTypes() {
-        assertTrue(parser.getSupportedTypes() == setOf(Int::class.java))
+        assertEquals(setOf(Int::class.java, Integer::class.java), parser.getSupportedTypes())
     }
 
     @Test fun parse() {
@@ -28,5 +28,9 @@ class IntParserTest : ParserTest() {
 
     @Test fun parseInvalidWithDefault() {
         assertEquals(23, parser.parse("Hi!".asReader(), defElement(23)))
+    }
+
+    @Test fun testToString() {
+        assertFalse(parser.toString().isNullOrBlank())
     }
 }
