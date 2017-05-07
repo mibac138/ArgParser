@@ -1,3 +1,8 @@
+echo -e "Repo:   $TRAVIS_REPO_SLUG\n"
+echo -e "Pull:   $TRAVIS_PULL_REQUEST\n"
+echo -e "Branch: $TRAVIS_BRANCH\n"
+
+
 if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
 
   echo -e "Publishing javadoc\n"
@@ -13,7 +18,7 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
   git rm -rf ./javadoc
   cp -Rf $HOME/javadoc-latest ./javadoc
   git add -f .
-  git commit -m ":sparkles: Auto pushed commit $TRAVIS_BUILD_NUMBER"
+  git commit -m ":sparkles: Auto pushed commit $TRAVIS_COMMIT"
   git push -fq origin gh-pages > /dev/null
 
   echo -e "Published Javadoc to gh-pages.\n"
