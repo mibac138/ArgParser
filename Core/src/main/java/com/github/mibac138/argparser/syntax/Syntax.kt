@@ -24,7 +24,6 @@
 
 package com.github.mibac138.argparser.syntax
 
-import com.sun.xml.internal.ws.api.addressing.AddressingVersion.isRequired
 import java.util.*
 
 /**
@@ -38,13 +37,13 @@ interface SyntaxElement<T> {
 
     /**
      * Indicate whether this element is required.
-     * If not a parser *might* return [getDefaultValue]
+     * If not a parser *might* return [defaultValue]
      */
     val required: Boolean
 
     /**
      * Return element's default value.
-     * Must not be null if [isRequired] is true,
+     * Must not be null if [required] is true,
      * otherwise might be any value
      */
     val defaultValue: T?

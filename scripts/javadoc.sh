@@ -5,7 +5,7 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
 
   echo -e "Publishing javadoc\n"
 
-  cp -R "build/docs/javadoc" $HOME/javadoc-latest
+  cp -R "build/javadoc" $HOME/javadoc-latest
 
   cd $HOME
   git config --global user.email "travis@travis-ci.org"
