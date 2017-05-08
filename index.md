@@ -4,9 +4,9 @@
 - [Source](https://github.com/mibac138/ArgParser/)
 
 ## Core
-- [Documentation](https://mibac138.github.io/argparser/javadoc/core)
+- [Documentation](https://mibac138.github.io/ArgParser/javadoc/core)
 - [Source](https://github.com/mibac138/ArgParser/tree/master/core)
 
 ## Binder
-- [Documentation](https://mibac138.github.io/argparser/javadoc/binder)
+- [Documentation](https://mibac138.github.io/ArgParser/javadoc/binder)
 - [Source](https://github.com/mibac138/ArgParser/tree/master/binder)
