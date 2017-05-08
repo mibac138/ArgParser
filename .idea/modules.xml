@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/binder/Binder.iml" filepath="$PROJECT_DIR$/binder/Binder.iml" />
-      <module fileurl="file://$PROJECT_DIR$/core/Core.iml" filepath="$PROJECT_DIR$/core/Core.iml" />
       <module fileurl="file://$PROJECT_DIR$/example/Example.iml" filepath="$PROJECT_DIR$/example/Example.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/binder/argparser-binder.iml" filepath="$PROJECT_DIR$/.idea/modules/binder/argparser-binder.iml" group="argparser-binder" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/binder/argparser-binder_main.iml" filepath="$PROJECT_DIR$/.idea/modules/binder/argparser-binder_main.iml" group="argparser-binder" />

@@ -7,8 +7,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="Binder" />
-    <orderEntry type="module" module-name="Core" />
     <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-runtime:1.1.2" level="project" />
   </component>
 </module>

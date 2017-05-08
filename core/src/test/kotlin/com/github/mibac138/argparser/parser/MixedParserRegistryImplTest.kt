@@ -54,7 +54,6 @@ class MixedParserRegistryImplTest {
         }
         val output = parser.parse("true --seq1='Hiya!' --seq2: 'Lorem ipsum' 100 false --seq3=Hi".asReader(), syntax)
 
-        println(output)
         assertContentEquals(mapOf(
                 null to listOf(true, 100, false),
                 "seq1" to "'Hiya!'",

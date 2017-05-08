@@ -46,7 +46,7 @@ class BindingImpl constructor(private val boundMethod: BoundMethod) : Binding {
     private val _exceptions: MutableList<Exception> = ArrayList()
     override val exceptions: List<Exception>
         get() = _exceptions
-    var syntax: SyntaxElement<*> = boundMethod.syntax
+    private var syntax: SyntaxElement<*> = boundMethod.syntax
 
     private val argsMap: MutableMap<String, IndexedValue<SyntaxElement<*>>> = HashMap()
     private val noNameArgsMap: MutableMap<Class<*>, IndexedValue<SyntaxElement<*>>> = HashMap()
@@ -76,9 +76,6 @@ class BindingImpl constructor(private val boundMethod: BoundMethod) : Binding {
      * Recreates internal syntax representation
      */
     fun syntaxChanged() {
-        if (syntax == boundMethod.syntax)
-            return
-
         syntax = boundMethod.syntax
         syntax.iterator().withIndex().forEach { (i, element) ->
             val name = element.name
@@ -88,11 +85,27 @@ class BindingImpl constructor(private val boundMethod: BoundMethod) : Binding {
         }
     }
 
-    private fun transform(iterator: Iterator<Map.Entry<String?, *>>): Array<*> {
-        val array = Array<Any?>(syntax.getSize(), { null })
+    private fun transform(iterator: Iterator<Map.Entry<String?, *>>,
+                          array: Array<Any?> = Array<Any?>(syntax.getSize(), { null }))
+            : Array<*> {
+
         for (entry in iterator) {
             if (entry.value is Exception) {
                 _exceptions.add(entry.value as Exception)
+            } else if (iterator !is ListAsEntryIterator && entry.key?.isEmpty() ?: true) {
+                entry.value?.let {
+                    val subIterator: Iterator<Map.Entry<String?, *>>
+                    if (it is List<*>)
+                        subIterator = it.iterator().asEntry()
+                    else if (it is Array<*>)
+                        subIterator = it.iterator().asEntry()
+                    else {
+                        _exceptions.add(ParserInternalException("Couldn't process unnamed output. Data type is ${it.javaClass}"))
+                        return@let
+                    }
+
+                    transform(subIterator, array)
+                }
             } else {
                 val element = resolveArg(entry) ?: throw IllegalArgumentException("Parser returned " +
                         "result which I can't map to the syntax: $entry")
@@ -116,11 +129,22 @@ class BindingImpl constructor(private val boundMethod: BoundMethod) : Binding {
     }
 
     private fun getArgByType(type: Class<*>): IndexedValue<SyntaxElement<*>>? {
-        return argsMap.values.firstOrNull {
-            type.isAssignableFrom(it.value.outputType)
-        } ?: noNameArgsMap.entries.firstOrNull {
-            type.isAssignableFrom(it.key)
-        }?.value
+        for (value in argsMap.values) {
+            if (type.isAssignableFrom(value.value.outputType))
+                return value
+        }
+
+        for ((key, value) in noNameArgsMap) {
+            if (type.isAssignableFrom(key))
+                return value
+        }
+
+        return null
+//        return argsMap.values.firstOrNull {
+//            type.isAssignableFrom(it.value.outputType)
+//        } ?: noNameArgsMap.entries.firstOrNull {
+//            type.isAssignableFrom(it.key)
+//        }?.value
     }
 
     private fun getArgByName(name: String): IndexedValue<SyntaxElement<*>>? {
