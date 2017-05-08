@@ -23,7 +23,7 @@
 package com.github.mibac138.argparser.exception
 
 /**
- * Created by mibac138 on 05-04-2017.
+ * Indicates a exception inside a [Parser]
  */
 open class ParserException : RuntimeException {
     constructor() : super()

@@ -25,18 +25,17 @@ package com.github.mibac138.argparser.binder
 import com.github.mibac138.argparser.syntax.SyntaxElement
 
 /**
- * Created by mibac138 on 14-04-2017.
- * Represents a already bound method which can be easily invoked
+ * Represents a bound method. Can be easily invoked using [invoke]
  */
 interface BoundMethod {
     /**
-     * @param parameters A properly ordered array of parameters used by this method. Mustn't be null. Array's elements can be null
+     * @param parameters A properly ordered array of parameters used by this method.
+     * @return the same thing the underlying method returned or `null`
      */
     fun invoke(parameters: Array<*>): Any?
 
     /**
      * Syntax this method uses.
-     * Usually auto generated.
      */
     val syntax: SyntaxElement<*>
 }

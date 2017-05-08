@@ -63,7 +63,7 @@ class SyntaxElementImpl<T> : SyntaxElement<T> {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : SyntaxComponent> get(clazz: Class<T>): T? {
-        return components[clazz] as T?
+        return components[clazz] as? T?
     }
 
     override fun equals(other: Any?): Boolean {

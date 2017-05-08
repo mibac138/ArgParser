@@ -57,6 +57,11 @@ interface SyntaxElement<T> {
 }
 
 interface SyntaxComponent {
+    /**
+     * Usually implementing class is enough though when
+     * you want to have a interface with multiple implementations
+     * return the interface's class instead
+     */
     val id: Class<out SyntaxComponent>
 }
 
@@ -75,6 +80,9 @@ fun SyntaxElement<*>?.getSize(): Int {
     return 1
 }
 
+/**
+ * Returns this SyntaxElement's required size (i.e. amount of required elements)
+ */
 fun SyntaxElement<*>?.getRequiredSize(): Int {
     if (this == null) return 0
     if (!required) return 0
@@ -95,5 +103,17 @@ operator fun SyntaxElement<*>?.iterator(): Iterator<SyntaxElement<*>> {
         return Collections.emptyIterator()
     if (this is SyntaxContainer)
         return content.iterator()
+    return SingleSyntaxElementIterator(this)
+}
+
+
+/**
+ * Returns a iterator for given [SyntaxElement] consisting of only required elements
+ */
+fun SyntaxElement<*>?.requiredIterator(): Iterator<SyntaxElement<*>> {
+    if (this == null || !required || getRequiredSize() == 0)
+        return Collections.emptyIterator()
+    if (this is SyntaxContainer)
+        return content.filter { required }.iterator()
     return SingleSyntaxElementIterator(this)
 }

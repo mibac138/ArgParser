@@ -23,9 +23,7 @@
 package com.github.mibac138.argparser.exception
 
 /**
- * Created by mibac138 on 05-04-2017.
- *
- * Usually means the input didn't match parser's syntax
+ * Indicates a improperly formatted input
  */
 class ParserInvalidInputException : ParserException {
     constructor() : super()

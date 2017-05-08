@@ -23,6 +23,7 @@
 package com.github.mibac138.argparser.binder
 
 import com.github.mibac138.argparser.exception.ParserException
+import com.github.mibac138.argparser.exception.ParserInternalException
 import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.reader.ArgumentReader
@@ -33,8 +34,18 @@ import java.util.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.set
 
-class BindingImpl internal constructor(private val boundMethod: BoundMethod) : Binding {
-    private val exceptions: MutableList<Exception> = ArrayList()
+/**
+ * Default [Binding] implementation.
+ * Supports as parser's output the following objects:
+ * - [List], [Array]
+ * - [Map] (*only with String as key*). If one of the keys is `null` or a empty string and value is a `List` it
+ * interprets that list as unnamed output
+ * - [Exception] (wraps it with [ParserException] and rethrows if it's the only output, otherwise tries to quietly add it to [exceptions])
+ */
+class BindingImpl constructor(private val boundMethod: BoundMethod) : Binding {
+    private val _exceptions: MutableList<Exception> = ArrayList()
+    override val exceptions: List<Exception>
+        get() = _exceptions
     var syntax: SyntaxElement<*> = boundMethod.syntax
 
     private val argsMap: MutableMap<String, IndexedValue<SyntaxElement<*>>> = HashMap()
@@ -44,33 +55,30 @@ class BindingImpl internal constructor(private val boundMethod: BoundMethod) : B
         syntaxChanged()
     }
 
-    override fun getExceptions(): List<Exception>
-            = exceptions
-
     override fun invoke(reader: ArgumentReader, parser: Parser): Any? {
-        exceptions.clear()
+        _exceptions.clear()
         val args = parser.parse(reader, syntax)
 
-        val mapped: Array<*>
-
-        if (args is List<*>)
-            mapped = transform(args.iterator().asEntry())
-        else if (args is Array<*>)
-            mapped = transform(args.iterator().asEntry())
-        else if (args is Map<*, *>)
-            mapped = transform(args.entries.iterator() as Iterator<Map.Entry<String?, *>>)
-        else if (args is Exception)
-            if (args is ParserException)
-                throw args
-            else
-                throw ParserException(args)
-        else
-            mapped = arrayOf(args)
+        @Suppress("UNCHECKED_CAST")
+        val mapped: Array<*> = when (args) {
+            is List<*> -> transform(args.iterator().asEntry())
+            is Array<*> -> transform(args.iterator().asEntry())
+            is Map<*, *> -> transform(args.entries.iterator() as Iterator<Map.Entry<String?, *>>)
+            is ParserException -> throw args
+            is Exception -> throw ParserInternalException(args)
+            else -> arrayOf(args)
+        }
 
         return boundMethod.invoke(mapped)
     }
 
+    /**
+     * Recreates internal syntax representation
+     */
     fun syntaxChanged() {
+        if (syntax == boundMethod.syntax)
+            return
+
         syntax = boundMethod.syntax
         syntax.iterator().withIndex().forEach { (i, element) ->
             val name = element.name
@@ -84,7 +92,7 @@ class BindingImpl internal constructor(private val boundMethod: BoundMethod) : B
         val array = Array<Any?>(syntax.getSize(), { null })
         for (entry in iterator) {
             if (entry.value is Exception) {
-                exceptions.add(entry.value as Exception)
+                _exceptions.add(entry.value as Exception)
             } else {
                 val element = resolveArg(entry) ?: throw IllegalArgumentException("Parser returned " +
                         "result which I can't map to the syntax: $entry")

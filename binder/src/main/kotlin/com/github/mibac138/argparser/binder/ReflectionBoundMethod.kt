@@ -29,6 +29,9 @@ import com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSL
 import com.github.mibac138.argparser.syntax.dsl.element
 import java.lang.reflect.Method
 
+/**
+ * Java's reflection based bound method
+ */
 class ReflectionBoundMethod(private val owner: Any, private val method: Method) : BoundMethod {
     override val syntax: SyntaxElement<*>
 

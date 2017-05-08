@@ -25,6 +25,9 @@ package com.github.mibac138.argparser.syntax
 import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 
+/**
+ * Asks the processing [Parser] to use the specified [parser] to parse input for this [SyntaxElement]
+ */
 data class ParserComponent(val parser: Parser) : SyntaxComponent {
     override val id: Class<out SyntaxComponent>
         get() = ParserComponent::class.java

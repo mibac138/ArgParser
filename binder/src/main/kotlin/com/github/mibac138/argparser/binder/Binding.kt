@@ -27,20 +27,19 @@ import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.reader.ArgumentReader
 
 /**
- *
+ * Binding is a connector between [Parser]'s output and [BoundMethod]'s invoke
  */
 interface Binding {
     /**
-     * Returns a list of exceptions that occurred during last invoking
+     * @return a list of exceptions that occured during last invoking
      */
-    //    val exceptions: List<Exception>
-    fun getExceptions(): List<Exception>
+    val exceptions: List<Exception>
 
     /**
      * Calls the underlying method using output from [parser].
      * In case parser returned a error (as a collection/map/array element) it gets
-     * added to [getExceptions] from where you can retrieve it. *Warning: This method
-     * might throw an exception if one of parser's results is a exception*
+     * added to [exceptions] from where you can retrieve it. *Note:* This method
+     * *might* throw an exception if one of parser's results is a exception
      *
      * @throws ParserException if the only thing parser returned is a exception
      */

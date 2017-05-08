@@ -36,7 +36,7 @@ import kotlin.reflect.full.valueParameters
 import kotlin.reflect.jvm.jvmErasure
 
 /**
- * Created by mibac138 on 29-04-2017.
+ * Kotlin's reflection based bound method
  */
 class CallableBoundMethod(private val function: KCallable<*>, private val owner: Any? = null) : BoundMethod {
     override val syntax: SyntaxElement<*>
@@ -44,7 +44,7 @@ class CallableBoundMethod(private val function: KCallable<*>, private val owner:
     init {
         if ((function.instanceParameter != null || function.extensionReceiverParameter != null)
                 && owner == null)
-            throw IllegalArgumentException("Method requires instance variable (owner) but it's null")
+            throw IllegalArgumentException("Method requires instance variable or extension receiver but it's null")
 
         val builder = SyntaxContainerDSL(Any::class.java)
 

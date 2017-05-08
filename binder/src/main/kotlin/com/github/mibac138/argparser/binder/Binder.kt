@@ -30,9 +30,17 @@ import kotlin.reflect.full.functions
 import kotlin.reflect.full.instanceParameter
 
 /**
- * Created by mibac138 on 13-04-2017.
+ * Common entry point for binding methods.
+ * You can initialize methods directly but
+ * it's recommended to use these methods
+ * when you can
  */
 object Binder {
+    /**
+     * Binds the whole class by scanning for methods with [BindMethod] annotation.
+     *
+     * @return map with [BindMethod.name] as keys and binding as the bound methods
+     */
     @JvmStatic
     fun bind(owner: Any): Map<String, Binding> {
         val functions = owner::class.declaredMemberFunctions
@@ -48,19 +56,30 @@ object Binder {
         return map
     }
 
+    /**
+     * Binds the given [method] and returns a [Binding].
+     * To be used with Java code
+     */
     @JvmStatic
     fun bind(owner: Any, method: Method): Binding {
         return bind(ReflectionBoundMethod(owner, method))
     }
 
+    /**
+     * Binds the given [method] and returns a [Binding].
+     * @param [owner] use this if your [method] isn't bound. (For more info what bound means in this context refer to [link](http://stackoverflow.com/q/43822920/3533380))
+     */
     @JvmStatic
     fun bind(method: KCallable<*>, owner: Any? = null): Binding {
         if ((method.instanceParameter != null || method.extensionReceiverParameter != null)
                 && owner == null)
-            throw IllegalArgumentException("Method requires instance variable (owner) but it's null")
+            throw IllegalArgumentException("Method requires instance variable or extension receiver (owner) but it's null")
         return bind(CallableBoundMethod(method, owner))
     }
 
+    /**
+     * Binds the given [method] and returns a [Binding]
+     */
     @JvmStatic
     fun bind(method: BoundMethod): Binding {
         return BindingImpl(method)

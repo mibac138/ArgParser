@@ -22,9 +22,11 @@
 
 package com.github.mibac138.argparser.binder
 
-/**
- * Created by mibac138 on 06-05-2017.
- */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class BindMethod(val name: String)
+annotation class BindMethod(
+        /**
+         * Is only used as a key in the map when binding the whole class ([Binder.bind])
+         */
+        val name: String
+)
