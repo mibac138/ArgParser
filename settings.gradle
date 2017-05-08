@@ -2,5 +2,5 @@ rootProject.name = 'parent'
 include ':argparser-binder'
 include ':argparser-core'
 
-project(':argparser-binder').projectDir = "$rootDir/Binder" as File
-project(':argparser-core').projectDir = "$rootDir/Core" as File
+project(':argparser-binder').projectDir = "$rootDir/binder" as File
+project(':argparser-core').projectDir = "$rootDir/core" as File
