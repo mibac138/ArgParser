@@ -83,6 +83,7 @@ subprojects {
         pkg {
             repo = 'maven'
             name = 'ArgParser'
+            vcsUrl = 'https://github.com/mibac138/ArgParser.git'
         }
         version {
             name = project.version
