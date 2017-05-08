@@ -27,12 +27,17 @@ import com.github.mibac138.argparser.syntax.SyntaxDSLComponentProperty
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 
-
+/**
+ * Used in [NamedParserRegistry] to name [SyntaxElement]s
+ */
 data class NameComponent(val name: String) : SyntaxComponent {
     override val id: Class<out SyntaxComponent>
         get() = NameComponent::class.java
 }
 
+/**
+ * Returns this element's [NameComponent]'s name or null
+ */
 val SyntaxElement<*>?.name: String?
     get() = this?.get(NameComponent::class.java)?.name
 

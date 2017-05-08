@@ -34,6 +34,11 @@ import com.github.mibac138.argparser.syntax.iterator
 import com.github.mibac138.argparser.syntax.parser
 import java.util.regex.Pattern
 
+/**
+ * Can parse mixed syntax (i.e. with both named and unnamed elements)
+ *
+ * *Note*: Currently unnamed not required element's *must* be at the end of the syntax
+ */
 class MixedParserRegistryImpl : MixedParserRegistry {
     private val nameToParserMap: MutableMap<String, Parser> = HashMap()
     private val positionToParserMap: MutableMap<Int, Parser> = HashMap()

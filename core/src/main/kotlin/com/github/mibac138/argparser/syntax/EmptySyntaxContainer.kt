@@ -23,7 +23,7 @@
 package com.github.mibac138.argparser.syntax
 
 /**
- * Created by mibac138 on 06-04-2017.
+ * Represents an empty [SyntaxContainer]
  */
 object EmptySyntaxContainer : SyntaxContainer<Any> {
     override fun <T : SyntaxComponent> get(clazz: Class<T>): T?

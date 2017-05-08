@@ -62,6 +62,24 @@ class MixedParserRegistryImplTest {
         ), output)
     }
 
+    /*@Test*/ fun missionImpossible() {
+        parser.registerParser(SequenceParser(), 0)
+        parser.registerParser(SequenceParser(), 1)
+        parser.registerParser(SequenceParser(), "seq")
+        val syntax = syntaxContainer {
+            element(String::class.java, { name = "seq" })
+            element(String::class.java, { required = false; defaultValue = "default" })
+            element(String::class.java)
+        }
+        val output = parser.parse("yes --seq:sequence".asReader(), syntax)
+
+        println(output)
+        assertContentEquals(mapOf(
+                null to listOf("yes", "default"),
+                "seq" to "sequence"
+        ), output)
+    }
+
     private fun assertContentEquals(a: Map<String?, Any>, b: Map<String?, *>) {
         a.forEach { (key, value) ->
             if (value is List<*>)
