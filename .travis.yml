@@ -5,7 +5,7 @@ env:
   global:
     secure: QdwmVvjI108DIAfPXsOI+mQW0u0U38nZjBoM+82Mdox79MIO5pjvrBXlWEF0jLAk+dpPw/Chsbp+ORqbtkNRKJHiSYPxmev4spwOPfPKvpnfnxqGB65JuN6cc8O4USF3S/MXvqGhTzMi0aPsxCBZPxCvm3RF5PNGWZwHzYDlffljev6KmHlTqia56J8Lnm1ZkGo/mV4jlv8wVfyJycXEivfpwFRciEUdnKAToyEMnDLOfMZNzZk5nmCnTnFSilp/8i4ZcFMuSdBKR7OHhoF+sNKa1LG8GslgsrCx6g8Eum21KYdEeb83JGm6VfxvoR+OoKACLefcbGXqxGFQ6W/9csoje3S1mC8Tt93JB7l4gRWv+gPWs7lznLeeKX/2ScO6sIQMe5VkBBVMSKJH3bv9+ZxgiAJuvBHdfKKFFQ6MhPYE7RAM+gitYGLlAdb1CxilaY2UnZk6eJtopLcN/QKULe8zhog/j8kfhmjZZqiFNG6cVdO/aDoHDEiCWQeBDk80ZSiXeFkNKU7lCAXmAyQiBw8eJOoiMh29EcnFqPMMmazsvg2qIv3iKnT7BANkjhJ3tKAkDCcXKDVOHgv+GV1/VmNExt/EvWGkPV+CQXrpZweKEBV5qgLf7orJWilucwR/9R52Ec/k3qCfIw8QlOGJGw41t6LpJfEHDdiU5buuJig=
 after_success:
-  - ./gradlew javadoc
+  - ./gradlew dokka
   - ./scripts/javadoc.sh
 after_deploy:
   - ./gradlew bintrayUpload

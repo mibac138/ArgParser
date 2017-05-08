@@ -37,7 +37,7 @@ val SyntaxElement<*>?.name: String?
     get() = this?.get(NameComponent::class.java)?.name
 
 
-var SyntaxElementDSL<*>.name by SyntaxDSLComponentProperty<String?, NameComponent?>(null as NameComponent?,
+var SyntaxElementDSL<*>.name by SyntaxDSLComponentProperty<String?, NameComponent>(null as NameComponent?,
         { this?.let { NameComponent(this) } },
         { this?.let { name } })
 

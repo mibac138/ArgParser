@@ -22,32 +22,35 @@
 
 package com.github.mibac138.argparser.syntax
 
+import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
-open class SyntaxDSLComponentProperty<T, COMPONENT : SyntaxComponent?>(
-        initialValue: COMPONENT,
-        protected var toComponent: T.() -> COMPONENT,
-        protected var toValue: COMPONENT.() -> T
-) : ReadWriteProperty<SyntaxElementDSL<*>, T> {
-    constructor(initialValue: T, toComponent: T.() -> COMPONENT, toValue: COMPONENT.() -> T) :
-            this(initialValue.toComponent(), toComponent, toValue)
-
-    protected var value: COMPONENT = initialValue
-
-    override fun getValue(thisRef: SyntaxElementDSL<*>, property: KProperty<*>)
-            = value.toValue()
-
-    override fun setValue(thisRef: SyntaxElementDSL<*>, property: KProperty<*>, value: T) {
-        this.value?.let {
-            val component: SyntaxComponent = it!!
-            thisRef.components.remove(component)
-        }
-
-        this.value = value.toComponent()
-        this.value?.let {
-            thisRef.components.add(it!!)
-        }
-    }
+data class ParserComponent(val parser: Parser) : SyntaxComponent {
+    override val id: Class<out SyntaxComponent>
+        get() = ParserComponent::class.java
 }
+
+/**
+ * Returns this element's [ParserComponent]'s parser or null
+ */
+val SyntaxElement<*>?.parser: Parser?
+    get() = this?.get(ParserComponent::class.java)?.parser
+
+
+/**
+ * Adds given parser upon creation. Note: there can be only one parser per syntax element and setting this multiple
+ * times overwrites the previous value
+ */
+var SyntaxElementDSL<*>.parser: Parser? by SyntaxDSLComponentProperty<Parser?, ParserComponent>(null as ParserComponent?,
+        { this?.let { ParserComponent(this) } },
+        { this?.let { parser } })
+
+/**
+ * Adds given parser upon creation. Note: there can be only one parser per syntax element and setting this multiple
+ * times overwrites the previous value
+ * @see SyntaxElementDSL.parser
+ */
+inline fun <T> SyntaxElementDSL<T>.parser(init: SyntaxElementDSL<T>.() -> Parser) = apply {
+    parser = init()
+}
+

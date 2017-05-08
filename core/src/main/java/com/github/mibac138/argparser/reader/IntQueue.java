@@ -28,9 +28,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by mibac138 on 05-04-2017.
- */
 class IntQueue {
 	@NotNull
 	private List<Integer> list = new ArrayList<Integer>(4);
