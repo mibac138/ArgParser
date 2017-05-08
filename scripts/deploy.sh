@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-./../gradlew release
+cd $HOME/
+exec gradlew release
