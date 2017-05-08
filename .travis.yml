@@ -10,6 +10,11 @@ before_cache:
 cache:
     directories:
         - $HOME/.gradle/
+deploy:
+  on:
+    repo: "mibac138/ArgParser"
+    tags: true
+    branch: master
 after_success:
   - ./gradlew dokka
   - ./scripts/javadoc.sh
