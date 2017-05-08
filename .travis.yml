@@ -10,8 +10,9 @@ before_cache:
 cache:
     directories:
         - $HOME/.gradle/
-after_success:
+before_install:
   - ./gradlew clean
+after_success:
   - ./gradlew javadoc
   - ./scripts/javadoc.sh
 after_deploy:
