@@ -13,6 +13,7 @@ cache:
 deploy:
   provider: script
   script: scripts/deploy.sh
+  skip_cleanup: true
   on:
     repo: "mibac138/ArgParser"
     tags: true
