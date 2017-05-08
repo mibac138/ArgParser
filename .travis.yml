@@ -11,6 +11,8 @@ cache:
     directories:
         - $HOME/.gradle/
 deploy:
+  provider: script
+  script: scripts/deploy.sh
   on:
     repo: "mibac138/ArgParser"
     tags: true
