@@ -11,6 +11,7 @@ cache:
     directories:
         - $HOME/.gradle/
 after_success:
+  - ./gradlew clean
   - ./gradlew javadoc
   - ./scripts/javadoc.sh
 after_deploy:
