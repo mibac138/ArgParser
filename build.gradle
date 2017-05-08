@@ -103,9 +103,9 @@ subprojects {
             }
 
             developers {
-                id = 'Mibac'
-                name = 'Michał Bączkowski'
-                email = 'mibacpb@gmail.com'
+                id 'Mibac'
+                name 'Michał Bączkowski'
+                email 'mibacpb@gmail.com'
             }
         }
     }
