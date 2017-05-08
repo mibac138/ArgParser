@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-exec ./../gradlew release
+./../gradlew release
