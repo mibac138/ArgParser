@@ -36,7 +36,7 @@ class BindingTest {
         val binding = Binder.bind(Tester()::method)
 
         binding.invoke("hello! 11".asReader(), SimpleParserRegistry())
-        assertFalse(binding.getExceptions().isEmpty())
+        assertFalse(binding.exceptions.isEmpty())
     }
 
     @Test fun invokeNamed() {
