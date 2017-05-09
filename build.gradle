@@ -100,8 +100,10 @@ subprojects {
                 name 'MIT License'
                 url 'https://opensource.org/licenses/MIT'
             }
+        }
 
-            developers {
+        developers {
+            developer {
                 id 'Mibac'
                 name 'Michał Bączkowski'
                 email 'mibacpb@gmail.com'
