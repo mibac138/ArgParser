@@ -10,6 +10,7 @@
 ```groovy
 compile 'com.github.mibac138.argparser:argparser-core:1.0.0'
 ```
+
 2. // TODO
 
 ## Communication

@@ -8,8 +8,7 @@ Binder is a layer on top of ArgParser to make working with it easier and more co
 
 ## Getting started
 
-The first step is to add Binder to your project:
-
+1. Add Binder to your project:
 ```groovy
 // Core (required)
 compile 'com.github.mibac138.argparser:argparser-core:1.0.0'

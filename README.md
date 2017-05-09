@@ -5,7 +5,7 @@
 [Javadoc](https://mibac138.github.io/ArgParser/)
 ## Getting started
 
-1.Add ArgParser to your project:
+1. Add ArgParser to your project:
 ```groovy
 // Core
 compile 'com.github.mibac138.argparser:argparser-core:1.0.0'
