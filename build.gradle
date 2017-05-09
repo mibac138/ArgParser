@@ -82,6 +82,7 @@ subprojects {
             repo = 'ArgParser'
             name = 'ArgParser'
             vcsUrl = 'https://github.com/mibac138/ArgParser.git'
+            licenses = ['MIT']
             version {
                 name = project.version
                 desc = "$project.name v$project.version"
