@@ -79,7 +79,7 @@ subprojects {
         user = System.getenv("BINTRAY_USER")
         key = System.getenv("BINTRAY_KEY")
         pkg {
-            repo = 'maven'
+            repo = 'ArgParser'
             name = 'ArgParser'
             vcsUrl = 'https://github.com/mibac138/ArgParser.git'
             version {
