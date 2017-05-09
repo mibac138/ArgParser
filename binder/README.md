@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/mibac138/ArgParser.svg?branch=master)](https://travis-ci.org/mibac138/ArgParser) 
 
+[Javadoc](https://mibac138.github.com/ArgParser/javadoc/binder)
+
 Binder is a layer on top of ArgParser to make working with it easier and more comfy
 
 ## Getting started
@@ -9,23 +11,31 @@ Binder is a layer on top of ArgParser to make working with it easier and more co
 The first step is to add Binder to your project:
 
 ```groovy
-// TODO //
+// Core (required)
+compile 'com.github.mibac138.argparser:argparser-core:1.0.0'
+// Binder
+compile 'com.github.mibac138.argparser:argparser-binder:1.0.0'
 ```
 
-The second is to bind your method(s). You have several options at this point:
+2. Bind your method(s). You have several options at this point:
 - bind a specific method (`Binder.bind(object, object.class.getMethod("name", /* params */))`),
 - bind a specific method using Kotlin (`Binder.bind(object::method)`),
 - or bind the whole class (`Binder.bind(object)`, every method meant to be bound must be annotated with `@BindMethod`)
+
+3. Invoke your binding
+- from Java
+```java
+binding.invoke(asReader("args"), /* parser */ new SimpleParserRegistry())
+ ```
+ - from Kotlin
+ ```kotlin
+ binding.invoke("args".asReader(), /* parser */ SimpleParserRegistry())
+ ```
 
 ## Communication
 
 - [GitHub Issues](https://github.com/mibac138/ArgParser/issues)
 - [Discord](https://discord.gg/9wxjQuv)
-
-## Full Documentation
-
-- [Javadoc](mibac138.github.com/argparser/javadoc/binder)
-
 
 ## Bugs and Feedback
 

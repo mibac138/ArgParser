@@ -1,59 +1,16 @@
-# ArgParser
+# ArgParser Core
 
 [![Build Status](https://travis-ci.org/mibac138/ArgParser.svg?branch=master)](https://travis-ci.org/mibac138/ArgParser) 
 
-[Javadoc](https://mibac138.github.io/ArgParser/)
+[Javadoc](https://mibac138.github.com/ArgParser/javadoc/binder)
+
 ## Getting started
 
 1.Add ArgParser to your project:
 ```groovy
-// Core
 compile 'com.github.mibac138.argparser:argparser-core:1.0.0'
-// Binder (not required)
-compile 'com.github.mibac138.argparser:argparser-binder:1.0.0'
 ```
-
-2. Bind a method:
-- in Java:
-```java
-public class Example {
-
-    public Example() {
-    	Binding binding = Binder.bind(this).get("method");
-    	
-    	// Invoke binding
-    	binding.invoke(asReader("text true"), new SimpleParserRegistry());
-    }
-
-    @BindMethod("method")
-    public void method(String input1, boolean someBoolean) {
-    	System.out.println("Input: " + input1);
-    	System.out.println("Bool:  " + someBoolean);
-        /* ... */
-    }
-}
-```
-- in Kotlin:
-```kotlin
-fun main(args: Array<String>) {
-  val binding = Binder.bind(::method)
-  
-  // Invoke binding
-  binding.invoke("text true".asReader(), SimpleParserRegistry())
-}
-
-fun method(input1: String, someBoolean: Boolean) {
-    println("Input: $input1")
-    println("Bool:  $someBoolean")
-    /* ... */
-}
-```
-
-### Which Parser to use?
-- if you want a simple parser for only unnamed arguments (ex. `string boolean`) use `SimpleParserRegistry`
-- if you want only named arguments (ex. `--value: key --bool=true`) use `NamedParserRegistry`
-- if you want to combine these 2 options use `MixedParserRegistry`
-
+2. // TODO
 
 ## Communication
 
