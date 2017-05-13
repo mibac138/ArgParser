@@ -10,7 +10,7 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
   echo -e "Generated javadoc\n"
   echo -e "Publishing javadoc\n"
 
-  for entry in build/javadoc/*
+  for entry in build/javadoc/core/*
   do
     echo "$entry"
   done
@@ -22,7 +22,7 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
   git config --global user.name "travis-ci"
   git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/mibac138/ArgParser gh-pages > /dev/null
 
-  for entry in $HOME/javadoc-latest/*
+  for entry in $HOME/javadoc-latest/core/*
   do
     echo "$entry"
   done
@@ -31,7 +31,7 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
   git rm -rf ./javadoc
   cp -Rf $HOME/javadoc-latest ./javadoc
   
-  for entry in ./javadoc/*
+  for entry in ./javadoc/core/*
   do
     echo "$entry"
   done
