@@ -25,9 +25,7 @@ package com.github.mibac138.argparser.binder
 import java.lang.reflect.Method
 import kotlin.reflect.KCallable
 import kotlin.reflect.full.declaredMemberFunctions
-import kotlin.reflect.full.extensionReceiverParameter
 import kotlin.reflect.full.functions
-import kotlin.reflect.full.instanceParameter
 
 /**
  * Common entry point for binding methods.
@@ -62,7 +60,7 @@ object Binder {
      */
     @JvmStatic
     fun bind(owner: Any, method: Method): Binding {
-        return bind(ReflectionBoundMethod(owner, method))
+        return bind(MethodBinder.bindMethod(owner, method))
     }
 
     /**
@@ -71,10 +69,7 @@ object Binder {
      */
     @JvmStatic
     fun bind(method: KCallable<*>, owner: Any? = null): Binding {
-        if ((method.instanceParameter != null || method.extensionReceiverParameter != null)
-                && owner == null)
-            throw IllegalArgumentException("Method requires instance variable or extension receiver (owner) but it's null")
-        return bind(CallableBoundMethod(method, owner))
+        return bind(MethodBinder.bindMethod(method, owner))
     }
 
     /**

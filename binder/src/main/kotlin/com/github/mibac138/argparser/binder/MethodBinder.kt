@@ -22,20 +22,33 @@
 
 package com.github.mibac138.argparser.binder
 
-import com.github.mibac138.argparser.syntax.SyntaxElement
+import java.lang.reflect.Method
+import kotlin.reflect.KCallable
+import kotlin.reflect.full.declaredMemberFunctions
+import kotlin.reflect.full.extensionReceiverParameter
+import kotlin.reflect.full.instanceParameter
 
 /**
- * Represents a bound method. Can be easily invoked using [invoke]
+ * Created by mibac138 on 10-05-2017.
  */
-interface BoundMethod {
-    /**
-     * @param parameters A properly ordered array of parameters used by this method.
-     * @return the same thing the underlying method returned or `null`
-     */
-    fun invoke(vararg parameters: Any?): Any?
+object MethodBinder {
+    @JvmStatic
+    fun bindMethod(owner: Any, name: String): BoundMethod? {
+        val func = owner::class.declaredMemberFunctions.firstOrNull { it.name == name } ?: return null
 
-    /**
-     * Syntax this method uses.
-     */
-    val syntax: SyntaxElement<*>
+        return bindMethod(func, owner)
+    }
+
+    @JvmStatic
+    fun bindMethod(method: KCallable<*>, owner: Any?): BoundMethod {
+        if ((method.instanceParameter != null || method.extensionReceiverParameter != null)
+                && owner == null)
+            throw IllegalArgumentException("Method requires instance variable or extension receiver (owner) but it's null")
+        return CallableBoundMethod(method, owner)
+    }
+
+    @JvmStatic
+    fun bindMethod(owner: Any, method: Method): BoundMethod {
+        return ReflectionBoundMethod(owner, method)
+    }
 }

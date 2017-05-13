@@ -1,8 +1,13 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 set -v
 
 if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
 
+  echo -e "Generating javadoc\n"
+
+  ./gradlew dokka
+  
+  echo -e "Generated javadoc\n"
   echo -e "Publishing javadoc\n"
 
   cp -R "build/javadoc/" $HOME/javadoc-latest

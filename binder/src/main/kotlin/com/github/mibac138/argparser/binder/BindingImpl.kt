@@ -52,7 +52,7 @@ class BindingImpl constructor(private val boundMethod: BoundMethod) : Binding {
     private val noNameArgsMap: MutableMap<Class<*>, IndexedValue<SyntaxElement<*>>> = HashMap()
 
     init {
-        syntaxChanged()
+        updateSyntax()
     }
 
     override fun invoke(reader: ArgumentReader, parser: Parser): Any? {
@@ -69,13 +69,13 @@ class BindingImpl constructor(private val boundMethod: BoundMethod) : Binding {
             else -> arrayOf(args)
         }
 
-        return boundMethod.invoke(mapped)
+        return boundMethod.invoke(*mapped)
     }
 
     /**
      * Recreates internal syntax representation
      */
-    fun syntaxChanged() {
+    fun updateSyntax() {
         syntax = boundMethod.syntax
         syntax.iterator().withIndex().forEach { (i, element) ->
             val name = element.name

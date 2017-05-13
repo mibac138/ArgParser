@@ -19,5 +19,4 @@ deploy:
     tags: true
     branch: master
 after_success:
-  - ./gradlew dokka
   - ./scripts/javadoc.sh

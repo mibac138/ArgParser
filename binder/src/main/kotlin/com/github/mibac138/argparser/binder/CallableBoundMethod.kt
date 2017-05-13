@@ -70,7 +70,7 @@ class CallableBoundMethod(private val function: KCallable<*>, private val owner:
         else return this
     }
 
-    override fun invoke(parameters: Array<*>): Any? {
+    override fun invoke(vararg parameters: Any?): Any? {
         if (function.parameters[0].kind == KParameter.Kind.INSTANCE)
             return function.call(owner, *parameters)
         else

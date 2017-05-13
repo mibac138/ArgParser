@@ -58,7 +58,7 @@ class ReflectionBoundMethod(private val owner: Any, private val method: Method) 
         else return this
     }
 
-    override fun invoke(parameters: Array<*>): Any?
+    override fun invoke(vararg parameters: Any?): Any?
             = method.invoke(owner, *parameters)
 
     private fun findAnnotation(array: Array<Annotation>): Arg?

@@ -51,10 +51,11 @@ subprojects {
 
     // argparser-core -> core
     ext.simpleName = project.name.substring(project.name.indexOf('-') + 1, project.name.size())
+    ext.javadocOutput = "$rootProject.buildDir/javadoc/$project.ext.simpleName"
 
     dokka {
         outputFormat = 'javadoc'
-        outputDirectory = "${rootProject.buildDir}/javadoc/$project.ext.simpleName"
+        outputDirectory = project.ext.javadocOutput
         linkMapping {
             dir = 'src/main/java'
             url = "https://github.com/mibac138/ArgParser/blob/master/$project.ext.simpleName/src/main/java"
@@ -66,8 +67,8 @@ subprojects {
     }
 
     task javadocJar(type: Jar, dependsOn: dokka) {
-        classifier = 'javadoc'
-        from javadoc.destinationDir
+        classifier 'javadoc'
+        from project.ext.javadocOutput
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
