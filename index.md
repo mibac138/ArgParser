@@ -18,4 +18,4 @@ Input parsing made easy
 
 
 ### Resources
-- [Parsers cheat sheet](https://https://mibac138.github.io/ArgParser/parsers)
+- [Parsers cheat sheet](https://mibac138.github.io/ArgParser/parsers)
