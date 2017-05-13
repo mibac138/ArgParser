@@ -31,3 +31,5 @@
    - Format: `value --name: value --name=value`, allows custom (only for named)
    - Named input can be in any order, unnamed must be in correct order
    - Example: `value1 --name2=value value2 --name1:value`
+   
+[Main site](https://mibac138.github.io/ArgParser/)
