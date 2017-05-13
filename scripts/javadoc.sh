@@ -5,7 +5,7 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
 
   echo -e "Generating javadoc\n"
 
-  ./gradlew dokka
+  ./gradlew dokka --stacktrace --debug
   
   echo -e "Generated javadoc\n"
   echo -e "Publishing javadoc\n"
