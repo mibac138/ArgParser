@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+@file:JvmName("ParserUtil")
+
 package com.github.mibac138.argparser.parser
 
 import com.github.mibac138.argparser.reader.ArgumentReader

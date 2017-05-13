@@ -21,6 +21,8 @@
  */
 
 
+@file:JvmName("SyntaxContainerDSLCreator")
+
 package com.github.mibac138.argparser.syntax.dsl
 
 import com.github.mibac138.argparser.syntax.EmptySyntaxContainer

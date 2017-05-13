@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+@file:JvmName("ParserComponentHelper")
+
 package com.github.mibac138.argparser.named
 
 import com.github.mibac138.argparser.syntax.SyntaxComponent
