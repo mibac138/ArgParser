@@ -1,4 +1,6 @@
 buildscript {
+    ext.kotlinVersion = '1.1.3'
+
     repositories {
         jcenter()
         maven {
@@ -6,13 +8,26 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.2-3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.13'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     }
 }
 
 ext.simpleName = ''
+
+def getProjectVersion = { project ->
+    def tag = System.getenv('TRAVIS_TAG')
+    if (tag != null) return tag
+
+    def commit = System.getenv('TRAVIS_COMMIT')
+    if (commit != null) return 'dev-$commit'
+
+    return 'dev-undefined'
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_6
+targetCompatibility = JavaVersion.VERSION_1_6
 
 subprojects {
     apply plugin: 'java'
@@ -23,23 +38,22 @@ subprojects {
     apply plugin: 'maven-publish'
 
     group 'com.github.mibac138.argparser'
-    def tagVersion = System.getenv('TRAVIS_TAG')
-    if (tagVersion != null && !tagVersion.isEmpty()) {
-        project.version = tagVersion
-    } else {
-        project.version = 'dev-' + System.getenv('TRAVIS_COMMIT')
-    }
+
+    project.version = getProjectVersion(this)
 
     repositories {
         jcenter()
         mavenCentral()
     }
 
+    sourceCompatibility = JavaVersion.VERSION_1_6
+    targetCompatibility = JavaVersion.VERSION_1_6
+
     dependencies {
-        compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.2-3'
+        compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
         testCompile 'junit:junit:4.12'
-        testCompile 'org.jetbrains.kotlin:kotlin-test-junit:1.1.2-3'
+        testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
         testCompile 'org.mockito:mockito-core:2.7.21'
         testCompile 'com.nhaarman:mockito-kotlin:1.4.0'
     }
