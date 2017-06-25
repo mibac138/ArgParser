@@ -56,7 +56,7 @@ class BooleanParser : Parser {
         if (this === other) return true
         if (other?.javaClass != javaClass) return false
 
-        other as com.github.mibac138.argparser.parser.BooleanParser
+        other as BooleanParser
 
         if (values != other.values) return false
 

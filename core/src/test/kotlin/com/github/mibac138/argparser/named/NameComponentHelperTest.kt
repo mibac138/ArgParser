@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 /**
  * Created by mibac138 on 07-05-2017.
  */
-class NameComponentKtTest {
+class NameComponentHelperTest {
     @Test fun test() {
         val syntax = syntaxElement(Any::class.java) {
             name = "Hello"
@@ -19,9 +19,9 @@ class NameComponentKtTest {
 
     @Test fun dsl() {
         val syntax = syntaxElement(Any::class.java) {
-            name { "Hey" }
-            name { "Hi" }
-            name { "Hello" }
+            name = "Hey"
+            name = "Hi"
+            name = "Hello"
         }
 
         assertEquals("Hello", syntax.name)

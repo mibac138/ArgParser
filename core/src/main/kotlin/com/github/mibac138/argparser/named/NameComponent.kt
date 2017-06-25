@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-@file:JvmName("ParserComponentHelper")
+@file:JvmName("NameComponentHelper")
 
 package com.github.mibac138.argparser.named
 

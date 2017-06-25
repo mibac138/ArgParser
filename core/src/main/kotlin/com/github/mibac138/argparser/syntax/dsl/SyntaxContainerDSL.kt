@@ -40,6 +40,10 @@ class SyntaxContainerDSL<T>(type: Class<T>) : SyntaxElementDSL<T>(type) {
         elements.add(element)
     }
 
+    fun add(dsl: SyntaxElementDSL<*>) {
+        add(dsl.build())
+    }
+
     fun addAll(elements: Collection<SyntaxElement<*>>) {
         this.elements.addAll(elements)
     }
