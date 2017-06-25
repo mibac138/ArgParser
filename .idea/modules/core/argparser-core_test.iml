@@ -26,7 +26,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6">
     <output-test url="file://$MODULE_DIR$/../../../core/build/classes/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../core/src/test">
