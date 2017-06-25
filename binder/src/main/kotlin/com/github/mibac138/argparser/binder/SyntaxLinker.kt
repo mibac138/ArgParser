@@ -22,37 +22,15 @@
 
 package com.github.mibac138.argparser.binder
 
-import com.github.mibac138.argparser.parser.Parser
-import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.syntax.SyntaxElement
 
 /**
- * Default [Binding] implementation.
+ * Created by mibac138 on 19-06-2017.
  */
-open class BindingImpl constructor(
-        protected val boundMethod: BoundMethod,
-        private val linker: SyntaxLinker = SyntaxLinkerImpl(boundMethod.syntax))
-    : Binding {
-    private var syntax: SyntaxElement<*> = boundMethod.syntax
+interface SyntaxLinker {
+    fun link(input: Any): Array<*>
+}
 
-
-    override fun invoke(reader: ArgumentReader, parser: Parser): Any? {
-        if (boundMethod.syntax != syntax)
-            updateSyntax()
-
-        val args = parser.parse(reader, syntax)
-
-        return boundMethod.invoke(*linker.link(args))
-    }
-
-    /**
-     * Recreates internal syntax representation
-     */
-    fun updateSyntax() {
-        if (linker !is ReusableSyntaxLinker)
-            throw IllegalStateException("Can't update syntax if the SyntaxLinker isn't reusable")
-
-        syntax = boundMethod.syntax
-        linker.recreate(syntax)
-    }
+interface ReusableSyntaxLinker : SyntaxLinker {
+    fun recreate(syntax: SyntaxElement<*>)
 }

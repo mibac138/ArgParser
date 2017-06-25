@@ -22,26 +22,16 @@
 
 package com.github.mibac138.argparser.binder
 
-import com.github.mibac138.argparser.exception.ParserException
 import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.reader.ArgumentReader
 
 /**
- * Binding is a connector between [Parser]'s output and [BoundMethod]'s invoke
+ * Binding is a connector between [Parser]'s output, [SyntaxLinker]'s linking and [BoundMethod]'s invoke
  */
 interface Binding {
-    /**
-     * @return a list of exceptions that occured during last invoking
-     */
-    val exceptions: List<Exception>
 
     /**
      * Calls the underlying method using output from [parser].
-     * In case parser returned a error (as a collection/map/array element) it gets
-     * added to [exceptions] from where you can retrieve it. *Note:* This method
-     * *might* throw an exception if one of parser's results is a exception
-     *
-     * @throws ParserException if the only thing parser returned is a exception
      */
     fun invoke(reader: ArgumentReader, parser: Parser): Any?
 }
