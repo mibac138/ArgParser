@@ -26,6 +26,7 @@ import java.lang.reflect.Method
 import kotlin.reflect.KCallable
 import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.full.functions
+import kotlin.reflect.jvm.kotlinFunction
 
 /**
  * Common entry point for binding methods.
@@ -60,7 +61,7 @@ object Binder {
      */
     @JvmStatic
     fun bind(owner: Any, method: Method): Binding {
-        return bind(MethodBinder.bindMethod(owner, method))
+        return bind(method.kotlinFunction!!, owner)
     }
 
     /**

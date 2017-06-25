@@ -27,11 +27,14 @@ import kotlin.reflect.KCallable
 import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.full.extensionReceiverParameter
 import kotlin.reflect.full.instanceParameter
+import kotlin.reflect.jvm.kotlinFunction
 
 /**
  * Created by mibac138 on 10-05-2017.
  */
 object MethodBinder {
+    val generator: SyntaxGeneratorManager = SyntaxGeneratorManager(ArgSyntaxGenerator)
+
     @JvmStatic
     fun bindMethod(owner: Any, name: String): BoundMethod? {
         val func = owner::class.declaredMemberFunctions.firstOrNull { it.name == name } ?: return null
@@ -41,14 +44,14 @@ object MethodBinder {
 
     @JvmStatic
     fun bindMethod(method: KCallable<*>, owner: Any?): BoundMethod {
-        if ((method.instanceParameter != null || method.extensionReceiverParameter != null)
-                && owner == null)
+        if ((method.instanceParameter != null || method.extensionReceiverParameter != null) && owner == null)
             throw IllegalArgumentException("Method requires instance variable or extension receiver (owner) but it's null")
-        return CallableBoundMethod(method, owner)
+
+        return CallableBoundMethod(method, owner, generator)
     }
 
     @JvmStatic
     fun bindMethod(owner: Any, method: Method): BoundMethod {
-        return ReflectionBoundMethod(owner, method)
+        return bindMethod(method.kotlinFunction!!, owner)
     }
 }

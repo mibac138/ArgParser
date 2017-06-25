@@ -22,10 +22,9 @@
 
 package com.github.mibac138.argparser.binder
 
-import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSL
-import com.github.mibac138.argparser.syntax.dsl.element
+import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 import java.lang.reflect.Array.get
 import java.lang.reflect.Array.newInstance
 import kotlin.reflect.KCallable
@@ -38,27 +37,24 @@ import kotlin.reflect.jvm.jvmErasure
 /**
  * Kotlin's reflection based bound method
  */
-class CallableBoundMethod(private val function: KCallable<*>, private val owner: Any? = null) : BoundMethod {
+class CallableBoundMethod(override val method: KCallable<*>, private val owner: Any? = null, generator: SyntaxGenerator = NullSyntaxGenerator) : BoundMethod {
     override val syntax: SyntaxElement<*>
 
     init {
-        if ((function.instanceParameter != null || function.extensionReceiverParameter != null)
-                && owner == null)
+        if ((method.instanceParameter != null || method.extensionReceiverParameter != null) && owner == null)
             throw IllegalArgumentException("Method requires instance variable or extension receiver but it's null")
 
         val builder = SyntaxContainerDSL(Any::class.java)
 
-        for (parameter in function.valueParameters) {
-            if (parameter.index == 0 && parameter.kind == KParameter.Kind.INSTANCE)
-                continue
-            val arg = findAnnotation(parameter.annotations)
-            val name = arg?.name ?: Arg.NO_NAME
-            val type = parameter.type.jvmErasure.java.boxClass()
+        for (parameter in method.valueParameters) {
+            if (parameter.index == 0 && parameter.kind == KParameter.Kind.INSTANCE) continue
 
-            if (name == Arg.NO_NAME || name.isEmpty())
-                builder.element(type)
-            else
-                builder.element(type, { name { name } })
+            val type = parameter.type.jvmErasure.java.boxClass()
+            val element = SyntaxElementDSL(type)
+
+            generator.generate(element, parameter)
+
+            builder.add(element)
         }
 
         syntax = builder.build()
@@ -71,14 +67,11 @@ class CallableBoundMethod(private val function: KCallable<*>, private val owner:
     }
 
     override fun invoke(vararg parameters: Any?): Any? {
-        if (function.parameters[0].kind == KParameter.Kind.INSTANCE)
-            return function.call(owner, *parameters)
+        if (method.parameters[0].kind == KParameter.Kind.INSTANCE)
+            return method.call(owner, *parameters)
         else
-            return function.call(*parameters)
+            return method.call(*parameters)
     }
-
-    private fun findAnnotation(array: List<Annotation>): Arg?
-            = array.firstOrNull { it is Arg } as? Arg
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -86,16 +79,16 @@ class CallableBoundMethod(private val function: KCallable<*>, private val owner:
 
         other as CallableBoundMethod
 
-        if (function != other.function) return false
+        if (method != other.method) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return function.hashCode()
+        return method.hashCode()
     }
 
     override fun toString(): String {
-        return "CallableBoundMethod(function=$function, syntax=$syntax)"
+        return "CallableBoundMethod(method=$method, syntax=$syntax)"
     }
 }

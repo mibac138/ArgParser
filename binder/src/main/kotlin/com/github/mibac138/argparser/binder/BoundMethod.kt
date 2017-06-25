@@ -23,6 +23,7 @@
 package com.github.mibac138.argparser.binder
 
 import com.github.mibac138.argparser.syntax.SyntaxElement
+import kotlin.reflect.KCallable
 
 /**
  * Represents a bound method. Can be easily invoked using [invoke]
@@ -38,4 +39,9 @@ interface BoundMethod {
      * Syntax this method uses.
      */
     val syntax: SyntaxElement<*>
+
+    /**
+     * The underlying method
+     */
+    val method: KCallable<*>
 }
