@@ -17,14 +17,12 @@ import kotlin.test.assertEquals
 class BoundMethodTest(private val producer: () -> BoundMethod) {
     companion object {
         private val obj = Tested()
-        private val jMethod = Tested::class.java.getMethod("method", String::class.java, Int::class.java)
         private val kMethod = obj::method
 
         @JvmStatic
         @Parameters
         fun data(): Array<() -> BoundMethod> {
-            return arrayOf({ CallableBoundMethod(kMethod) },
-                    { ReflectionBoundMethod(obj, jMethod) })
+            return arrayOf({ CallableBoundMethod(kMethod) })
         }
 
         class Tested {
@@ -46,7 +44,7 @@ class BoundMethodTest(private val producer: () -> BoundMethod) {
     }
 
     @Test fun testSyntax() {
-        assertEquals(SyntaxContainerDSL().element(String::class.java).element(Integer::class.java).build(),
+        assertEquals(SyntaxContainerDSL().element(String::class.java).element(Int::class.javaObjectType).build(),
                 method.syntax)
     }
 

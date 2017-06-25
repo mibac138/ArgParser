@@ -5,7 +5,6 @@ import com.github.mibac138.argparser.parser.IntParser
 import com.github.mibac138.argparser.parser.SequenceParser
 import com.github.mibac138.argparser.parser.SimpleParserRegistry
 import com.github.mibac138.argparser.reader.asReader
-import org.junit.Assert.assertFalse
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -32,11 +31,10 @@ class BindingTest {
         assertEquals(Pair(10, "hi!"), binding.invoke("10 hi!".asReader(), SimpleParserRegistry()))
     }
 
-    @Test fun invokeUnnamedWithInvalidInput() {
+    @Test(expected = IllegalArgumentException::class) fun invokeUnnamedWithInvalidInput() {
         val binding = Binder.bind(Tester()::method)
 
         binding.invoke("hello! 11".asReader(), SimpleParserRegistry())
-        assertFalse(binding.exceptions.isEmpty())
     }
 
     @Test fun invokeNamed() {
