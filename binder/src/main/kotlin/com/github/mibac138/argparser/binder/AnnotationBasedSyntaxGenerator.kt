@@ -22,15 +22,19 @@
 
 package com.github.mibac138.argparser.binder
 
-import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
+import kotlin.reflect.KParameter
 
 /**
- * Created by mibac138 on 22-05-2017.
+ * A little convenience class. Does the param checking for you
  */
-object ArgSyntaxGenerator : AnnotationBasedSyntaxGenerator<Arg>(Arg::class.java) {
-    override fun generate(dsl: SyntaxElementDSL<*>, annotation: Arg) {
-        if (annotation.name != Arg.NO_NAME)
-            dsl.name = annotation.name
+abstract class AnnotationBasedSyntaxGenerator<in T : Annotation>(private val type: Class<T>) : SyntaxGenerator {
+    override final fun generate(dsl: SyntaxElementDSL<*>, param: KParameter) {
+        @Suppress("UNCHECKED_CAST")
+        val annotation = param.annotations.firstOrNull { type.isInstance(it) } as T? ?: return
+
+        generate(dsl, annotation)
     }
+
+    abstract fun generate(dsl: SyntaxElementDSL<*>, annotation: T)
 }
