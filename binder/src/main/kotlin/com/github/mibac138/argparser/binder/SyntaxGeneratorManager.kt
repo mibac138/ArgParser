@@ -40,8 +40,28 @@ class SyntaxGeneratorManager() : SyntaxGenerator {
         generators += generator
     }
 
+    fun addAll(vararg add: SyntaxGenerator) {
+        generators += add
+    }
+
+    fun addAll(add: Collection<SyntaxGenerator>) {
+        generators += add
+    }
+
     fun remove(generator: SyntaxGenerator) {
         generators -= generator
+    }
+
+    fun removeAll(vararg remove: SyntaxGenerator) {
+        generators -= remove
+    }
+
+    fun removeAll(remove: Collection<SyntaxGenerator>) {
+        generators -= remove
+    }
+
+    fun clear() {
+        generators.clear()
     }
 
     override fun generate(dsl: SyntaxElementDSL<*>, param: KParameter) {

@@ -65,7 +65,7 @@ fun method(input1: String, someBoolean: Boolean) {
 For bugs, questions and discussions please use the [Github Issues](https://github.com/mibac138/ArgParser/issues).
 
  
-## LICENSE
+## License
 
 Copyright (c) 2017 Michał Bączkowski
 
