@@ -49,18 +49,20 @@ fun <T> parseOrDefault(syntax: SyntaxElement<*>, action: () -> T): T {
 }
 
 
-fun <T> ArgumentReader.readUntilCharOrDefault(syntax: SyntaxElement<*>, action: (String) -> T, char: Char = ' '): T {
+fun <T> ArgumentReader.readUntilCharOrDefault(syntax: SyntaxElement<*>, action: (String) -> T, char: Char = ' '): T? {
     mark()
     try {
-        val output = action(readUntilChar(char))
+        val input = readUntilChar(char)
+        val output = action(input)
         removeMark()
 
         return output
     } catch (e: Exception) {
-        if (!syntax.required && syntax.defaultValue != null) {
+        if (!syntax.required) {
             removeMark()
+
             @Suppress("UNCHECKED_CAST")
-            return syntax.defaultValue as T
+            return syntax.defaultValue as T?
         }
 
         reset()
