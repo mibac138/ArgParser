@@ -33,7 +33,7 @@ import com.github.mibac138.argparser.syntax.SyntaxElement
  */
 interface Parser {
     fun getSupportedTypes(): Set<Class<*>>
-    fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Any
+    fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Any?
 }
 
 fun <T> parseOrDefault(syntax: SyntaxElement<*>, action: () -> T): T {

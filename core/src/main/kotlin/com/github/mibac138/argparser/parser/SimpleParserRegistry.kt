@@ -86,7 +86,7 @@ class SimpleParserRegistry : ParserRegistry {
     }
 
     private fun parseSyntax(input: ArgumentReader, size: Int, iterator: Iterator<SyntaxElement<*>>): List<*> {
-        val result = ArrayList<Any>(size)
+        val result = ArrayList<Any?>(size)
 
         for (element in iterator) {
             val parser = getParserForElement(element)
@@ -97,10 +97,10 @@ class SimpleParserRegistry : ParserRegistry {
         return result
     }
 
-    private fun parseElement(reader: ArgumentReader, element: SyntaxElement<*>, parser: Parser): Any {
+    private fun parseElement(reader: ArgumentReader, element: SyntaxElement<*>, parser: Parser): Any? {
         reader.skipChar(' ')
         reader.mark()
-        var parsed: Any
+        var parsed: Any?
         try {
             parsed = parser.parse(reader, element)
         } catch (e: Exception) {

@@ -43,7 +43,7 @@ class NamedParserRegistryImpl : NamedParserRegistry {
             throw IllegalArgumentException("I only accept SyntaxElements with NameComponent (and SyntaxContainers with" +
                     "all elements having NameComponent)")
 
-        val map = HashMap<String, Any>()
+        val map = HashMap<String, Any?>()
 
         for (i in 0 until syntax.getSize()) {
             input.skipChar(' ')
@@ -65,10 +65,10 @@ class NamedParserRegistryImpl : NamedParserRegistry {
         return map
     }
 
-    private fun parseElement(input: ArgumentReader, element: SyntaxElement<*>, parser: Parser): Any {
+    private fun parseElement(input: ArgumentReader, element: SyntaxElement<*>, parser: Parser): Any? {
         input.skipChar(' ')
         input.mark()
-        var parsed: Any
+        var parsed: Any?
         try {
             parsed = parser.parse(input, element)
         } catch (e: Exception) {

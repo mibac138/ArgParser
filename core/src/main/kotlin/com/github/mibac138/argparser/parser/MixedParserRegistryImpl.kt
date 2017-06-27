@@ -78,10 +78,10 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         return named
     }
 
-    private fun parseElement(input: ArgumentReader, element: SyntaxElement<*>, parser: Parser): Any {
+    private fun parseElement(input: ArgumentReader, element: SyntaxElement<*>, parser: Parser): Any? {
         input.skipChar(' ')
         input.mark()
-        var parsed: Any
+        var parsed: Any?
         try {
             parsed = parser.parse(input, element)
         } catch (e: Exception) {
