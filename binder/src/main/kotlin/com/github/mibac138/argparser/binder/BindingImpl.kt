@@ -41,9 +41,9 @@ open class BindingImpl constructor(
             updateSyntax()
 
         val parsed = parser.parse(reader, syntax)
-        val args: Array<*> = if (parsed == null) emptyArray<Any>() else linker.link(parsed)
+        val args: Array<Any?> = if (parsed == null) emptyArray() else linker.link(parsed)
 
-        return boundMethod.invoke(*args)
+        return boundMethod.invoke(args)
     }
 
     /**

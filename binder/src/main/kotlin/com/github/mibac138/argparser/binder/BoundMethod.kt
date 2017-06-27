@@ -33,7 +33,7 @@ interface BoundMethod {
      * @param parameters A properly ordered array of parameters used by this method.
      * @return the same thing the underlying method returned or `null`
      */
-    fun invoke(vararg parameters: Any?): Any?
+    fun invoke(parameters: Array<Any?>): Any?
 
     /**
      * Syntax this method uses.

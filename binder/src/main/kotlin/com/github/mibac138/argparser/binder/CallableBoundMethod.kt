@@ -37,7 +37,7 @@ import kotlin.reflect.jvm.jvmErasure
 /**
  * Kotlin's reflection based bound method
  */
-class CallableBoundMethod(override val method: KCallable<*>, private val owner: Any? = null, generator: SyntaxGenerator = NullSyntaxGenerator) : BoundMethod {
+class CallableBoundMethod(override val method: KCallable<*>, private val owner: Any? = null, generator: SyntaxGenerator = MethodBinder.generator) : BoundMethod {
     override val syntax: SyntaxElement<*>
 
     init {
@@ -66,11 +66,25 @@ class CallableBoundMethod(override val method: KCallable<*>, private val owner: 
         else return this
     }
 
-    override fun invoke(vararg parameters: Any?): Any? {
-        if (method.parameters[0].kind == KParameter.Kind.INSTANCE)
-            return method.call(owner, *parameters)
-        else
-            return method.call(*parameters)
+    override fun invoke(parameters: Array<Any?>): Any? {
+        val map = mutableMapOf<KParameter, Any?>()
+
+        var paramI = 0
+        for (i in 0 until method.parameters.size) {
+            val param = method.parameters[i]
+
+            if (param.kind == KParameter.Kind.INSTANCE) {
+                map[param] = owner
+                continue
+            }
+
+            if (!param.isOptional || parameters[paramI] != null) {
+                map[param] = parameters[paramI]
+            }
+            paramI++
+        }
+
+        return method.callBy(map)
     }
 
     override fun equals(other: Any?): Boolean {

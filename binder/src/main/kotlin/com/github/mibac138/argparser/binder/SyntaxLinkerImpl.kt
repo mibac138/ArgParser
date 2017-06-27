@@ -52,16 +52,17 @@ class SyntaxLinkerImpl(private var syntax: SyntaxElement<*>) : ReusableSyntaxLin
     }
 
 
-    override fun link(input: Any): Array<*> =
+    override fun link(input: Any): Array<Any?> =
             link(input.entryIterator())
 
 
-    private fun link(iterator: Iterator<Map.Entry<String?, *>>,
-                     array: Array<Any?> = Array<Any?>(syntax.getSize(), { null })): Array<*> {
+    private fun link(iterator: Iterator<IndexedValue<Map.Entry<String?, *>>>,
+                     array: Array<Any?> = Array<Any?>(syntax.getSize(), { null })): Array<Any?> {
 
-        for ((key, value) in iterator) {
-            val element = resolveArg(key, value) ?: if (!iterator.areEntriesNameless() &&
-                    key?.isEmpty() ?: true &&
+        for ((i, entry) in iterator) {
+            val (key, value) = entry
+            val element = resolveArg(key, value, i) ?: if (/*!iterator.areEntriesNameless() &&*/
+            key?.isEmpty() ?: true &&
                     value != null) {
                 link(value.entryIterator(), array)
                 continue
@@ -77,11 +78,15 @@ class SyntaxLinkerImpl(private var syntax: SyntaxElement<*>) : ReusableSyntaxLin
         return array
     }
 
-    private fun resolveArg(key: String?, value: Any?): IndexedValue<SyntaxElement<*>>? {
+    private fun resolveArg(key: String?, value: Any?, index: Int): IndexedValue<SyntaxElement<*>>? {
         if (key != null) return getArgByName(key)
         if (value != null) return getArgByType(value.javaClass)
-        return null
+        return getArgByIndex(index)
     }
+
+    private fun getArgByName(name: String): IndexedValue<SyntaxElement<*>>?
+            = argsMap[name]
+
 
     private fun getArgByType(type: Class<*>): IndexedValue<SyntaxElement<*>>? {
         argsMap.values
@@ -96,22 +101,32 @@ class SyntaxLinkerImpl(private var syntax: SyntaxElement<*>) : ReusableSyntaxLin
         return null
     }
 
-    private fun getArgByName(name: String): IndexedValue<SyntaxElement<*>>?
-            = argsMap[name]
+
+    private fun getArgByIndex(index: Int): IndexedValue<SyntaxElement<*>>? {
+        for (value in noNameArgsMap.values)
+            if (value.index == index)
+                return value
 
 
-    private fun Any.entryIterator(): Iterator<Map.Entry<String?, *>>
+        for (value in argsMap.values)
+            if (value.index == index)
+                return value
+
+        return null
+    }
+
+    private fun Any.entryIterator(): Iterator<IndexedValue<Map.Entry<String?, *>>>
             = when (this) {
-        is List<*> -> this.iterator().asEntryBasedIterator()
-        is Array<*> -> this.iterator().asEntryBasedIterator()
-        is Map<*, *> -> this.entries.iterator() as Iterator<Map.Entry<String?, *>>
+        is List<*> -> this.iterator().asEntryBasedIterator().withIndex()
+        is Array<*> -> this.iterator().asEntryBasedIterator().withIndex()
+        is Map<*, *> -> (this.entries.iterator() as Iterator<Map.Entry<String?, *>>).withIndex()
         else -> throw UnsupportedOperationException("The given input type [$this] isn't supported")
     }
 
     private fun <T> Iterator<T>.asEntryBasedIterator(): Iterator<Map.Entry<String?, *>>
             = ListAsEntryIterator(this)
 
-    private fun Iterator<Map.Entry<*, *>>.areEntriesNameless() = this is ListAsEntryIterator<*>
+//    private fun Iterator<IndexedValue<Map.Entry<*, *>>>.areEntriesNameless() = this is ListAsEntryIterator<*>
 
     private class ListAsEntryIterator<out T>(private val iterator: Iterator<T>) : Iterator<Map.Entry<String?, T>> {
         override fun hasNext() = iterator.hasNext()
