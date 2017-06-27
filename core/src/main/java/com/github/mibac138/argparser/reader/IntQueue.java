@@ -40,8 +40,7 @@ class IntQueue {
 		return list.add(integer);
 	}
 	
-	@NotNull
-	public Integer remove() {
+	public int remove() {
 		return list.remove(getHead());
 	}
 	

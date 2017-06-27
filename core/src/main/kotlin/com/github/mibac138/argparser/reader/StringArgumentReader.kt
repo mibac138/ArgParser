@@ -82,8 +82,17 @@ class StringArgumentReader(private var string: String) : ArgumentReader {
     }
 
     override fun reset(): Boolean {
-        position = marks.poll() ?: return false
-        return true
+        if (marks.size() == 1) {
+            minPosition = NOT_REQUIRED
+            cleanBuffer()
+        }
+
+        marks.poll()?.let {
+            position = it
+            return true
+        }
+
+        return false
     }
 
 
