@@ -82,10 +82,11 @@ class StringArgumentReader(private var string: String) : ArgumentReader {
     }
 
     override fun reset(): Boolean {
-        if (marks.size() == 1) {
-            minPosition = NOT_REQUIRED
-            cleanBuffer()
-        }
+        // TODO fix later
+//        if (marks.size() == 1) {
+//            minPosition = NOT_REQUIRED
+//            cleanBuffer()
+//        }
 
         marks.poll()?.let {
             position = it
