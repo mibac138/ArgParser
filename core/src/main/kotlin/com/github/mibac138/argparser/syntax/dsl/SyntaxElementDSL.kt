@@ -44,7 +44,7 @@ open class SyntaxElementDSL<T>(val type: Class<T>) {
     inline fun components(init: SyntaxElementDSL<T>.() -> Collection<SyntaxComponent>) = apply { components.addAll(init()) }
 
     open fun build(): SyntaxElement<T> {
-        return SyntaxElementImpl(type, defaultValue, components)
+        return SyntaxElementImpl(type, defaultValue, required, components)
     }
 }
 

@@ -94,7 +94,7 @@ class SimpleParserRegistryTest {
     }
 
     @Test fun testCustomParser2() {
-        val syntax = SyntaxElementImpl(Boolean::class.java, null, ParserComponent(object : Parser {
+        val syntax = SyntaxElementImpl(Boolean::class.java, null, components = ParserComponent(object : Parser {
             override fun getSupportedTypes(): Set<Class<*>> = setOf(Boolean::class.java)
 
             override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Boolean

@@ -27,20 +27,23 @@ package com.github.mibac138.argparser.syntax
  */
 class SyntaxElementImpl<T> : SyntaxElement<T> {
     override val outputType: Class<T>
+    override val required: Boolean
     override val defaultValue: T?
     private val components: Map<Class<out SyntaxComponent>, SyntaxComponent>
 
 
     @JvmOverloads
-    constructor(outputType: Class<T>, defaultValue: T? = null) {
+    constructor(outputType: Class<T>, defaultValue: T? = null, required: Boolean = defaultValue == null) {
         this.outputType = outputType
+        this.required = required
         this.defaultValue = defaultValue
         this.components = emptyMap()
     }
 
     @JvmOverloads
-    constructor(outputType: Class<T>, defaultValue: T? = null, vararg components: SyntaxComponent) {
+    constructor(outputType: Class<T>, defaultValue: T? = null, required: Boolean = defaultValue == null, vararg components: SyntaxComponent) {
         this.outputType = outputType
+        this.required = required
         this.defaultValue = defaultValue
         this.components = HashMap(components.size)
         components.forEach {
@@ -49,17 +52,15 @@ class SyntaxElementImpl<T> : SyntaxElement<T> {
     }
 
     @JvmOverloads
-    constructor(outputType: Class<T>, defaultValue: T? = null, components: Collection<SyntaxComponent>) {
+    constructor(outputType: Class<T>, defaultValue: T? = null, required: Boolean = defaultValue == null, components: Collection<SyntaxComponent>) {
         this.outputType = outputType
+        this.required = required
         this.defaultValue = defaultValue
         this.components = HashMap(components.size)
         components.forEach {
             this.components[it.id] = it
         }
     }
-
-    override val required: Boolean
-        get() = defaultValue === null
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : SyntaxComponent> get(clazz: Class<T>): T? {

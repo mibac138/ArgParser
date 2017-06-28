@@ -23,7 +23,7 @@ class NamedParserRegistryImplTest {
     @Test fun test() {
         parser.registerParser(BooleanParser())
         parser.associateParserWithName(Boolean::class.java, "hi")
-        val result = parser.parse("--hi: true".asReader(), SyntaxElementImpl(Boolean::class.java, null, NameComponent("hi")))
+        val result = parser.parse("--hi: true".asReader(), SyntaxElementImpl(Boolean::class.java, null, components = NameComponent("hi")))
         assertEquals(mapOf("hi" to true), result)
     }
 

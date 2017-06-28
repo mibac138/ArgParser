@@ -33,10 +33,12 @@ class SyntaxUtilTest {
                 .element(Any::class.java).build().getRequiredSize())
 
         assertEquals(3, SyntaxContainerDSL(Any::class.java)
-                .element(Any::class.java, { defaultValue = Any() })
-                .element(Any::class.java, { defaultValue = Any() })
-                .element(Any::class.java).element(Any::class.java)
-                .element(Any::class.java).build().getRequiredSize())
+                .element(Any::class.java) { required = false }
+                .element(Any::class.java) { required = false }
+                .element(Any::class.java)
+                .element(Any::class.java)
+                .element(Any::class.java)
+                .build().getRequiredSize())
 
     }
 
