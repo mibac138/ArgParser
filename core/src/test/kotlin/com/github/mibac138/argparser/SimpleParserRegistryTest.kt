@@ -1,6 +1,5 @@
 package com.github.mibac138.argparser
 
-import com.github.mibac138.argparser.exception.ParserException
 import com.github.mibac138.argparser.exception.ParserInvalidInputException
 import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.parser.SimpleParserRegistry
@@ -39,10 +38,11 @@ class SimpleParserRegistryTest {
         assertTrue(Collections.disjoint(registry.getSupportedTypes(), parser.getSupportedTypes()))
     }
 
-    @Test fun testInvalidInput() {
-        val parsed = registry.parse("15 hi!".asReader(), SyntaxContainerDSL(Any::class.java).element(String::class.java).element(Int::class.java).build())
-        assertEquals("15", parsed[0])
-        assertTrue(parsed[1] is ParserException)
+    @Test(expected = NumberFormatException::class) fun testInvalidInput() {
+        registry.parse("15 hi!".asReader(), SyntaxContainerDSL(Any::class.java)
+                .element(String::class.java)
+                .element(Int::class.java)
+                .build())
     }
 
     @Test fun testRemove() {
@@ -97,7 +97,7 @@ class SimpleParserRegistryTest {
         val syntax = SyntaxElementImpl(Boolean::class.java, null, components = ParserComponent(object : Parser {
             override fun getSupportedTypes(): Set<Class<*>> = setOf(Boolean::class.java)
 
-            override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Boolean
+            override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Boolean?
                     = input.readUntilCharOrDefault(syntax, { !java.lang.Boolean.parseBoolean(it) })
         }))
 
@@ -110,26 +110,21 @@ class SimpleParserRegistryTest {
         registry.parse("hi".asReader(), syntax)
     }
 
-    @Test fun testProblematicParser() {
+    @Test(expected = ArrayIndexOutOfBoundsException::class) fun testProblematicParser() {
         val exception = ArrayIndexOutOfBoundsException()
         registry.registerParser(problematicParser(exception, Boolean::class.java))
         val syntax = SyntaxContainerDSL(Any::class.java).element(Boolean::class.java).build()
 
-        val parsed = registry.parse("hi".asReader(), syntax)
-        assertTrue(parsed[0] is ParserException)
-        assertEquals((parsed[0] as Exception).cause, exception)
+        registry.parse("hi".asReader(), syntax)
     }
 
-    @Test fun testProblematicParser2() {
+    @Test(expected = ParserInvalidInputException::class) fun testProblematicParser2() {
         val exception = ParserInvalidInputException()
         val parser = problematicParser(exception, Boolean::class.java)
         registry.registerParser(parser)
         val syntax = SyntaxContainerDSL(Any::class.java).element(Boolean::class.java).build()
 
-        val parsed = registry.parse("hi".asReader(), syntax)
-        assertTrue(parsed[0] is ParserException)
-        assertTrue(parsed[0] is ParserInvalidInputException)
-        assertEquals(exception, parsed[0])
+        registry.parse("hi".asReader(), syntax)
     }
 
     @Test fun testCustomParser() {

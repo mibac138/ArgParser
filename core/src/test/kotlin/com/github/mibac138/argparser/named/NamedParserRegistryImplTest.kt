@@ -1,6 +1,5 @@
 package com.github.mibac138.argparser.named
 
-import com.github.mibac138.argparser.exception.ParserException
 import com.github.mibac138.argparser.exception.ParserInvalidInputException
 import com.github.mibac138.argparser.parser.BooleanParser
 import com.github.mibac138.argparser.parser.Parser
@@ -12,7 +11,6 @@ import com.github.mibac138.argparser.syntax.dsl.syntaxElement
 import com.github.mibac138.argparser.syntax.parser
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 /**
  * Created by mibac138 on 03-05-2017.
@@ -75,7 +73,7 @@ class NamedParserRegistryImplTest {
         parser.parse("--".asReader(), SyntaxElementImpl(Any::class.java, NameComponent("")))
     }
 
-    @Test fun testProblematicParser1() {
+    @Test(expected = Exception::class) fun testProblematicParser1() {
         parser.registerParser(object : Parser {
             override fun getSupportedTypes(): Set<Class<*>> = setOf(Any::class.java)
 
@@ -83,12 +81,11 @@ class NamedParserRegistryImplTest {
                     = throw Exception()
         }, "color")
 
-        val result = parser.parse("--color:".asReader(), SyntaxElementImpl(Any::class.java, components = NameComponent("color")))
-        assertTrue(result["color"] is ParserException)
+        parser.parse("--color:".asReader(), SyntaxElementImpl(Any::class.java, components = NameComponent("color")))
     }
 
 
-    @Test fun testProblematicParser2() {
+    @Test(expected = ParserInvalidInputException::class) fun testProblematicParser2() {
         parser.registerParser(object : Parser {
             override fun getSupportedTypes(): Set<Class<*>> = setOf(Any::class.java)
 
@@ -96,8 +93,7 @@ class NamedParserRegistryImplTest {
                     = throw ParserInvalidInputException()
         }, "color")
 
-        val result = parser.parse("--color:".asReader(), SyntaxElementImpl(Any::class.java, components = NameComponent("color")))
-        assertTrue(result["color"] is ParserException)
+        parser.parse("--color:".asReader(), SyntaxElementImpl(Any::class.java, components = NameComponent("color")))
     }
 
     @Test fun testEquality() {
@@ -117,6 +113,6 @@ class NamedParserRegistryImplTest {
     }
 
     class InvertedBooleanParser(private val parser: BooleanParser) : Parser by parser {
-        override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Any = !parser.parse(input, syntax)
+        override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Boolean? = parser.parse(input, syntax)?.not()
     }
 }

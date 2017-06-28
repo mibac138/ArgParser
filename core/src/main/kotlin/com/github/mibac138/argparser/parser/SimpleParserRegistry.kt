@@ -22,8 +22,6 @@
 
 package com.github.mibac138.argparser.parser
 
-import com.github.mibac138.argparser.exception.ParserException
-import com.github.mibac138.argparser.exception.ParserInternalException
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.skipChar
 import com.github.mibac138.argparser.syntax.SyntaxContainer
@@ -46,9 +44,9 @@ class SimpleParserRegistry : ParserRegistry {
     }
 
 
-    override fun getSupportedTypes(): Set<Class<*>> {
-        return classToParserMap.keys
-    }
+    override fun getSupportedTypes(): Set<Class<*>>
+            = classToParserMap.keys
+
 
     override fun registerParser(parser: Parser) {
         parser.getSupportedTypes().forEach { clazz -> classToParserMap.put(clazz, parser) }
@@ -100,21 +98,21 @@ class SimpleParserRegistry : ParserRegistry {
     private fun parseElement(reader: ArgumentReader, element: SyntaxElement<*>, parser: Parser): Any? {
         reader.skipChar(' ')
         reader.mark()
-        var parsed: Any?
+
+        val parsed: Any?
         try {
             parsed = parser.parse(reader, element)
         } catch (e: Exception) {
-            parsed = wrapException(e)
+            reader.reset()
+            throw e
         }
 
         reader.removeMark()
-
         return parsed
     }
 
-    private fun getParserForElement(element: SyntaxElement<*>): Parser {
-        return element.parser ?: getParserForType(element.outputType)
-    }
+    private fun getParserForElement(element: SyntaxElement<*>): Parser
+            = element.parser ?: getParserForType(element.outputType)
 
     private fun getParserForType(type: Class<*>): Parser {
         val parser = classToParserMap[type]
@@ -124,11 +122,22 @@ class SimpleParserRegistry : ParserRegistry {
         throw IllegalArgumentException("Tried to parse ${type.name} but no eligible parsers were registered")
     }
 
-    private fun wrapException(e: Exception?): Exception {
-        if (e is ParserException) {
-            return e
-        } else {
-            return ParserInternalException(e)
-        }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+
+        other as SimpleParserRegistry
+
+        if (classToParserMap != other.classToParserMap) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return classToParserMap.hashCode()
+    }
+
+    override fun toString(): String {
+        return "SimpleParserRegistry(classToParserMap=$classToParserMap)"
     }
 }

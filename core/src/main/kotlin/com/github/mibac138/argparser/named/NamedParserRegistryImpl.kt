@@ -22,7 +22,6 @@
 
 package com.github.mibac138.argparser.named
 
-import com.github.mibac138.argparser.exception.ParserException
 import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.skipChar
@@ -68,21 +67,16 @@ class NamedParserRegistryImpl : NamedParserRegistry {
     private fun parseElement(input: ArgumentReader, element: SyntaxElement<*>, parser: Parser): Any? {
         input.skipChar(' ')
         input.mark()
-        var parsed: Any?
+        val parsed: Any?
         try {
             parsed = parser.parse(input, element)
         } catch (e: Exception) {
-            parsed = e.wrap()
+            input.reset()
+            throw e
         }
 
         input.removeMark()
         return parsed
-    }
-
-    private fun Exception.wrap(): Exception {
-        if (this is ParserException)
-            return this
-        return ParserException(this)
     }
 
     override fun getSupportedTypes(): Set<Class<*>>
@@ -130,11 +124,9 @@ class NamedParserRegistryImpl : NamedParserRegistry {
         nameToParserMap[name] = parser
     }
 
-    private fun getParserForElement(element: SyntaxElement<*>): Parser {
-        // TODO improve code style
-        return element.parser ?: getParserForName(element.name ?:
-                throw IllegalArgumentException())
-    }
+    private fun getParserForElement(element: SyntaxElement<*>): Parser
+            = element.parser ?:
+            getParserForName(element.name ?: throw IllegalArgumentException())
 
     private fun getParserForType(type: Class<*>): Parser {
         val parser = typeToParserMap[type]
