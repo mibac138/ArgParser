@@ -61,13 +61,12 @@ class SyntaxLinkerImpl(private var syntax: SyntaxElement<*>) : ReusableSyntaxLin
 
         for ((i, entry) in iterator) {
             val (key, value) = entry
-            val element = resolveArg(key, value, i) ?: if (/*!iterator.areEntriesNameless() &&*/
-            key?.isEmpty() ?: true &&
-                    value != null) {
-                link(value.entryIterator(true), array)
-                continue
-            } else throw IllegalArgumentException("Parser returned " +
-                    "result which I can't map to the syntax: [key='$key', value='$value']")
+            val element = resolveArg(key, value, i) ?:
+                    if (key.isNullOrEmpty() && value != null) {
+                        link(value.entryIterator(true), array)
+                        continue
+                    } else throw IllegalArgumentException("Parser returned " +
+                            "result which I can't map to the syntax: [key='$key', value='$value']")
 
             if (array[element.index] != null)
                 throw IllegalStateException("Can't pass two values to one argument")
