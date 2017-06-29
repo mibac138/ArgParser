@@ -43,7 +43,7 @@ class SyntaxLinkerImpl(private var syntax: SyntaxElement<*>) : ReusableSyntaxLin
         argsMap.clear()
         noNameArgsMap.clear()
 
-        syntax.iterator().withIndex().forEach { (i, element) ->
+        for ((i, element) in syntax.iterator().withIndex()) {
             val name = element.name
 
             if (name != null) argsMap[name] = IndexedValue(i, element)
@@ -53,7 +53,7 @@ class SyntaxLinkerImpl(private var syntax: SyntaxElement<*>) : ReusableSyntaxLin
 
 
     override fun link(input: Any): Array<Any?> =
-            link(input.entryIterator())
+            link(input.entryIterator(false))
 
 
     private fun link(iterator: Iterator<IndexedValue<Map.Entry<String?, *>>>,
@@ -64,7 +64,7 @@ class SyntaxLinkerImpl(private var syntax: SyntaxElement<*>) : ReusableSyntaxLin
             val element = resolveArg(key, value, i) ?: if (/*!iterator.areEntriesNameless() &&*/
             key?.isEmpty() ?: true &&
                     value != null) {
-                link(value.entryIterator(), array)
+                link(value.entryIterator(true), array)
                 continue
             } else throw IllegalArgumentException("Parser returned " +
                     "result which I can't map to the syntax: [key='$key', value='$value']")
@@ -115,12 +115,15 @@ class SyntaxLinkerImpl(private var syntax: SyntaxElement<*>) : ReusableSyntaxLin
         return null
     }
 
-    private fun Any.entryIterator(): Iterator<IndexedValue<Map.Entry<String?, *>>>
+    private fun Any.entryIterator(nested: Boolean): Iterator<IndexedValue<Map.Entry<String?, *>>>
             = when (this) {
-        is List<*> -> this.iterator().asEntryBasedIterator().withIndex()
+        is Collection<*> -> this.iterator().asEntryBasedIterator().withIndex()
         is Array<*> -> this.iterator().asEntryBasedIterator().withIndex()
         is Map<*, *> -> (this.entries.iterator() as Iterator<Map.Entry<String?, *>>).withIndex()
-        else -> throw UnsupportedOperationException("The given input type [$this] isn't supported")
+        else -> if (nested)
+            throw UnsupportedOperationException("The given input type [$this (${this::class.qualifiedName})] isn't supported")
+        else
+            listOf(this).iterator().asEntryBasedIterator().withIndex()
     }
 
     private fun <T> Iterator<T>.asEntryBasedIterator(): Iterator<Map.Entry<String?, *>>
