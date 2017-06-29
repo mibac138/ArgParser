@@ -9,6 +9,16 @@ import org.junit.Test
  */
 class SyntaxLinkerImplTest {
 
+    @Test fun subclasses() {
+        open class A
+        class B : A()
+
+        val bInstance = B()
+        val linker = SyntaxLinkerImpl(syntaxElement(A::class.java))
+
+        assertArrayEquals(arrayOf(bInstance), linker.link(bInstance))
+    }
+
     @Test fun valueAsInputRoot() {
         class A
 
@@ -16,6 +26,6 @@ class SyntaxLinkerImplTest {
         val linker = SyntaxLinkerImpl(syntaxElement(A::class.java))
         val output = linker.link(aInstance)
 
-        assertArrayEquals(arrayOf<Any?>(aInstance), output)
+        assertArrayEquals(arrayOf(aInstance), output)
     }
 }

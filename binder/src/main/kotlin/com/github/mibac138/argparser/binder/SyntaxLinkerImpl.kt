@@ -80,7 +80,7 @@ class SyntaxLinkerImpl(private var syntax: SyntaxElement<*>) : ReusableSyntaxLin
 
     private fun resolveArg(key: String?, value: Any?, index: Int): IndexedValue<SyntaxElement<*>>? {
         if (key != null) return getArgByName(key)
-        if (value != null) return getArgByType(value.javaClass)
+        if (value != null) return getArgByType(value)
         return getArgByIndex(index)
     }
 
@@ -88,13 +88,13 @@ class SyntaxLinkerImpl(private var syntax: SyntaxElement<*>) : ReusableSyntaxLin
             = argsMap[name]
 
 
-    private fun getArgByType(type: Class<*>): IndexedValue<SyntaxElement<*>>? {
+    private fun getArgByType(instance: Any): IndexedValue<SyntaxElement<*>>? {
         argsMap.values
-                .firstOrNull { type.isAssignableFrom(it.value.outputType) }
+                .firstOrNull { it.value.outputType.isInstance(instance) }
                 ?.let { return it }
 
         for ((key, value) in noNameArgsMap) {
-            if (type.isAssignableFrom(key))
+            if (key.isInstance(instance))
                 return value
         }
 
@@ -128,8 +128,6 @@ class SyntaxLinkerImpl(private var syntax: SyntaxElement<*>) : ReusableSyntaxLin
 
     private fun <T> Iterator<T>.asEntryBasedIterator(): Iterator<Map.Entry<String?, *>>
             = ListAsEntryIterator(this)
-
-//    private fun Iterator<IndexedValue<Map.Entry<*, *>>>.areEntriesNameless() = this is ListAsEntryIterator<*>
 
     private class ListAsEntryIterator<out T>(private val iterator: Iterator<T>) : Iterator<Map.Entry<String?, T>> {
         override fun hasNext() = iterator.hasNext()
