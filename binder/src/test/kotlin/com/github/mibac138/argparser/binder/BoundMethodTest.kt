@@ -62,6 +62,30 @@ class BoundMethodTest(private val producer: (KFunction<*>) -> BoundMethod) {
         assertEquals(Pair("Hiya", 10), binding.invoke("--num: 10".asReader(), parser))
     }
 
+    @Test fun testInstanceParameterWithOwner() {
+        val binding = Binder.bind(CallableBoundMethod(Tested::method, Tested()))
+
+        assertEquals(Pair("Hello!", 10), binding.invoke("Hello! 10".asReader(), SimpleParserRegistry()))
+    }
+
+    @Test fun testExtensionParameterWithOwner() {
+        val binding = Binder.bind(CallableBoundMethod(String::extension, "Instance param"))
+
+        assertEquals(Pair("Hello!", 10), binding.invoke("Hello! 10".asReader(), SimpleParserRegistry()))
+    }
+
+    @Test(expected = IllegalArgumentException::class) fun testInstanceParameterWithoutOwner() {
+        CallableBoundMethod(Tested::method)
+    }
+
+    @Test(expected = IllegalArgumentException::class) fun testExtensionReceiverParameterWithoutOwner() {
+        CallableBoundMethod(String::extension)
+    }
+
+    @Test(expected = IllegalArgumentException::class) fun testWithWrongOwner() {
+        CallableBoundMethod(String::extension, 123456)
+    }
+
     @Test fun testSyntax() {
         assertEquals(SyntaxContainerDSL().element(String::class.java).element(Int::class.javaObjectType).build(),
                 method.syntax)
@@ -77,3 +101,5 @@ class BoundMethodTest(private val producer: (KFunction<*>) -> BoundMethod) {
     }
 
 }
+
+fun String.extension(name: String, num: Int) = Pair(name, num)

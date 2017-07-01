@@ -31,8 +31,10 @@ import kotlin.reflect.KCallable
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.extensionReceiverParameter
 import kotlin.reflect.full.instanceParameter
+import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.valueParameters
 import kotlin.reflect.jvm.jvmErasure
+import kotlin.reflect.jvm.jvmName
 
 /**
  * Kotlin's reflection based bound method
@@ -40,11 +42,19 @@ import kotlin.reflect.jvm.jvmErasure
 class CallableBoundMethod(override val method: KCallable<*>, private val owner: Any? = null, generator: SyntaxGenerator = MethodBinder.generator) : BoundMethod {
     override val syntax: SyntaxElement<*>
     private val syntaxToParamMap: Map<SyntaxElement<*>, KParameter>
-    private val instanceParam: KParameter? = method.instanceParameter
+    private val instanceParam: KParameter? = method.instanceParameter ?: method.extensionReceiverParameter
 
     init {
-        if ((method.instanceParameter != null || method.extensionReceiverParameter != null) && owner == null)
-            throw IllegalArgumentException("Method requires instance variable or extension receiver but it's null")
+        if (instanceParam != null) {
+            if (owner == null)
+                throw IllegalArgumentException("Method requires instance variable or extension receiver but it's null")
+
+            val paramTypeClass = instanceParam.type.jvmErasure
+            val ownerClass = owner::class
+            if (!ownerClass.isSubclassOf(paramTypeClass))
+                throw IllegalArgumentException("Provided owner (${ownerClass.jvmName}) isn't an subclass of required " +
+                        "instance param's value's class (${paramTypeClass.jvmName})")
+        }
 
         val builder = SyntaxContainerDSL(Any::class.java)
         val mutableSyntaxToParamMap = mutableMapOf<SyntaxElement<*>, KParameter>()
