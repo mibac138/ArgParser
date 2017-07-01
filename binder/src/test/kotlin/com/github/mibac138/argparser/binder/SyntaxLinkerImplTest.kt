@@ -1,8 +1,9 @@
 package com.github.mibac138.argparser.binder
 
+import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.dsl.syntaxElement
-import org.junit.Assert.assertArrayEquals
 import org.junit.Test
+import kotlin.test.assertEquals
 
 /**
  * Created by mibac138 on 29-06-2017.
@@ -14,18 +15,23 @@ class SyntaxLinkerImplTest {
         class B : A()
 
         val bInstance = B()
-        val linker = SyntaxLinkerImpl(syntaxElement(A::class.java))
+        val syntax = syntaxElement(A::class.java)
+        val linker = SyntaxLinkerImpl(syntax)
 
-        assertArrayEquals(arrayOf(bInstance), linker.link(bInstance))
+        assertEquals<Map<SyntaxElement<*>, Any?>>(
+                mapOf(syntax to bInstance),
+                linker.link(bInstance))
     }
 
     @Test fun valueAsInputRoot() {
         class A
 
         val aInstance = A()
-        val linker = SyntaxLinkerImpl(syntaxElement(A::class.java))
-        val output = linker.link(aInstance)
+        val syntax = syntaxElement(A::class.java)
+        val linker = SyntaxLinkerImpl(syntax)
 
-        assertArrayEquals(arrayOf(aInstance), output)
+        assertEquals<Map<SyntaxElement<*>, Any?>>(
+                mapOf(syntax to aInstance),
+                linker.link(aInstance))
     }
 }

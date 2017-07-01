@@ -24,7 +24,6 @@ package com.github.mibac138.argparser.binder
 
 import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.syntax.SyntaxElement
-import com.github.mibac138.argparser.syntax.getSize
 import com.github.mibac138.argparser.syntax.iterator
 
 /**
@@ -52,64 +51,65 @@ class SyntaxLinkerImpl(private var syntax: SyntaxElement<*>) : ReusableSyntaxLin
     }
 
 
-    override fun link(input: Any): Array<Any?> =
-            link(input.entryIterator(false))
+    override fun link(input: Any): Map<SyntaxElement<*>, Any?> =
+            linkMap(input.entryIterator(false))
 
 
-    private fun link(iterator: Iterator<IndexedValue<Map.Entry<String?, *>>>,
-                     array: Array<Any?> = Array<Any?>(syntax.getSize(), { null })): Array<Any?> {
+    private fun linkMap(iterator: Iterator<IndexedValue<Map.Entry<String?, *>>>,
+                        map: MutableMap<SyntaxElement<*>, Any?> = mutableMapOf()): Map<SyntaxElement<*>, Any?> {
 
         for ((i, entry) in iterator) {
             val (key, value) = entry
+
             val element = resolveArg(key, value, i) ?:
                     if (key.isNullOrEmpty() && value != null) {
-                        link(value.entryIterator(true), array)
+                        linkMap(value.entryIterator(true), map)
                         continue
                     } else throw IllegalArgumentException("Parser returned " +
                             "result which I can't map to the syntax: [key='$key', value='$value']")
 
-            if (array[element.index] != null)
+            if (map.containsKey(element))
                 throw IllegalStateException("Can't pass two values to one argument")
 
-            array[element.index] = value
+            map[element] = value
         }
 
-        return array
+        return map
     }
 
-    private fun resolveArg(key: String?, value: Any?, index: Int): IndexedValue<SyntaxElement<*>>? {
+    private fun resolveArg(key: String?, value: Any?, index: Int): SyntaxElement<*>? {
         if (key != null) return getArgByName(key)
         if (value != null) return getArgByType(value)
         return getArgByIndex(index)
     }
 
-    private fun getArgByName(name: String): IndexedValue<SyntaxElement<*>>?
-            = argsMap[name]
+    private fun getArgByName(name: String): SyntaxElement<*>?
+            = argsMap[name]?.value
 
 
-    private fun getArgByType(instance: Any): IndexedValue<SyntaxElement<*>>? {
+    private fun getArgByType(instance: Any): SyntaxElement<*>? {
         argsMap.values
                 .firstOrNull { it.value.outputType.isInstance(instance) }
-                ?.let { return it }
+                ?.let { return it.value }
 
         for ((key, value) in noNameArgsMap) {
             if (key.isInstance(instance))
-                return value
+                return value.value
         }
 
         return null
     }
 
 
-    private fun getArgByIndex(index: Int): IndexedValue<SyntaxElement<*>>? {
+    private fun getArgByIndex(index: Int): SyntaxElement<*>? {
         for (value in noNameArgsMap.values)
             if (value.index == index)
-                return value
+                return value.value
 
 
         for (value in argsMap.values)
             if (value.index == index)
-                return value
+                return value.value
 
         return null
     }
@@ -120,6 +120,7 @@ class SyntaxLinkerImpl(private var syntax: SyntaxElement<*>) : ReusableSyntaxLin
         is Array<*> -> this.iterator().asEntryBasedIterator().withIndex()
         is Map<*, *> -> (this.entries.iterator() as Iterator<Map.Entry<String?, *>>).withIndex()
         else -> if (nested)
+        // if the object is nested and has got here it means the linker couldn't resolve it
             throw UnsupportedOperationException("The given input type [$this (${this::class.qualifiedName})] isn't supported")
         else
             listOf(this).iterator().asEntryBasedIterator().withIndex()

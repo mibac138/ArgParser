@@ -39,12 +39,15 @@ import kotlin.reflect.jvm.jvmErasure
  */
 class CallableBoundMethod(override val method: KCallable<*>, private val owner: Any? = null, generator: SyntaxGenerator = MethodBinder.generator) : BoundMethod {
     override val syntax: SyntaxElement<*>
+    private val syntaxToParamMap: Map<SyntaxElement<*>, KParameter>
+    private val instanceParam: KParameter? = method.instanceParameter
 
     init {
         if ((method.instanceParameter != null || method.extensionReceiverParameter != null) && owner == null)
             throw IllegalArgumentException("Method requires instance variable or extension receiver but it's null")
 
         val builder = SyntaxContainerDSL(Any::class.java)
+        val mutableSyntaxToParamMap = mutableMapOf<SyntaxElement<*>, KParameter>()
 
         for (parameter in method.valueParameters) {
             if (parameter.index == 0 && parameter.kind == KParameter.Kind.INSTANCE) continue
@@ -54,10 +57,13 @@ class CallableBoundMethod(override val method: KCallable<*>, private val owner: 
 
             generator.generate(element, parameter)
 
-            builder.add(element)
+            val syntaxElement = element.build()
+            mutableSyntaxToParamMap[syntaxElement] = parameter
+            builder.add(syntaxElement)
         }
 
         syntax = builder.build()
+        syntaxToParamMap = mutableSyntaxToParamMap
     }
 
     private fun Class<*>.boxClass(): Class<*> {
@@ -66,26 +72,18 @@ class CallableBoundMethod(override val method: KCallable<*>, private val owner: 
         else return this
     }
 
-    override fun invoke(parameters: Array<Any?>): Any? {
-        val map = mutableMapOf<KParameter, Any?>()
+    override fun invoke(parameters: Map<SyntaxElement<*>, Any?>): Any? {
+        var paramMap = mapSyntaxMapToParamMap(parameters)
 
-        var paramI = 0
-        for (i in 0 until method.parameters.size) {
-            val param = method.parameters[i]
+        if (instanceParam != null)
+            paramMap = paramMap.plus(instanceParam to owner)
 
-            if (param.kind == KParameter.Kind.INSTANCE) {
-                map[param] = owner
-                continue
-            }
-
-            if (!param.isOptional || parameters[paramI] != null) {
-                map[param] = parameters[paramI]
-            }
-            paramI++
-        }
-
-        return method.callBy(map)
+        return method.callBy(paramMap)
     }
+
+    private fun mapSyntaxMapToParamMap(syntax: Map<SyntaxElement<*>, Any?>): Map<KParameter, Any?>
+            // filter allows optional parameters with null value to use default value instead
+            = syntax.mapKeys { syntaxToParamMap[it.key]!! }.filter { !it.key.isOptional || it.value != null }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
