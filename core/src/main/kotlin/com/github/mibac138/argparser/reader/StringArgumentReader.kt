@@ -27,12 +27,8 @@ import com.github.mibac138.argparser.reader.ArgumentString.Companion.NOT_REQUIRE
 class StringArgumentReader(private var string: String) : ArgumentReader {
     private var position: Int = 0
     private var minPosition: Int = -1
-    private var length: Int = 0
+    private var length: Int = string.length
     private val marks: IntQueue = IntQueue()
-
-    init {
-        length = string.length
-    }
 
 
     override fun skip(count: Int) {
