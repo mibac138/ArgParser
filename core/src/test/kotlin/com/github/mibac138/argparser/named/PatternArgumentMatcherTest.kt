@@ -10,10 +10,10 @@ import kotlin.test.assertEquals
 /**
  * Created by mibac138 on 03-05-2017.
  */
-class DefaultArgumentMatcherTest {
+class PatternArgumentMatcherTest {
     @Test fun testEquality() {
-        val a = DefaultArgumentMatcher(Pattern.compile(""))
-        val b = DefaultArgumentMatcher(Pattern.compile(""))
+        val a = PatternArgumentMatcher(Pattern.compile(""))
+        val b = PatternArgumentMatcher(Pattern.compile(""))
 
         assertEquals(a, b)
         assertEquals(a.hashCode(), b.hashCode())
@@ -21,7 +21,7 @@ class DefaultArgumentMatcherTest {
     }
 
     @Test fun testMatch() {
-        val matcher = DefaultArgumentMatcher(Pattern.compile("--([a-zA-Z]+)(?:=|: ?)"))
+        val matcher = PatternArgumentMatcher(Pattern.compile("--([a-zA-Z]+)(?:=|: ?)"))
         var match = matcher.match("--test: Hello!".asReader())!!
 
         assertEquals("test", match.name)

@@ -31,7 +31,7 @@ import java.util.regex.Pattern
  * A simple argument matcher based on [Pattern]. Expects name to be at group 1. If it's not
  * please specify it in the constructor. [match] returns the given reader as result's reader
  */
-class DefaultArgumentMatcher @JvmOverloads constructor(
+class PatternArgumentMatcher @JvmOverloads constructor(
         private val pattern: Pattern,
         private val group: Int = 1)
     : ArgumentMatcher {
@@ -46,7 +46,7 @@ class DefaultArgumentMatcher @JvmOverloads constructor(
         if (this === other) return true
         if (other?.javaClass != javaClass) return false
 
-        other as DefaultArgumentMatcher
+        other as PatternArgumentMatcher
 
         if (group != other.group) return false
         // Pattern itself doesn't override equals so we must check for equality ourselves
@@ -64,6 +64,6 @@ class DefaultArgumentMatcher @JvmOverloads constructor(
     }
 
     override fun toString(): String {
-        return "DefaultArgumentMatcher(pattern=$pattern)"
+        return "PatternArgumentMatcher(pattern=$pattern)"
     }
 }
