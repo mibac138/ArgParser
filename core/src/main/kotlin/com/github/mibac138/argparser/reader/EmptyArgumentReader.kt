@@ -26,18 +26,15 @@ package com.github.mibac138.argparser.reader
  * Represents a empty [ArgumentReader].
  */
 object EmptyArgumentReader : ArgumentReader {
-    override fun skip(count: Int) = throw IllegalArgumentException("I'm a EmptyArgumentReader. That means you probably have" +
-            "a null somewhere in your code.")
+    override fun skip(count: Int) = throwIf<Unit>(count > 0) ?: Unit
 
-    override fun read(count: Int): String = throw IllegalArgumentException("I'm a EmptyArgumentReader. That means you probably have" +
-            "a null somewhere in your code.")
-
+    override fun read(count: Int) = throwIf(count > 0) ?: ""
 
     override fun hasNext(): Boolean
             = false
 
-    override fun next(): Char = throw IllegalArgumentException("I'm a EmptyArgumentReader. That means you probably have" +
-            "a null somewhere in your code.")
+    override fun next(): Char = throw IllegalArgumentException("I'm EmptyArgumentReader. That means that I have no " +
+            "content (length and available count always equals 0, skip and read throw if count > 0)")
 
     override fun getLength(): Int
             = 0
@@ -53,4 +50,12 @@ object EmptyArgumentReader : ArgumentReader {
 
     override fun reset(): Boolean
             = false
+
+    private fun <T> throwIf(cond: Boolean): T? {
+        if (cond)
+            throw IllegalArgumentException("I'm EmptyArgumentReader. That means that I have no " +
+                    "content (length and available count always equals 0, skip and read throw if count > 0)")
+
+        return null
+    }
 }
