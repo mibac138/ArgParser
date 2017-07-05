@@ -42,7 +42,6 @@ interface ArgumentReader {
      *
      * @throws IllegalArgumentException if underlying source isn't long enough
      * @param count amount of characters meant to be skipped
-     * @since 1.0
      */
     fun skip(count: Int)
 
@@ -64,7 +63,7 @@ interface ArgumentReader {
     /**
      * Returns next character from the underlying source
      *
-     * @throws IllegalArgumentException if underlying source is empty
+     * @throws IllegalArgumentException if is empty
      */
     fun next(): Char
 
@@ -88,26 +87,26 @@ interface ArgumentReader {
     /**
      * Removes last mark (doesn't return to it)
      *
-     * @return `true` if removed mark, `false` otherwise (no marks)
+     * @return `true` if removed mark, `false` otherwise (usually means no marks left)
      */
     fun removeMark(): Boolean
 
     /**
      * Removes last mark _and_ returns to it
      *
-     * @return `true` if removed mark and returned, `false` otherwise
+     * @return `true` if removed mark and returned, `false` otherwise (usually means no marks left)
      */
     fun reset(): Boolean
 }
 
 /**
- * Reads the reader until hits a space
+ * Reads the reader until it hits the given [targetChar] or [ArgumentReader.hasNext] returns false.
  * If possible, use [readUntilChar] with
  * action as argument instead of this function
  * as it reverts read text in case your
  * code threw an exception
  */
-fun ArgumentReader.readUntilChar(targetChar: Char = ' ', inclusive: Boolean = true): String {
+fun ArgumentReader.readUntilChar(targetChar: Char = ' '): String {
     val s = StringBuilder()
 
     while (hasNext()) {
@@ -115,8 +114,7 @@ fun ArgumentReader.readUntilChar(targetChar: Char = ' ', inclusive: Boolean = tr
         val char = next()
 
         if (char == targetChar) {
-            if (inclusive) reset()
-            else removeMark()
+            reset()
 
             return s.toString()
         } else {
@@ -135,10 +133,10 @@ fun ArgumentReader.readUntilChar(targetChar: Char = ' ', inclusive: Boolean = tr
  * is reverted (you will be able to read it again) and exception
  * is passed on
  */
-fun <T> ArgumentReader.readUntilChar(targetChar: Char = ' ', inclusive: Boolean = true, action: (String) -> T): T {
+fun <T> ArgumentReader.readUntilChar(targetChar: Char = ' ', action: (String) -> T): T {
     mark()
     try {
-        val output = action(readUntilChar(targetChar, inclusive))
+        val output = action(readUntilChar(targetChar))
         removeMark()
 
         return output
@@ -183,37 +181,39 @@ fun ArgumentReader.matchPattern(pattern: Pattern, readStep: Int = 30): MatchResu
 fun ArgumentReader.matchMatcher(matcher: Matcher, readStep: Int = 30): MatchResult? {
     mark()
 
-    val output: Pair<Matcher, String>
+    val read: String
     try {
-        var read: String = ""
+        var currentlyRead: String = ""
         var available = getAvailableCount()
 
         do {
-            read += read(Math.min(readStep, available))
-            matcher.reset(read)
+            currentlyRead += read(Math.min(readStep, available))
+            matcher.reset(currentlyRead)
             available = getAvailableCount()
         } while (!matcher.hitEnd() && available != 0)
 
-        output = Pair(matcher, read)
+        read = currentlyRead
     } catch(e: Exception) {
         reset()
         throw e
     }
 
-    if (!output.first.find() || output.first.start() != 0) {
+    // Revert if didn't find any matches or didn't find
+    // at the start (probably took text that it shouldn't take)
+    if (!matcher.find() || matcher.start() != 0) {
         reset()
         matcher.reset()
         return null
     }
 
     // Revert if matcher took too much text
-    if (output.first.end() != output.second.length) {
+    if (matcher.end() != read.length) {
         reset()
-        skip(output.first.end())
+        skip(matcher.end())
     }
 
     removeMark()
-    return output.first.toMatchResult()
+    return matcher.toMatchResult()
 }
 
 /**

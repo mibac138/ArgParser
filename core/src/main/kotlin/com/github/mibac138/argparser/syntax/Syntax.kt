@@ -37,14 +37,13 @@ interface SyntaxElement<T> {
 
     /**
      * Indicate whether this element is required.
-     * If not a parser *might* return [defaultValue]
+     * If false a parser *should* return [defaultValue]
      */
     val required: Boolean
 
     /**
-     * Return element's default value.
-     * Must not be null if [required] is true,
-     * otherwise might be any value
+     * Return element's default value if [required] equals `false`
+     * otherwise usually equals `null`
      */
     val defaultValue: T?
 
