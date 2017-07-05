@@ -50,7 +50,13 @@ class SequenceParser : Parser {
      * - '"abcd efgh"' returns '"abcd efgh"'
      * - '"abcd ef"gh' returns '"abcd ef"'
      */
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): String {
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): String? {
+        if (!input.hasNext()) {
+            return if (!syntax.required)
+                syntax.defaultValue as String?
+            else ""
+        }
+
         val first = input.next()
         if (quotationMarks.contains(first))
             return first + input.readUntilChar(first) + input.next() // return quotation marks too

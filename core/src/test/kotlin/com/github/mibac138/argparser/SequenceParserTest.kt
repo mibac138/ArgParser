@@ -1,7 +1,9 @@
 package com.github.mibac138.argparser
 
 import com.github.mibac138.argparser.parser.SequenceParser
+import com.github.mibac138.argparser.reader.EmptyArgumentReader
 import com.github.mibac138.argparser.reader.asReader
+import com.github.mibac138.argparser.syntax.EmptySyntaxContainer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -12,6 +14,10 @@ import kotlin.test.assertNotEquals
  */
 class SequenceParserTest : ParserTest() {
     private val parser = SequenceParser()
+
+    @Test fun issue8() {
+        assertEquals("", parser.parse(EmptyArgumentReader, EmptySyntaxContainer))
+    }
 
     @Test fun supportedTypes() {
         assertTrue(parser.getSupportedTypes() == setOf(String::class.java))
