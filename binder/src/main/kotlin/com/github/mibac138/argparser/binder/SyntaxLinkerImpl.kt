@@ -29,14 +29,13 @@ import com.github.mibac138.argparser.syntax.iterator
 /**
  * Created by mibac138 on 23-06-2017.
  */
-class SyntaxLinkerImpl(private var syntax: SyntaxElement<*>) : ReusableSyntaxLinker {
+class SyntaxLinkerImpl(syntax: SyntaxElement<*>) : ReusableSyntaxLinker {
     private val argsMap: MutableMap<String, IndexedValue<SyntaxElement<*>>> = HashMap()
     private val noNameArgsMap: MutableMap<Class<*>, IndexedValue<SyntaxElement<*>>> = HashMap()
 
     init {
         recreate(syntax)
     }
-
 
     override fun recreate(syntax: SyntaxElement<*>) {
         argsMap.clear()

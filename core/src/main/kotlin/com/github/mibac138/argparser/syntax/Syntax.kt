@@ -37,7 +37,7 @@ interface SyntaxElement<T> {
 
     /**
      * Indicate whether this element is required.
-     * If false a parser *should* return [defaultValue]
+     * If false a parser *might* return [defaultValue]
      */
     val required: Boolean
 

@@ -35,7 +35,7 @@ class NamedParserRegistryImpl : NamedParserRegistry {
     private val typeToParserMap: MutableMap<Class<*>, Parser> = HashMap()
     private val nameToParserMap: MutableMap<String, Parser> = HashMap()
 
-    override var matcher: ArgumentMatcher = DefaultArgumentMatcher(Pattern.compile("--([a-zA-Z]+)(?:=|: ?)"))
+    override var matcher: ArgumentMatcher = PatternArgumentMatcher(Pattern.compile("--([a-zA-Z]+)(?:=|: ?)"))
 
     override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Map<String, *> {
         if (syntax.get(NameComponent::class.java) == null && syntax !is SyntaxContainer)
@@ -45,11 +45,12 @@ class NamedParserRegistryImpl : NamedParserRegistry {
         val map = HashMap<String, Any?>()
 
         for (i in 0 until syntax.getSize()) {
+            if (!input.hasNext()) break
+
             input.skipChar(' ')
             val matched = matcher.match(input)
 
             if (matched == null) {
-                // Is this the proper way to handle this?
                 throw IllegalArgumentException("Matcher didn't match input")
             } else {
                 val name = matched.name

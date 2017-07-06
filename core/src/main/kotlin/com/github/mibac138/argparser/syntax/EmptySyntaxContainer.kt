@@ -29,9 +29,8 @@ object EmptySyntaxContainer : SyntaxContainer<Any> {
     override fun <T : SyntaxComponent> get(clazz: Class<T>): T?
             = null
 
-    private val _content = emptyList<SyntaxElement<*>>()
     override val content: List<SyntaxElement<*>>
-        get() = _content
+        get() = emptyList()
 
     override val required: Boolean
         get() = false

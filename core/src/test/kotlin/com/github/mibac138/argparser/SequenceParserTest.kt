@@ -16,7 +16,7 @@ class SequenceParserTest : ParserTest() {
     private val parser = SequenceParser()
 
     @Test fun issue8() {
-        assertEquals("", parser.parse(EmptyArgumentReader, EmptySyntaxContainer))
+        parser.parse(EmptyArgumentReader, EmptySyntaxContainer)
     }
 
     @Test fun supportedTypes() {

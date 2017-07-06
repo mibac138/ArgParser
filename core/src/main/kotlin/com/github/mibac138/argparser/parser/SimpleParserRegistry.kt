@@ -24,8 +24,8 @@ package com.github.mibac138.argparser.parser
 
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.skipChar
-import com.github.mibac138.argparser.syntax.SyntaxContainer
 import com.github.mibac138.argparser.syntax.SyntaxElement
+import com.github.mibac138.argparser.syntax.getSize
 import com.github.mibac138.argparser.syntax.iterator
 import com.github.mibac138.argparser.syntax.parser
 import java.util.*
@@ -68,17 +68,13 @@ class SimpleParserRegistry : ParserRegistry {
         classToParserMap.clear()
     }
 
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): List<*> {
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): List<Any?> {
         if (!input.hasNext())
-            return emptyList<Any>()
+            return emptyList()
 
-        val size: Int
-        if (syntax is SyntaxContainer) {
-            if (syntax.content.isEmpty())
-                return emptyList<Any>()
-            else
-                size = syntax.content.size
-        } else size = 1
+        val size = syntax.getSize()
+        if (size == 0)
+            return emptyList()
 
         return parseSyntax(input, size, syntax.iterator())
     }
