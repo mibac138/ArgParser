@@ -4,6 +4,7 @@ import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.reader.asReader
 import com.github.mibac138.argparser.syntax.dsl.element
 import com.github.mibac138.argparser.syntax.dsl.syntaxContainer
+import com.github.mibac138.argparser.syntax.dsl.syntaxElement
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -67,9 +68,9 @@ class MixedParserRegistryImplTest {
         parser.registerParser(SequenceParser(), 1)
         parser.registerParser(SequenceParser(), "seq")
         val syntax = syntaxContainer {
-            element(String::class.java, { name = "seq" })
-            element(String::class.java, { required = false; defaultValue = "default" })
+            element(String::class.java) { name = "seq" }
             element(String::class.java)
+            element(String::class.java) { required = false; defaultValue = "default" }
         }
         val output = parser.parse("yes --seq:sequence".asReader(), syntax)
 
@@ -77,6 +78,22 @@ class MixedParserRegistryImplTest {
         assertContentEquals(mapOf(
                 null to listOf("yes", "default"),
                 "seq" to "sequence"
+        ), output)
+    }
+
+    @Test fun issue9() {
+        parser.registerParser(SequenceParser(), 0)
+
+        val syntax = syntaxElement(String::class.java) {
+            required = false
+            defaultValue = "default"
+        }
+
+        //
+        val output = parser.parse(" ".asReader(), syntax)
+        println(output)
+        assertContentEquals(mapOf(
+                null to listOf("default")
         ), output)
     }
 

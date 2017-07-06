@@ -23,25 +23,20 @@
 package com.github.mibac138.argparser.parser
 
 import com.github.mibac138.argparser.named.ArgumentMatcher
-import com.github.mibac138.argparser.named.DefaultArgumentMatcher
+import com.github.mibac138.argparser.named.PatternArgumentMatcher
 import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.skipChar
-import com.github.mibac138.argparser.syntax.SyntaxElement
-import com.github.mibac138.argparser.syntax.getSize
-import com.github.mibac138.argparser.syntax.iterator
-import com.github.mibac138.argparser.syntax.parser
+import com.github.mibac138.argparser.syntax.*
 import java.util.regex.Pattern
 
 /**
  * Can parse mixed syntax (i.e. with both named and unnamed elements)
- *
- * *Note*: Currently unnamed not required element's *must* be at the end of the syntax
  */
 class MixedParserRegistryImpl : MixedParserRegistry {
     private val nameToParserMap: MutableMap<String, Parser> = HashMap()
     private val positionToParserMap: MutableMap<Int, Parser> = HashMap()
-    override var matcher: ArgumentMatcher = DefaultArgumentMatcher(Pattern.compile("--([a-zA-Z_0-9]+)(?:=|: ?)"))
+    override var matcher: ArgumentMatcher = PatternArgumentMatcher(Pattern.compile("--([a-zA-Z_0-9]+)(?:=|: ?)"))
 
     override fun getSupportedTypes(): Set<Class<*>> {
         val output = mutableSetOf<Class<*>>()
@@ -63,9 +58,13 @@ class MixedParserRegistryImpl : MixedParserRegistry {
             val matched = matcher.match(input)
 
             if (matched == null) {
-                positionToParserMap[index]?.let {
-                    unnamed += parseElement(input, syntax.findElementById(index), it)
-                }
+                val element = syntax.findElementById(index)
+                val parser = positionToParserMap[index] ?: element.parser
+                if (parser != null)
+                    unnamed += parseElement(input, element, parser)
+                else
+                    unnamed += element.defaultValue
+
                 index++
             } else {
                 val element = syntax.findElementByName(matched.name)
@@ -122,10 +121,9 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         positionToParserMap.clear()
     }
 
-    private fun getParserForElement(element: SyntaxElement<*>): Parser {
-        return element.parser ?: getParserForName(element.name ?:
-                throw IllegalArgumentException())
-    }
+    private fun getParserForElement(element: SyntaxElement<*>)
+            = element.parser ?: getParserForName(element.name ?:
+            throw IllegalArgumentException())
 
     private fun getParserForName(name: String): Parser {
         val parser = nameToParserMap[name]
@@ -135,18 +133,12 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         throw IllegalArgumentException("Couldn't find parser for name '$name'")
     }
 
-    private fun SyntaxElement<*>.findElementById(id: Int): SyntaxElement<*> {
-        var index = 0
-        for (element in iterator()) {
-            if (element.name != null)
-                continue
-
-            if (index++ == id)
-                return element
-        }
-
-        throw Exception("Couldn't find syntax element with id $id inside $this")
-    }
+    private fun SyntaxElement<*>.findElementById(id: Int): SyntaxElement<*> =
+            if (this is SyntaxContainer)
+                content.filter { it.name == null }[id]
+            else if (id != 0)
+                throw Exception("Couldn't find syntax element with id $id inside $this")
+            else this
 
     private fun SyntaxElement<*>.findElementByName(name: String): SyntaxElement<*> {
         for (element in iterator()) {
