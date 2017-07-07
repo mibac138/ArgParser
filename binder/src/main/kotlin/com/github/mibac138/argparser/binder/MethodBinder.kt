@@ -41,7 +41,7 @@ object MethodBinder {
     }
 
     @JvmStatic
-    fun bindMethod(method: KCallable<*>, owner: Any?): BoundMethod
+    fun bindMethod(method: KCallable<*>, owner: Any? = null): BoundMethod
             = CallableBoundMethod(method, owner, generator)
 
     @JvmStatic
