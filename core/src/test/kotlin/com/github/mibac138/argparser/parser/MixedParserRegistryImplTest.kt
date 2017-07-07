@@ -89,9 +89,7 @@ class MixedParserRegistryImplTest {
             defaultValue = "default"
         }
 
-        //
         val output = parser.parse(" ".asReader(), syntax)
-        println(output)
         assertContentEquals(mapOf(
                 null to listOf("default")
         ), output)
