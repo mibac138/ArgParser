@@ -5,6 +5,6 @@ package com.github.mibac138.argparser.binder;
  */
 @SuppressWarnings("unused")
 public class JavaClass {
-	public void javaMethod(String string) {
+	public void javaMethod(@Name("a") String string) {
 	}
 }
