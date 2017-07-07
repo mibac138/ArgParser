@@ -1,5 +1,6 @@
 package com.github.mibac138.argparser.named
 
+import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 import com.github.mibac138.argparser.syntax.dsl.syntaxElement
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -25,5 +26,20 @@ class NameComponentHelperTest {
         }
 
         assertEquals("Hello", syntax.name)
+    }
+
+    @Test fun dslDefaultValueShouldBeNull() {
+        val dsl = SyntaxElementDSL(Any::class.java)
+
+        assertEquals(null, dsl.name)
+    }
+
+    @Test fun issue14() {
+        val dsl = SyntaxElementDSL(Any::class.java)
+        val anotherDsl = SyntaxElementDSL(Any::class.java)
+
+        dsl.name = "dsl1 name"
+
+        assertEquals(null, anotherDsl.name)
     }
 }

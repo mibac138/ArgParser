@@ -27,26 +27,18 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 open class SyntaxDSLComponentProperty<T, COMPONENT : SyntaxComponent>(
-        initialValue: COMPONENT?,
+        protected val componentType: Class<COMPONENT>,
         protected var toComponent: T?.() -> COMPONENT?,
         protected var toValue: COMPONENT?.() -> T?
 ) : ReadWriteProperty<SyntaxElementDSL<*>, T?> {
-    constructor(initialValue: T?, toComponent: T?.() -> COMPONENT?, toValue: COMPONENT?.() -> T?) :
-            this(initialValue.toComponent(), toComponent, toValue)
 
-    protected var value: COMPONENT? = initialValue
-
+    @Suppress("UNCHECKED_CAST")
     override fun getValue(thisRef: SyntaxElementDSL<*>, property: KProperty<*>)
-            = value?.toValue()
+            = (thisRef.components.firstOrNull { componentType.isInstance(it) } as COMPONENT?).toValue()
 
     override fun setValue(thisRef: SyntaxElementDSL<*>, property: KProperty<*>, value: T?) {
-        this.value?.let {
-            val component: SyntaxComponent = it
-            thisRef.components.remove(component)
-        }
-
-        this.value = value?.toComponent()
-        this.value?.let {
+        thisRef.components.removeIf { componentType.isInstance(it) }
+        value.toComponent()?.let {
             thisRef.components.add(it)
         }
     }

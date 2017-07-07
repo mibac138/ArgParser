@@ -46,7 +46,7 @@ val SyntaxElement<*>?.parser: Parser?
  * Adds given parser upon creation. Note: there can be only one parser per syntax element and setting this multiple
  * times overwrites the previous value
  */
-var SyntaxElementDSL<*>.parser: Parser? by SyntaxDSLComponentProperty<Parser?, ParserComponent>(null as ParserComponent?,
+var SyntaxElementDSL<*>.parser: Parser? by SyntaxDSLComponentProperty<Parser?, ParserComponent>(ParserComponent::class.java,
         { this?.let { ParserComponent(this) } },
         { this?.let { parser } })
 
