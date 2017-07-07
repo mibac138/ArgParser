@@ -33,7 +33,7 @@ class BoundMethodTest(private val producer: (KFunction<*>) -> BoundMethod) {
             fun method(name: String, num: Int)
                     = Pair(name, num)
 
-            fun defaultValues(name: String = "Hiya", @Arg(name = "num") num: Int = 5)
+            fun defaultValues(name: String = "Hiya", @Name("num") num: Int = 5)
                     = Pair(name, num)
         }
     }

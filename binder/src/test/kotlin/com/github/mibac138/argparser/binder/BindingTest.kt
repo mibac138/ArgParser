@@ -70,13 +70,13 @@ class BindingTest {
 
 
     class UnnamedTester {
-        fun method(@Arg name: String, @Arg value: Int): Pair<String, Int> {
+        fun method(name: String, value: Int): Pair<String, Int> {
             return Pair(name, value)
         }
     }
 
     class Tester {
-        fun method(@Arg(name = "number") num: Int?, @Arg(name = "greeting") hi: String?): Pair<Int?, String?> {
+        fun method(@Name("number") num: Int?, @Name("greeting") hi: String?): Pair<Int?, String?> {
             return Pair(num, hi)
         }
     }

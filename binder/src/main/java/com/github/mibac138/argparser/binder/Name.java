@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Arg {
+public @interface Name {
 	String NO_NAME = "NO_NAME";
 	
 	/**
@@ -40,5 +40,5 @@ public @interface Arg {
 	 *
 	 * @return argument's name or {@link #NO_NAME} if the argument is unnamed
 	 */
-	String name() default NO_NAME;
+	String value() default NO_NAME;
 }
