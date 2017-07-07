@@ -31,5 +31,6 @@ class ParamNameSyntaxGeneratorTest {
 
 
     private fun kotlinFunction(string: String) {
+        println(string)
     }
 }

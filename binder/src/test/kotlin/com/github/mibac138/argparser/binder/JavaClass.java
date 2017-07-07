@@ -5,5 +5,6 @@ package com.github.mibac138.argparser.binder;
  */
 public class JavaClass {
 	public void javaMethod(String string) {
+		System.out.println(string);
 	}
 }

@@ -31,7 +31,11 @@ import kotlin.reflect.jvm.kotlinFunction
  * Created by mibac138 on 10-05-2017.
  */
 object MethodBinder {
-    val generator = SyntaxGeneratorManager(ArgSyntaxGenerator, KotlinNullabilitySyntaxGenerator)
+    val generator = SyntaxGeneratorManager(
+            ArgSyntaxGenerator(),
+            KotlinNullabilitySyntaxGenerator(),
+            ParamNameSyntaxGenerator()
+    )
 
     @JvmStatic
     fun bindMethod(owner: Any, name: String): BoundMethod? {
