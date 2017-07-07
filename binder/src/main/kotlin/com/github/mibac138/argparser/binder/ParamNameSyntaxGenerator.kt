@@ -27,10 +27,13 @@ import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 import kotlin.reflect.KParameter
 
 /**
- * Created by mibac138 on 07-07-2017.
+ * Generates syntax based on [KParameter]'s name.
+ * Works as a last resort option (generates syntax only if
+ * it hasn't been already generated [[NameComponent]])
  */
 class ParamNameSyntaxGenerator : SyntaxGenerator {
     override fun generate(dsl: SyntaxElementDSL<*>, param: KParameter) {
+        // Check first as this is intended to be a last resort name generator
         if (dsl.name == null)
             dsl.name = param.name
     }

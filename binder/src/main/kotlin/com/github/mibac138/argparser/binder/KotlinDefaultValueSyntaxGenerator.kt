@@ -26,10 +26,12 @@ import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 import kotlin.reflect.KParameter
 
 /**
- * Created by mibac138 on 28-06-2017.
+ * Generates relevant syntax for optional [KParameter]s
  */
-class KotlinNullabilitySyntaxGenerator : SyntaxGenerator {
+class KotlinDefaultValueSyntaxGenerator : SyntaxGenerator {
     override fun generate(dsl: SyntaxElementDSL<*>, param: KParameter) {
+        // If a param is optional it means that when no value is provided for it
+        // then the default one is called
         if (param.isOptional)
             dsl.required = false
     }

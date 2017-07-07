@@ -26,7 +26,7 @@ import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 import kotlin.reflect.KParameter
 
 /**
- * Created by mibac138 on 18-06-2017.
+ * Represents an empty [SyntaxGenerator]
  */
 object NullSyntaxGenerator : SyntaxGenerator {
     override fun generate(dsl: SyntaxElementDSL<*>, param: KParameter) {}
