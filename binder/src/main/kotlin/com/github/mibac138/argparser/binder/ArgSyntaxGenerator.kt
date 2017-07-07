@@ -28,7 +28,7 @@ import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 /**
  * Created by mibac138 on 22-05-2017.
  */
-object ArgSyntaxGenerator : AnnotationBasedSyntaxGenerator<Arg>(Arg::class.java) {
+class ArgSyntaxGenerator : AnnotationBasedSyntaxGenerator<Arg>(Arg::class.java) {
     override fun generate(dsl: SyntaxElementDSL<*>, annotation: Arg) {
         if (annotation.name != Arg.NO_NAME)
             dsl.name = annotation.name

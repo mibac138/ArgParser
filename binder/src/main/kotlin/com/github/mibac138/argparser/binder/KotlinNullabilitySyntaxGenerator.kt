@@ -28,7 +28,7 @@ import kotlin.reflect.KParameter
 /**
  * Created by mibac138 on 28-06-2017.
  */
-object KotlinNullabilitySyntaxGenerator : SyntaxGenerator {
+class KotlinNullabilitySyntaxGenerator : SyntaxGenerator {
     override fun generate(dsl: SyntaxElementDSL<*>, param: KParameter) {
         if (param.isOptional)
             dsl.required = false
