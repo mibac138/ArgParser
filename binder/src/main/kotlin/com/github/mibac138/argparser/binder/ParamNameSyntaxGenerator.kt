@@ -32,9 +32,16 @@ import kotlin.reflect.KParameter
  * it hasn't been already generated [[NameComponent]])
  */
 class ParamNameSyntaxGenerator : SyntaxGenerator {
+    private val pattern = Regex("arg\\d+")
+
     override fun generate(dsl: SyntaxElementDSL<*>, param: KParameter) {
         // Check first as this is intended to be a last resort name generator
-        if (dsl.name == null)
-            dsl.name = param.name
+        val paramName = param.name ?: return
+
+        // JVM's default param names are argN (arg0, arg1, etc)
+        // (Oracle JDK doesn't save param names, don't know about other JDKs)
+        // we probably don't want to use the default ones
+        if (dsl.name == null && !pattern.matches(paramName))
+            dsl.name = paramName
     }
 }
