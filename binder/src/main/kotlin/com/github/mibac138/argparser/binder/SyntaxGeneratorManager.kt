@@ -36,27 +36,19 @@ class SyntaxGeneratorManager() : SyntaxGenerator {
         this.generators += generators
     }
 
-    fun add(generator: SyntaxGenerator) {
-        generators += generator
-    }
-
-    fun addAll(vararg add: SyntaxGenerator) {
+    fun add(vararg add: SyntaxGenerator) {
         generators += add
     }
 
-    fun addAll(add: Collection<SyntaxGenerator>) {
+    fun add(add: Iterable<SyntaxGenerator>) {
         generators += add
     }
 
-    fun remove(generator: SyntaxGenerator) {
-        generators -= generator
-    }
-
-    fun removeAll(vararg remove: SyntaxGenerator) {
+    fun remove(vararg remove: SyntaxGenerator) {
         generators -= remove
     }
 
-    fun removeAll(remove: Collection<SyntaxGenerator>) {
+    fun remove(remove: Iterable<SyntaxGenerator>) {
         generators -= remove
     }
 
