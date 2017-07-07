@@ -20,25 +20,11 @@
  * SOFTWARE.
  */
 
-package com.github.mibac138.argparser.binder;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.github.mibac138.argparser.binder
 
 /**
- * Annotation used by some binders in order to automagically generate syntax
+ *Annotation used by some binders in order to automagically generate syntax
  */
-@Target(ElementType.PARAMETER)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Name {
-	String NO_NAME = "NO_NAME";
-	
-	/**
-	 * The argument's name (used only for named arguments)
-	 *
-	 * @return argument's name or {@link #NO_NAME} if the argument is unnamed
-	 */
-	String value() default NO_NAME;
-}
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Name(val value: String)
