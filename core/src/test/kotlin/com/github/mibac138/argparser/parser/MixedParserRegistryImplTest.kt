@@ -63,7 +63,7 @@ class MixedParserRegistryImplTest {
         ), output)
     }
 
-    /*@Test*/ fun missionImpossible() {
+    @Test fun issue10() {
         parser.registerParser(SequenceParser(), 0)
         parser.registerParser(SequenceParser(), 1)
         parser.registerParser(SequenceParser(), "seq")
@@ -72,9 +72,9 @@ class MixedParserRegistryImplTest {
             element(String::class.java)
             element(String::class.java) { required = false; defaultValue = "default" }
         }
+
         val output = parser.parse("yes --seq:sequence".asReader(), syntax)
 
-        println(output)
         assertContentEquals(mapOf(
                 null to listOf("yes", "default"),
                 "seq" to "sequence"

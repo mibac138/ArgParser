@@ -3,10 +3,13 @@ package com.github.mibac138.argparser.named
 import com.github.mibac138.argparser.exception.ParserInvalidInputException
 import com.github.mibac138.argparser.parser.BooleanParser
 import com.github.mibac138.argparser.parser.Parser
+import com.github.mibac138.argparser.parser.SequenceParser
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.asReader
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.SyntaxElementImpl
+import com.github.mibac138.argparser.syntax.dsl.element
+import com.github.mibac138.argparser.syntax.dsl.syntaxContainer
 import com.github.mibac138.argparser.syntax.dsl.syntaxElement
 import com.github.mibac138.argparser.syntax.parser
 import org.junit.Test
@@ -94,6 +97,22 @@ class NamedParserRegistryImplTest {
         }, "color")
 
         parser.parse("--color:".asReader(), SyntaxElementImpl(Any::class.java, components = NameComponent("color")))
+    }
+
+    @Test fun issue10() {
+        parser.registerParser(SequenceParser(), "arg1")
+        parser.registerParser(SequenceParser(), "arg2")
+        val syntax = syntaxContainer {
+            element(String::class.java) { name = "arg1" }
+            element(String::class.java) { name = "arg2"; required = false; defaultValue = "default" }
+        }
+        val output = parser.parse("--arg1=yes".asReader(), syntax)
+
+
+        assertEquals(mapOf(
+                "arg1" to "yes",
+                "arg2" to "default"
+        ), output)
     }
 
     @Test fun testEquality() {

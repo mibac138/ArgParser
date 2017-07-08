@@ -116,3 +116,14 @@ fun SyntaxElement<*>?.requiredIterator(): Iterator<SyntaxElement<*>> {
         return content.filter { required }.iterator()
     return SingleSyntaxElementIterator(this)
 }
+
+
+// TODO
+/**
+ *
+ */
+fun SyntaxElement<*>?.content(): List<SyntaxElement<*>> {
+    if (this == null) return emptyList()
+    if (this !is SyntaxContainer) return listOf(this)
+    return this.content
+}

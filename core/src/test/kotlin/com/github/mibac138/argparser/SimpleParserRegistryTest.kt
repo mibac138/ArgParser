@@ -2,6 +2,7 @@ package com.github.mibac138.argparser
 
 import com.github.mibac138.argparser.exception.ParserInvalidInputException
 import com.github.mibac138.argparser.parser.Parser
+import com.github.mibac138.argparser.parser.SequenceParser
 import com.github.mibac138.argparser.parser.SimpleParserRegistry
 import com.github.mibac138.argparser.parser.readUntilCharOrDefault
 import com.github.mibac138.argparser.reader.ArgumentReader
@@ -12,6 +13,7 @@ import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.SyntaxElementImpl
 import com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSL
 import com.github.mibac138.argparser.syntax.dsl.element
+import com.github.mibac138.argparser.syntax.dsl.syntaxContainer
 import com.nhaarman.mockito_kotlin.any
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -135,6 +137,18 @@ class SimpleParserRegistryTest {
         registry.parse("hi".asReader(), syntax)
 
         verify(parser).parse(any(), any())
+    }
+
+    @Test fun issue10() {
+        registry.registerParser(SequenceParser())
+        val syntax = syntaxContainer {
+            element(String::class.java)
+            element(String::class.java) { required = false; defaultValue = "default" }
+        }
+        val output = registry.parse("yes".asReader(), syntax)
+
+
+        assertEquals(listOf("yes", "default"), output)
     }
 
     private fun parserOf(vararg clazz: Class<*>): Parser {

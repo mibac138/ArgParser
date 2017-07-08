@@ -68,16 +68,8 @@ class SimpleParserRegistry : ParserRegistry {
         classToParserMap.clear()
     }
 
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): List<Any?> {
-        if (!input.hasNext())
-            return emptyList()
-
-        val size = syntax.getSize()
-        if (size == 0)
-            return emptyList()
-
-        return parseSyntax(input, size, syntax.iterator())
-    }
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>)
+            = parseSyntax(input, syntax.getSize(), syntax.iterator())
 
     private fun parseSyntax(input: ArgumentReader, size: Int, iterator: Iterator<SyntaxElement<*>>): List<*> {
         val result = ArrayList<Any?>(size)

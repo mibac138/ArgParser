@@ -26,40 +26,51 @@ import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.skipChar
 import com.github.mibac138.argparser.syntax.*
+import java.util.*
 import java.util.regex.Pattern
 
 /**
- * Created by mibac138 on 09-04-2017.
+ * Supports named syntax only. The name format can be changed by providing a [ArgumentMatcher]
  */
 class NamedParserRegistryImpl : NamedParserRegistry {
     private val typeToParserMap: MutableMap<Class<*>, Parser> = HashMap()
     private val nameToParserMap: MutableMap<String, Parser> = HashMap()
 
-    override var matcher: ArgumentMatcher = PatternArgumentMatcher(Pattern.compile("--([a-zA-Z]+)(?:=|: ?)"))
+    override var matcher: ArgumentMatcher = PatternArgumentMatcher(Pattern.compile("--([a-zA-Z][a-zA-Z\\d]*)(?:=|: ?)"))
 
     override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Map<String, *> {
         if (syntax.get(NameComponent::class.java) == null && syntax !is SyntaxContainer)
             throw IllegalArgumentException("I only accept SyntaxElements with NameComponent (and SyntaxContainers with" +
                     "all elements having NameComponent)")
 
-        val map = HashMap<String, Any?>()
+        val map = mutableMapOf<String, Any?>()
+        // LinkedList has O(1) add, remove and Iterator.next (the only used methods here)
+        val unprocessedSyntax = LinkedList(syntax.content())
 
         for (i in 0 until syntax.getSize()) {
             if (!input.hasNext()) break
 
             input.skipChar(' ')
             val matched = matcher.match(input)
+                    ?: throw IllegalArgumentException("Matcher didn't match input")
 
-            if (matched == null) {
-                throw IllegalArgumentException("Matcher didn't match input")
-            } else {
-                val name = matched.name
+            val name = matched.name
 
-                val element = syntax.findElementByName(name)
-                val parser = getParserForElement(element)
-                val parsed = parseElement(matched.value, element, parser)
-                map.put(name, parsed)
-            }
+            val element = syntax.findElementByName(name)
+            val parser = getParserForElement(element)
+            val parsed = parseElement(matched.value, element, parser)
+            map[name] = parsed
+            unprocessedSyntax -= element
+        }
+
+        for (element in unprocessedSyntax) {
+            // Every element here *must* have name
+            val name = element.name!!
+
+            val parser = getParserForElement(element)
+            val parsed = parseElement(input, element, parser)
+
+            map[name] = parsed
         }
 
         return map
