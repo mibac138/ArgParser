@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/argparser-core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/argparser-core.iml" group="argparser-core" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/argparser-core_main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/argparser-core_main.iml" group="argparser-core" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/argparser-core_test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/argparser-core_test.iml" group="argparser-core" />
+      <module fileurl="file://$PROJECT_DIR$/example/command-system/command-system.iml" filepath="$PROJECT_DIR$/example/command-system/command-system.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/parent.iml" filepath="$PROJECT_DIR$/.idea/modules/parent.iml" />
     </modules>
   </component>
