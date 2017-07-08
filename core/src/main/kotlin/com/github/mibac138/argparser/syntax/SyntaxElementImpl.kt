@@ -47,6 +47,7 @@ class SyntaxElementImpl<T> : SyntaxElement<T> {
         this.defaultValue = defaultValue
         this.components = HashMap(components.size)
         components.forEach {
+            checkInstance(it)
             this.components[it.id] = it
         }
     }
@@ -58,8 +59,14 @@ class SyntaxElementImpl<T> : SyntaxElement<T> {
         this.defaultValue = defaultValue
         this.components = HashMap(components.size)
         components.forEach {
+            checkInstance(it)
             this.components[it.id] = it
         }
+    }
+
+    private fun checkInstance(component: SyntaxComponent) {
+        if (!component.id.isInstance(component))
+            throw IllegalArgumentException("SyntaxComponent's id must be a instance (or superclass, etc) of it")
     }
 
     @Suppress("UNCHECKED_CAST")

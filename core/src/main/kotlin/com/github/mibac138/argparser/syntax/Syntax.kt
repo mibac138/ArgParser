@@ -59,7 +59,9 @@ interface SyntaxComponent {
     /**
      * Usually implementing class is enough though when
      * you want to have a interface with multiple implementations
-     * return the interface's class instead
+     * you can return the interface's class instead.
+     *
+     * NB the given class *must* fulfill the following condition `this.id.isInstance(this)`
      */
     val id: Class<out SyntaxComponent>
 }
