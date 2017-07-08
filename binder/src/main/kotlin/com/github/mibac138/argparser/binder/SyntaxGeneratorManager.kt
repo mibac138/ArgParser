@@ -23,14 +23,13 @@
 package com.github.mibac138.argparser.binder
 
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
-import java.util.*
 import kotlin.reflect.KParameter
 
 /**
  * Created by mibac138 on 22-05-2017.
  */
 class SyntaxGeneratorManager() : SyntaxGenerator {
-    private val generators: MutableList<SyntaxGenerator> = ArrayList()
+    private val generators = mutableListOf<SyntaxGenerator>()
 
     constructor(vararg generators: SyntaxGenerator) : this() {
         this.generators += generators
