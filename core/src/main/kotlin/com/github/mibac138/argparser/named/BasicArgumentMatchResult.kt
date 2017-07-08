@@ -28,26 +28,4 @@ import com.github.mibac138.argparser.reader.ArgumentReader
 /**
  * Created by mibac138 on 03-05-2017.
  */
-open class BasicArgumentMatchResult(override val name: String, override val value: ArgumentReader) : ArgumentMatchResult {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other?.javaClass != javaClass) return false
-
-        other as BasicArgumentMatchResult
-
-        if (name != other.name) return false
-        if (value != other.value) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = name.hashCode()
-        result = 31 * result + value.hashCode()
-        return result
-    }
-
-    override fun toString(): String {
-        return "BasicArgumentMatchResult(name='$name', value=$value)"
-    }
-}
+data class BasicArgumentMatchResult(override val name: String, override val value: ArgumentReader) : ArgumentMatchResult
