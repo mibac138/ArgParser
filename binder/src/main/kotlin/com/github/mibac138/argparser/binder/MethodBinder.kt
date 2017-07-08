@@ -33,8 +33,10 @@ import kotlin.reflect.jvm.kotlinFunction
 object MethodBinder {
     val generator = SyntaxGeneratorManager(
             NameSyntaxGenerator(),
-            KotlinDefaultValueSyntaxGenerator(),
-            ParamNameSyntaxGenerator()
+            KotlinDefaultValueSyntaxGenerator()/*,
+            Disabled by default as it might cause
+            unexpected results
+            ParamNameSyntaxGenerator()*/
     )
 
     @JvmStatic

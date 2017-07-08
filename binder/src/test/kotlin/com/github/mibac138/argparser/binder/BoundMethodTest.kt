@@ -1,6 +1,5 @@
 package com.github.mibac138.argparser.binder
 
-import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.parser.IntParser
 import com.github.mibac138.argparser.parser.MixedParserRegistryImpl
 import com.github.mibac138.argparser.parser.SequenceParser
@@ -89,8 +88,8 @@ class BoundMethodTest(private val producer: (KFunction<*>) -> BoundMethod) {
 
     @Test fun testSyntax() {
         assertEquals(SyntaxContainerDSL()
-                .element(String::class.java) { name = "name" }
-                .element(Int::class.javaObjectType) { name = "num" }
+                .element(String::class.java)
+                .element(Int::class.javaObjectType)
                 .build(), method.syntax)
     }
 
