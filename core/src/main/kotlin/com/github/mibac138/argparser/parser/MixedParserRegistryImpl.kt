@@ -160,13 +160,15 @@ class MixedParserRegistryImpl : MixedParserRegistry {
     }
 
     private fun SyntaxElement<*>.findElementById(id: Int): SyntaxElement<*> {
-        var index = 0
-        for (element in iterator()) {
-            if (element.name == null && index++ == id)
-                return element
-        }
+        val elements = this.content()
+        val element = elements.getOrNull(id) ?:
+                throw Exception("Couldn't find syntax element with id $id inside $this")
 
-        throw Exception("Couldn't find syntax element with id $id inside $this")
+        // TODO is this actually good? maybe parameters available by both name and id would be good?
+        if (element.name != null)
+            throw Exception("Couldn't find syntax element with id $id inside $this")
+
+        return element
     }
 
     private fun SyntaxElement<*>.findElementByName(name: String): SyntaxElement<*> {
