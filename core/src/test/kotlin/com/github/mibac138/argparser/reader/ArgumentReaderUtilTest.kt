@@ -1,6 +1,7 @@
 package com.github.mibac138.argparser.reader
 
 import org.junit.Test
+import java.util.regex.Pattern
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
@@ -47,6 +48,18 @@ class ArgumentReaderUtilTest {
     @Test fun skipChar() {
         assertEquals("Hi", "    Hi".asReader().skipCharAndReadRest())
         assertEquals("1", "00001".asReader().skipCharAndReadRest('0'))
+    }
+
+    @Test fun matchPattern() {
+        val pattern = Pattern.compile("a")
+        val reader = " abc".asReader()
+
+        reader.mark()
+        reader.read(1)
+        reader.matchPattern(pattern)
+        reader.reset()
+
+        assertEquals(" abc", reader.readUntilChar('\r'))
     }
 
     private fun ArgumentReader.skipCharAndReadRest(char: Char = ' '): String {

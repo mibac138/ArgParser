@@ -210,9 +210,8 @@ fun ArgumentReader.matchMatcher(matcher: Matcher, readStep: Int = 30): MatchResu
     if (matcher.end() != read.length) {
         reset()
         skip(matcher.end())
-    }
+    } else removeMark()
 
-    removeMark()
     return matcher.toMatchResult()
 }
 
