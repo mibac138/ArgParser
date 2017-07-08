@@ -28,8 +28,8 @@ import kotlin.reflect.KParameter
 
 /**
  * Generates syntax based on [KParameter]'s name.
- * Works as a last resort option (generates syntax only if
- * it hasn't been already generated [[NameComponent]])
+ * Works as a last resort option (generates syntax [[NameComponent]]
+ * only if it hasn't been already generated)
  */
 class ParamNameSyntaxGenerator : SyntaxGenerator {
     private val pattern = Regex("arg\\d+")
