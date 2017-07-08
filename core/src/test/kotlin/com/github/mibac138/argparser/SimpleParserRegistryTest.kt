@@ -73,10 +73,8 @@ class SimpleParserRegistryTest {
         assertFalse(registry.getSupportedTypes().contains(Mockito::class.java))
     }
 
-
     @Test fun testEmptyParse() {
         assertTrue(registry.parse("".asReader(), EmptySyntaxContainer).isEmpty())
-        assertTrue(registry.parse("".asReader(), SyntaxElementImpl(Any::class.java)).isEmpty())
     }
 
     @Test fun testEmptySyntaxParse() {
