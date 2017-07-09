@@ -43,4 +43,23 @@ internal class IntQueue {
             list[i] = list[i] - amount
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+
+        other as IntQueue
+
+        if (list != other.list) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return list.hashCode()
+    }
+
+    override fun toString(): String {
+        return "IntQueue(list=$list)"
+    }
 }
