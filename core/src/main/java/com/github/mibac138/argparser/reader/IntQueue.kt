@@ -25,45 +25,22 @@ package com.github.mibac138.argparser.reader
 import java.util.*
 
 internal class IntQueue {
-    private val list = ArrayList<Int>(4)
+    private val list = LinkedList<Int>()
 
     fun size(): Int
             = list.size
 
-    fun add(int: Int): Boolean {
-        return list.add(int)
+    fun add(int: Int) {
+        list.addLast(int)
     }
 
-    fun remove(): Int {
-        return list.removeAt(head)
-    }
+    fun remove(): Int = list.removeLast()
 
-    fun poll(): Int?
-            = if (list.isEmpty()) null else list.removeAt(head)
+    fun poll(): Int? = list.pollLast()
 
     fun shift(amount: Int) {
         for (i in list.indices) {
             list[i] = list[i] - amount
         }
-    }
-
-    private val head: Int
-        get() = list.size - 1
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-
-        val intQueue = other as IntQueue?
-
-        return list == intQueue!!.list
-    }
-
-    override fun hashCode(): Int {
-        return list.hashCode()
-    }
-
-    override fun toString(): String {
-        return list.toString()
     }
 }
