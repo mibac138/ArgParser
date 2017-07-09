@@ -20,62 +20,50 @@
  * SOFTWARE.
  */
 
-package com.github.mibac138.argparser.reader;
+package com.github.mibac138.argparser.reader
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.*
 
-import java.util.ArrayList;
-import java.util.List;
+internal class IntQueue {
+    private val list = ArrayList<Int>(4)
 
-class IntQueue {
-	@NotNull
-	private List<Integer> list = new ArrayList<Integer>(4);
-	
-	public int size() {
-		return list.size();
-	}
-	
-	public boolean add(int integer) {
-		return list.add(integer);
-	}
-	
-	public int remove() {
-		return list.remove(getHead());
-	}
-	
-	@Nullable
-	public Integer poll() {
-		return list.isEmpty() ? null : list.remove(getHead());
-	}
-	
-	public void shift(int amount) {
-		for (int i = 0; i < list.size(); i++) {
-			list.set(i, list.get(i) - amount);
-		}
-	}
-	
-	private int getHead() {
-		return list.size() - 1;
-	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		
-		IntQueue intQueue = (IntQueue) o;
-		
-		return list.equals(intQueue.list);
-	}
-	
-	@Override
-	public int hashCode() {
-		return list.hashCode();
-	}
-	
-	@Override
-	public String toString() {
-		return list.toString();
-	}
+    fun size(): Int
+            = list.size
+
+    fun add(int: Int): Boolean {
+        return list.add(int)
+    }
+
+    fun remove(): Int {
+        return list.removeAt(head)
+    }
+
+    fun poll(): Int?
+            = if (list.isEmpty()) null else list.removeAt(head)
+
+    fun shift(amount: Int) {
+        for (i in list.indices) {
+            list[i] = list[i] - amount
+        }
+    }
+
+    private val head: Int
+        get() = list.size - 1
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+
+        val intQueue = other as IntQueue?
+
+        return list == intQueue!!.list
+    }
+
+    override fun hashCode(): Int {
+        return list.hashCode()
+    }
+
+    override fun toString(): String {
+        return list.toString()
+    }
 }
