@@ -33,8 +33,10 @@ class JavaDefaultValueSyntaxGenerator(private vararg val defaultValues: Any?) : 
     override fun generate(dsl: SyntaxElementDSL, param: KParameter) {
         val defaultValue = defaultValues[param.index]
 
-        if (defaultValue != NO_DEFAULT_VALUE)
+        if (defaultValue != NO_DEFAULT_VALUE) {
             dsl.defaultValue = defaultValue
+            dsl.required = false
+        }
     }
 
     object NO_DEFAULT_VALUE

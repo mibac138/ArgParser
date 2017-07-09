@@ -36,8 +36,8 @@ interface SyntaxContainer : SyntaxElement {
 interface SyntaxElement {
 
     /**
-     * Indicate whether this element is required.
-     * If false a parser *might* return [defaultValue]
+     * A syntax element isn't required when:
+     * - it has a default value supplied (either through Kotlin's default parameters or DefaultValueComponent)
      */
     val required: Boolean
 
