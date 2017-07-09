@@ -24,12 +24,20 @@ package com.github.mibac138.argparser.binder
 
 import com.github.mibac138.argparser.syntax.defaultValue
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
+import java.util.*
 import kotlin.reflect.KParameter
 
 /**
  * Created by mibac138 on 09-07-2017.
  */
 class JavaDefaultValueSyntaxGenerator(private vararg val defaultValues: Any?) : SyntaxGenerator {
+    /**
+     * Use this when you don't want the param to have a default value
+     * but want a next param (or any after this one) to have it
+     *
+     */
+    object NO_DEFAULT_VALUE
+
     override fun generate(dsl: SyntaxElementDSL, param: KParameter) {
         val defaultValue = defaultValues[param.index]
 
@@ -39,5 +47,22 @@ class JavaDefaultValueSyntaxGenerator(private vararg val defaultValues: Any?) : 
         }
     }
 
-    object NO_DEFAULT_VALUE
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+
+        other as JavaDefaultValueSyntaxGenerator
+
+        if (!Arrays.equals(defaultValues, other.defaultValues)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return Arrays.hashCode(defaultValues)
+    }
+
+    override fun toString(): String {
+        return "JavaDefaultValueSyntaxGenerator(defaultValues=${Arrays.toString(defaultValues)})"
+    }
 }
