@@ -29,5 +29,5 @@ import kotlin.reflect.KParameter
  * Represents an empty [SyntaxGenerator]
  */
 object NullSyntaxGenerator : SyntaxGenerator {
-    override fun generate(dsl: SyntaxElementDSL<*>, param: KParameter) {}
+    override fun generate(dsl: SyntaxElementDSL, param: KParameter) {}
 }

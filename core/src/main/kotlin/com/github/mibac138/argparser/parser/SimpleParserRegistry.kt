@@ -68,10 +68,10 @@ class SimpleParserRegistry : ParserRegistry {
         classToParserMap.clear()
     }
 
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>)
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement)
             = parseSyntax(input, syntax.getSize(), syntax.iterator())
 
-    private fun parseSyntax(input: ArgumentReader, size: Int, iterator: Iterator<SyntaxElement<*>>): List<*> {
+    private fun parseSyntax(input: ArgumentReader, size: Int, iterator: Iterator<SyntaxElement>): List<*> {
         val result = ArrayList<Any?>(size)
 
         for (element in iterator) {
@@ -83,7 +83,7 @@ class SimpleParserRegistry : ParserRegistry {
         return result
     }
 
-    private fun parseElement(reader: ArgumentReader, element: SyntaxElement<*>, parser: Parser): Any? {
+    private fun parseElement(reader: ArgumentReader, element: SyntaxElement, parser: Parser): Any? {
         reader.skipChar(' ')
         reader.mark()
 
@@ -99,7 +99,7 @@ class SimpleParserRegistry : ParserRegistry {
         return parsed
     }
 
-    private fun getParserForElement(element: SyntaxElement<*>): Parser
+    private fun getParserForElement(element: SyntaxElement): Parser
             = element.parser ?: getParserForType(element.outputType)
 
     private fun getParserForType(type: Class<*>): Parser {

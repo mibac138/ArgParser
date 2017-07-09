@@ -26,13 +26,13 @@ package com.github.mibac138.argparser.syntax
  * Is a iterator with only one element which is provided in the constructor
  * Simplifies interpreting syntax when it can be either a single element or a container
  */
-class SingleSyntaxElementIterator(private val syntax: SyntaxElement<*>) : Iterator<SyntaxElement<*>> {
+class SingleSyntaxElementIterator(private val syntax: SyntaxElement) : Iterator<SyntaxElement> {
     private var iterated: Boolean = false
 
     override fun hasNext(): Boolean
             = !iterated
 
-    override fun next(): SyntaxElement<*> {
+    override fun next(): SyntaxElement {
         if (iterated)
             throw IndexOutOfBoundsException()
         iterated = true

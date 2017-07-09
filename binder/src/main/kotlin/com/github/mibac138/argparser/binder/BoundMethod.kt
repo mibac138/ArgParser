@@ -33,12 +33,12 @@ interface BoundMethod {
      * @param parameters A properly ordered array of parameters used by this method.
      * @return the same thing the underlying method returned or `null`
      */
-    fun invoke(parameters: Map<SyntaxElement<*>, Any?>): Any?
+    fun invoke(parameters: Map<SyntaxElement, Any?>): Any?
 
     /**
      * Syntax this method uses.
      */
-    val syntax: SyntaxElement<*>
+    val syntax: SyntaxElement
 
     /**
      * The underlying method

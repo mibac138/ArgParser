@@ -25,6 +25,7 @@ package com.github.mibac138.argparser.parser
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.readUntilChar
 import com.github.mibac138.argparser.syntax.SyntaxElement
+import com.github.mibac138.argparser.syntax.defaultValue
 
 /**
  * Created by mibac138 on 05-04-2017.
@@ -50,7 +51,7 @@ class SequenceParser : Parser {
      * - '"abcd efgh"' returns '"abcd efgh"'
      * - '"abcd ef"gh' returns '"abcd ef"'
      */
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): String? {
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement): String? {
         if (!input.hasNext()) {
             return if (!syntax.required)
                 syntax.defaultValue as String?

@@ -33,31 +33,30 @@ import java.util.function.Consumer
  * Created by mibac138 on 07-05-2017.
  */
 @SyntaxDSL
-open class SyntaxElementDSL<T>(val type: Class<T>) {
-    var defaultValue: T? = null
+open class SyntaxElementDSL(val type: Class<*>) {
     var required: Boolean = true
     var components: MutableList<SyntaxComponent> = ArrayList()
 
-    inline fun defaultValue(init: SyntaxElementDSL<T>.() -> T?) = apply { defaultValue = init() }
-    inline fun required(init: SyntaxElementDSL<T>.() -> Boolean) = apply { required = init() }
-    inline fun component(init: SyntaxElementDSL<T>.() -> SyntaxComponent) = apply { components.add(init()) }
-    inline fun components(init: SyntaxElementDSL<T>.() -> Collection<SyntaxComponent>) = apply { components.addAll(init()) }
+    inline fun required(init: SyntaxElementDSL.() -> Boolean) = apply { required = init() }
+    inline fun component(init: SyntaxElementDSL.() -> SyntaxComponent) = apply { components.add(init()) }
+    inline fun components(init: SyntaxElementDSL.() -> Collection<SyntaxComponent>) = apply { components.addAll(init()) }
 
-    open fun build(): SyntaxElement<T> {
-        return SyntaxElementImpl(type, defaultValue, required, components)
+    open fun build(): SyntaxElement {
+        return SyntaxElementImpl(type, required, components)
     }
 }
 
-fun <T> syntaxElement(type: Class<T>): SyntaxElement<T>
+fun <T> syntaxElement(type: Class<T>): SyntaxElement
         = SyntaxElementImpl(type)
 
-fun <T> syntaxElement(type: Class<T>, init: SyntaxElementDSL<T>.() -> Unit = {}): SyntaxElement<T> {
+fun <T> syntaxElement(type: Class<T>, init: SyntaxElementDSL.() -> Unit = {}): SyntaxElement {
     val element = SyntaxElementDSL(type)
     element.init()
     return element.build()
 }
 
-fun <T> syntaxElement(type: Class<T>, init: Consumer<SyntaxElementDSL<T>> = Consumer { }): SyntaxElement<T> {
+
+fun <T> syntaxElement(type: Class<T>, init: Consumer<SyntaxElementDSL>): SyntaxElement {
     val element = SyntaxElementDSL(type)
     init.accept(element)
     return element.build()

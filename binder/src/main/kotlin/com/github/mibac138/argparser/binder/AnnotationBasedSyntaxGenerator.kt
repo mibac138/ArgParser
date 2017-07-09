@@ -29,12 +29,12 @@ import kotlin.reflect.KParameter
  * A little convenience class. Does the param checking for you
  */
 abstract class AnnotationBasedSyntaxGenerator<in T : Annotation>(private val type: Class<T>) : SyntaxGenerator {
-    override final fun generate(dsl: SyntaxElementDSL<*>, param: KParameter) {
+    override final fun generate(dsl: SyntaxElementDSL, param: KParameter) {
         @Suppress("UNCHECKED_CAST")
         val annotation = param.annotations.firstOrNull { type.isInstance(it) } as T? ?: return
 
         generate(dsl, annotation)
     }
 
-    abstract fun generate(dsl: SyntaxElementDSL<*>, annotation: T)
+    abstract fun generate(dsl: SyntaxElementDSL, annotation: T)
 }

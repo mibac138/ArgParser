@@ -7,10 +7,12 @@ import com.github.mibac138.argparser.reader.asReader
 import com.github.mibac138.argparser.reader.skipChar
 import com.github.mibac138.argparser.reader.skipUntilChar
 import com.github.mibac138.argparser.syntax.SyntaxElement
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * Created by mibac138 on 06-04-2017.
@@ -24,8 +26,8 @@ class PrecheckedParserTest : ParserTest() {
     }
 
     @Test fun simpleParse() {
-        assertTrue(parser.parse("yes".asReader(), reqElement()))
-        assertFalse(parser.parse("no".asReader(), reqElement()))
+        assertTrue(parser.parse("yes".asReader(), reqElement())!!)
+        assertFalse(parser.parse("no".asReader(), reqElement())!!)
     }
 
     @Test fun matchingLength() {
@@ -69,7 +71,7 @@ class PrecheckedParserTest : ParserTest() {
 
         reader.skipUntilChar(' ')
 
-        assertTrue(parser.parse(reader, reqElement()))
+        assertTrue(parser.parse(reader, reqElement())!!)
 
         // If an error occurs PrecheckedParser should revert read text
         assertEquals(reader.getLength() - "maybe yes".length, reader.getAvailableCount())
@@ -84,7 +86,7 @@ class PrecheckedParserTest : ParserTest() {
         reader.skipChar(' ')
         reader.skipUntilChar(' ')
 
-        assertFalse(parser.parse(reader, reqElement()))
+        assertFalse(parser.parse(reader, reqElement())!!)
     }
 
     @Test fun testToString() {
@@ -102,7 +104,7 @@ class PrecheckedParserTest : ParserTest() {
         override fun getPattern(): Pattern
                 = Pattern.compile("^(yes|no)")
 
-        override fun parse(matcher: Matcher, element: SyntaxElement<*>): Boolean {
+        override fun parse(matcher: Matcher, element: SyntaxElement): Boolean {
             val result = matcher.toMatchResult().group(0)
 
             if (result.equals("yes", ignoreCase = true)) return true
@@ -117,7 +119,7 @@ class PrecheckedParserTest : ParserTest() {
 
         override fun getPattern(): Pattern = Pattern.compile("")
 
-        override fun parse(matcher: Matcher, element: SyntaxElement<*>): Any {
+        override fun parse(matcher: Matcher, element: SyntaxElement): Any {
             throw Exception("Problematic parser")
         }
     }

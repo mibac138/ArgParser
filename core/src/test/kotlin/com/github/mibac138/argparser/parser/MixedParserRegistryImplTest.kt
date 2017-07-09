@@ -2,6 +2,7 @@ package com.github.mibac138.argparser.parser
 
 import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.reader.asReader
+import com.github.mibac138.argparser.syntax.defaultValue
 import com.github.mibac138.argparser.syntax.dsl.element
 import com.github.mibac138.argparser.syntax.dsl.syntaxContainer
 import com.github.mibac138.argparser.syntax.dsl.syntaxElement

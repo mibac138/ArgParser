@@ -23,23 +23,21 @@
 package com.github.mibac138.argparser.syntax
 
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
-open class SyntaxDSLComponentProperty<T, COMPONENT : SyntaxComponent>(
-        protected val componentType: Class<COMPONENT>,
-        protected var toComponent: T?.() -> COMPONENT?,
-        protected var toValue: COMPONENT?.() -> T?
-) : ReadWriteProperty<SyntaxElementDSL, T?> {
+/**
+ * Created by mibac138 on 09-07-2017.
+ */
+data class DefaultValueComponent(val defaultValue: Any?) : SyntaxComponent {
+    override val id = DefaultValueComponent::class.java
+}
 
-    @Suppress("UNCHECKED_CAST")
-    override fun getValue(thisRef: SyntaxElementDSL, property: KProperty<*>)
-            = (thisRef.components.firstOrNull { componentType.isInstance(it) } as COMPONENT?).toValue()
+val SyntaxElement?.defaultValue: Any?
+    get() = this?.get(DefaultValueComponent::class.java)?.defaultValue
 
-    override fun setValue(thisRef: SyntaxElementDSL, property: KProperty<*>, value: T?) {
-        thisRef.components.removeIf { componentType.isInstance(it) }
-        value.toComponent()?.let {
-            thisRef.components.add(it)
-        }
-    }
+var SyntaxElementDSL.defaultValue by SyntaxDSLComponentProperty<Any?, DefaultValueComponent>(DefaultValueComponent::class.java,
+        { DefaultValueComponent(this) },
+        { this?.defaultValue })
+
+inline fun SyntaxElementDSL.defaultValue(init: SyntaxElementDSL.() -> Any?) = apply {
+    defaultValue = init()
 }

@@ -47,7 +47,7 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         return output
     }
 
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Map<String?, *> {
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement): Map<String?, *> {
         val named = mutableMapOf<String?, Any?>()
         val unnamed = mutableListOf<Any?>()
         // LinkedList has O(1) add, remove and Iterator.next (the only used methods here)
@@ -98,13 +98,13 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         return named
     }
 
-    private fun parseElementOrDefault(input: ArgumentReader, element: SyntaxElement<*>, parser: Parser?): Any?
+    private fun parseElementOrDefault(input: ArgumentReader, element: SyntaxElement, parser: Parser?): Any?
             = when (parser) {
         null -> element.defaultValue
         else -> parseElement(input, element, parser)
     }
 
-    private fun parseElement(input: ArgumentReader, element: SyntaxElement<*>, parser: Parser): Any? {
+    private fun parseElement(input: ArgumentReader, element: SyntaxElement, parser: Parser): Any? {
         input.skipChar(' ')
         input.mark()
         val parsed: Any?
@@ -147,7 +147,7 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         positionToParserMap.clear()
     }
 
-    private fun getParserForElement(element: SyntaxElement<*>)
+    private fun getParserForElement(element: SyntaxElement)
             = element.parser ?: getParserForName(element.name ?:
             throw IllegalArgumentException())
 
@@ -159,11 +159,11 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         throw IllegalArgumentException("Couldn't find parser for name '$name'")
     }
 
-    private fun SyntaxElement<*>.findElementById(id: Int): SyntaxElement<*> =
+    private fun SyntaxElement.findElementById(id: Int): SyntaxElement =
             this.content().filter { it.name == null }.getOrNull(id) ?:
                     throw Exception("Couldn't find syntax element with id $id inside $this")
 
-    private fun SyntaxElement<*>.findElementByName(name: String): SyntaxElement<*> {
+    private fun SyntaxElement.findElementByName(name: String): SyntaxElement {
         for (element in iterator()) {
             if (element.name == name)
                 return element

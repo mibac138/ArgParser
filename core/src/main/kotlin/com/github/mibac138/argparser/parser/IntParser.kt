@@ -37,7 +37,7 @@ class IntParser : Parser {
      *
      * @throws NumberFormatException
      */
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Int? {
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement): Int? {
         return input.readUntilCharOrDefault(syntax, { Integer.parseInt(it) })
     }
 

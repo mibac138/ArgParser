@@ -25,18 +25,15 @@ package com.github.mibac138.argparser.syntax
 /**
  * Represents an empty [SyntaxContainer]
  */
-object EmptySyntaxContainer : SyntaxContainer<Any> {
+object EmptySyntaxContainer : SyntaxContainer {
     override fun <T : SyntaxComponent> get(clazz: Class<T>): T?
             = null
 
-    override val content: List<SyntaxElement<*>>
+    override val content: List<SyntaxElement>
         get() = emptyList()
 
     override val required: Boolean
         get() = false
-
-    override val defaultValue: Any?
-        get() = null
 
     override val outputType: Class<Any>
         get() = Any::class.java

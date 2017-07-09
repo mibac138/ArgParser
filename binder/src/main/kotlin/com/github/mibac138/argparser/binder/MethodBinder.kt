@@ -24,7 +24,6 @@ package com.github.mibac138.argparser.binder
 
 import java.lang.reflect.Method
 import kotlin.reflect.KCallable
-import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.jvm.kotlinFunction
 
 /**
@@ -40,10 +39,11 @@ object MethodBinder {
     )
 
     @JvmStatic
-    fun bindMethod(owner: Any, name: String): BoundMethod? {
-        val func = owner::class.declaredMemberFunctions.firstOrNull { it.name == name } ?: return null
+    @JvmOverloads
+    fun bindMethod(owner: Any, name: String, vararg defaultValues: Any? = emptyArray()): BoundMethod? {
+        val func = owner::class.java.declaredMethods.firstOrNull { it.name == name } ?: return null
 
-        return bindMethod(func, owner)
+        return bindMethod(owner, func, defaultValues)
     }
 
     @JvmStatic
@@ -51,6 +51,8 @@ object MethodBinder {
             = CallableBoundMethod(method, owner, generator)
 
     @JvmStatic
-    fun bindMethod(owner: Any, method: Method): BoundMethod
-            = bindMethod(method.kotlinFunction!!, owner)
+    @JvmOverloads
+    fun bindMethod(owner: Any, method: Method, vararg defaultValues: Any? = emptyArray()): BoundMethod
+            = CallableBoundMethod(method.kotlinFunction!!, owner,
+            SyntaxGeneratorManager(generator, JavaDefaultValueSyntaxGenerator(defaultValues)))
 }

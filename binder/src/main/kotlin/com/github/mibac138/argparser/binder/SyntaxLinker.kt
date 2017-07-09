@@ -28,9 +28,9 @@ import com.github.mibac138.argparser.syntax.SyntaxElement
  * Created by mibac138 on 19-06-2017.
  */
 interface SyntaxLinker {
-    fun link(input: Any): Map<SyntaxElement<*>, Any?>
+    fun link(input: Any): Map<SyntaxElement, Any?>
 }
 
 interface ReusableSyntaxLinker : SyntaxLinker {
-    fun recreate(syntax: SyntaxElement<*>)
+    fun recreate(syntax: SyntaxElement)
 }

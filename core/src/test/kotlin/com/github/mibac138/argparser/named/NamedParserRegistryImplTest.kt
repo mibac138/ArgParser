@@ -8,6 +8,7 @@ import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.asReader
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.SyntaxElementImpl
+import com.github.mibac138.argparser.syntax.defaultValue
 import com.github.mibac138.argparser.syntax.dsl.element
 import com.github.mibac138.argparser.syntax.dsl.syntaxContainer
 import com.github.mibac138.argparser.syntax.dsl.syntaxElement
@@ -24,7 +25,7 @@ class NamedParserRegistryImplTest {
     @Test fun test() {
         parser.registerParser(BooleanParser())
         parser.associateParserWithName(Boolean::class.java, "hi")
-        val result = parser.parse("--hi: true".asReader(), SyntaxElementImpl(Boolean::class.java, null, components = NameComponent("hi")))
+        val result = parser.parse("--hi: true".asReader(), SyntaxElementImpl(Boolean::class.java, components = NameComponent("hi")))
         assertEquals(mapOf("hi" to true), result)
     }
 
@@ -73,14 +74,14 @@ class NamedParserRegistryImplTest {
     }
 
     @Test(expected = IllegalArgumentException::class) fun testInvalidInput() {
-        parser.parse("--".asReader(), SyntaxElementImpl(Any::class.java, NameComponent("")))
+        parser.parse("--".asReader(), SyntaxElementImpl(Any::class.java, components = NameComponent("")))
     }
 
     @Test(expected = Exception::class) fun testProblematicParser1() {
         parser.registerParser(object : Parser {
             override fun getSupportedTypes(): Set<Class<*>> = setOf(Any::class.java)
 
-            override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Any
+            override fun parse(input: ArgumentReader, syntax: SyntaxElement): Any
                     = throw Exception()
         }, "color")
 
@@ -92,7 +93,7 @@ class NamedParserRegistryImplTest {
         parser.registerParser(object : Parser {
             override fun getSupportedTypes(): Set<Class<*>> = setOf(Any::class.java)
 
-            override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Any
+            override fun parse(input: ArgumentReader, syntax: SyntaxElement): Any
                     = throw ParserInvalidInputException()
         }, "color")
 
@@ -132,6 +133,6 @@ class NamedParserRegistryImplTest {
     }
 
     class InvertedBooleanParser(private val parser: BooleanParser) : Parser by parser {
-        override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Boolean? = parser.parse(input, syntax)?.not()
+        override fun parse(input: ArgumentReader, syntax: SyntaxElement): Boolean? = parser.parse(input, syntax)?.not()
     }
 }

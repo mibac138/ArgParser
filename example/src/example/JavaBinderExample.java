@@ -2,6 +2,7 @@ package example;
 
 import com.github.mibac138.argparser.binder.Binder;
 import com.github.mibac138.argparser.binder.Binding;
+import com.github.mibac138.argparser.binder.MethodBinder;
 import com.github.mibac138.argparser.parser.Parser;
 import com.github.mibac138.argparser.parser.SimpleParserRegistry;
 import com.github.mibac138.argparser.reader.ArgumentReader;
@@ -13,8 +14,8 @@ import static com.github.mibac138.argparser.reader.ArgumentReaderUtil.asReader;
  */
 public class JavaBinderExample {
 	public static void main(String[] args) throws NoSuchMethodException {
-		Binding binding = Binder.bind(new JavaBinderExample(), JavaBinderExample.class.getMethod("lendMoney",
-				String.class, int.class));
+		//noinspection ConstantConditions In theory bindMethod might return null but in practice it's impossible
+		Binding binding = Binder.bind(MethodBinder.bindMethod(new JavaBinderExample(), "lendMoney"));
 		ArgumentReader reader = asReader("Luke 100");
 		Parser parser = new SimpleParserRegistry();
 		

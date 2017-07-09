@@ -27,29 +27,30 @@ package com.github.mibac138.argparser.parser
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.readUntilChar
 import com.github.mibac138.argparser.syntax.SyntaxElement
+import com.github.mibac138.argparser.syntax.defaultValue
 
 /**
  *
  */
 interface Parser {
     fun getSupportedTypes(): Set<Class<*>>
-    fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Any?
+    fun parse(input: ArgumentReader, syntax: SyntaxElement): Any?
 }
 
-fun <T> parseOrDefault(syntax: SyntaxElement<*>, action: () -> T): T {
+fun <T> parseOrDefault(syntax: SyntaxElement, action: () -> T): T? {
     try {
         return action()
     } catch (e: Exception) {
         @Suppress("UNCHECKED_CAST")
         if (!syntax.required && syntax.defaultValue != null)
-            return syntax.defaultValue as T
+            return syntax.defaultValue as T?
         else
             throw e
     }
 }
 
 
-fun <T> ArgumentReader.readUntilCharOrDefault(syntax: SyntaxElement<*>, action: (String) -> T, char: Char = ' '): T? {
+fun <T> ArgumentReader.readUntilCharOrDefault(syntax: SyntaxElement, action: (String) -> T, char: Char = ' '): T? {
     mark()
     try {
         val input = readUntilChar(char)

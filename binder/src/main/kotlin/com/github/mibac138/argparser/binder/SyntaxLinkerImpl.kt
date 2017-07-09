@@ -29,15 +29,15 @@ import com.github.mibac138.argparser.syntax.iterator
 /**
  * Created by mibac138 on 23-06-2017.
  */
-class SyntaxLinkerImpl(syntax: SyntaxElement<*>) : ReusableSyntaxLinker {
-    private val argsMap: MutableMap<String, IndexedValue<SyntaxElement<*>>> = HashMap()
-    private val noNameArgsMap: MutableMap<Class<*>, IndexedValue<SyntaxElement<*>>> = HashMap()
+class SyntaxLinkerImpl(syntax: SyntaxElement) : ReusableSyntaxLinker {
+    private val argsMap: MutableMap<String, IndexedValue<SyntaxElement>> = HashMap()
+    private val noNameArgsMap: MutableMap<Class<*>, IndexedValue<SyntaxElement>> = HashMap()
 
     init {
         recreate(syntax)
     }
 
-    override fun recreate(syntax: SyntaxElement<*>) {
+    override fun recreate(syntax: SyntaxElement) {
         argsMap.clear()
         noNameArgsMap.clear()
 
@@ -50,12 +50,12 @@ class SyntaxLinkerImpl(syntax: SyntaxElement<*>) : ReusableSyntaxLinker {
     }
 
 
-    override fun link(input: Any): Map<SyntaxElement<*>, Any?> =
+    override fun link(input: Any): Map<SyntaxElement, Any?> =
             linkMap(input.entryIterator(false))
 
 
     private fun linkMap(iterator: Iterator<IndexedValue<Map.Entry<String?, *>>>,
-                        map: MutableMap<SyntaxElement<*>, Any?> = mutableMapOf()): Map<SyntaxElement<*>, Any?> {
+                        map: MutableMap<SyntaxElement, Any?> = mutableMapOf()): Map<SyntaxElement, Any?> {
 
         for ((i, entry) in iterator) {
             val (key, value) = entry
@@ -76,17 +76,17 @@ class SyntaxLinkerImpl(syntax: SyntaxElement<*>) : ReusableSyntaxLinker {
         return map
     }
 
-    private fun resolveArg(key: String?, value: Any?, index: Int): SyntaxElement<*>? {
+    private fun resolveArg(key: String?, value: Any?, index: Int): SyntaxElement? {
         if (key != null) return getArgByName(key)
         if (value != null) return getArgByType(value)
         return getArgByIndex(index)
     }
 
-    private fun getArgByName(name: String): SyntaxElement<*>?
+    private fun getArgByName(name: String): SyntaxElement?
             = argsMap[name]?.value
 
 
-    private fun getArgByType(instance: Any): SyntaxElement<*>? {
+    private fun getArgByType(instance: Any): SyntaxElement? {
         argsMap.values
                 .firstOrNull { it.value.outputType.isInstance(instance) }
                 ?.let { return it.value }
@@ -100,7 +100,7 @@ class SyntaxLinkerImpl(syntax: SyntaxElement<*>) : ReusableSyntaxLinker {
     }
 
 
-    private fun getArgByIndex(index: Int): SyntaxElement<*>? {
+    private fun getArgByIndex(index: Int): SyntaxElement? {
         for (value in noNameArgsMap.values)
             if (value.index == index)
                 return value.value

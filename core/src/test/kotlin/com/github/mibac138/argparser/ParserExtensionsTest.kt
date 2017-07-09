@@ -1,5 +1,6 @@
 package com.github.mibac138.argparser
 
+import com.github.mibac138.argparser.parser.parseOrDefault
 import com.github.mibac138.argparser.parser.readUntilCharOrDefault
 import com.github.mibac138.argparser.reader.asReader
 import com.github.mibac138.argparser.syntax.EmptySyntaxContainer
@@ -11,16 +12,16 @@ import org.junit.Test
  */
 class ParserExtensionsTest : ParserTest() {
     @Test fun parseOrDefault() {
-        com.github.mibac138.argparser.parser.parseOrDefault(reqElement(), { Any() })
+        parseOrDefault(reqElement(), { Any() })
     }
 
     @Test(expected = Exception::class) fun exceptionInParseOrDefault() {
-        com.github.mibac138.argparser.parser.parseOrDefault(reqElement(), this::exception)
+        parseOrDefault(reqElement(), this::exception)
     }
 
     @Test fun defaultParseOrDefault() {
-        assertTrue(com.github.mibac138.argparser.parser.parseOrDefault(defElement(true), this::exception))
-        assertFalse(com.github.mibac138.argparser.parser.parseOrDefault(defElement(false), this::exception))
+        assertTrue(parseOrDefault(defElement(true), this::exception)!!)
+        assertFalse(parseOrDefault(defElement(false), this::exception)!!)
     }
 
     @Test(expected = NumberFormatException::class) fun readUntilSpaceOrDefaultException() {

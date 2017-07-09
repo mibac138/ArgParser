@@ -37,7 +37,7 @@ data class ParserComponent(val parser: Parser) : SyntaxComponent {
 /**
  * Returns this element's [ParserComponent]'s parser or null
  */
-val SyntaxElement<*>?.parser: Parser?
+val SyntaxElement?.parser: Parser?
     get() = this?.get(ParserComponent::class.java)?.parser
 
 
@@ -45,7 +45,7 @@ val SyntaxElement<*>?.parser: Parser?
  * Adds given parser upon creation. Note: there can be only one parser per syntax element and setting this multiple
  * times overwrites the previous value
  */
-var SyntaxElementDSL<*>.parser: Parser? by SyntaxDSLComponentProperty<Parser?, ParserComponent>(ParserComponent::class.java,
+var SyntaxElementDSL.parser: Parser? by SyntaxDSLComponentProperty<Parser?, ParserComponent>(ParserComponent::class.java,
         { this?.let { ParserComponent(this) } },
         { this?.let { parser } })
 
@@ -54,7 +54,7 @@ var SyntaxElementDSL<*>.parser: Parser? by SyntaxDSLComponentProperty<Parser?, P
  * times overwrites the previous value
  * @see SyntaxElementDSL.parser
  */
-inline fun <T> SyntaxElementDSL<T>.parser(init: SyntaxElementDSL<T>.() -> Parser) = apply {
+inline fun SyntaxElementDSL.parser(init: SyntaxElementDSL.() -> Parser) = apply {
     parser = init()
 }
 

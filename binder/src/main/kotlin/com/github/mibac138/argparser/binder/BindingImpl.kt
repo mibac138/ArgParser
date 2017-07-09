@@ -33,7 +33,7 @@ open class BindingImpl constructor(
         protected val boundMethod: BoundMethod,
         private val linker: SyntaxLinker = SyntaxLinkerImpl(boundMethod.syntax))
     : Binding {
-    private var syntax: SyntaxElement<*> = boundMethod.syntax
+    private var syntax: SyntaxElement = boundMethod.syntax
 
 
     override fun invoke(reader: ArgumentReader, parser: Parser): Any? {
@@ -41,7 +41,7 @@ open class BindingImpl constructor(
             updateSyntax()
 
         val parsed = parser.parse(reader, syntax)
-        val args: Map<SyntaxElement<*>, Any?>
+        val args: Map<SyntaxElement, Any?>
                 = if (parsed == null) emptyMap() else linker.link(parsed)
 
         return boundMethod.invoke(args)

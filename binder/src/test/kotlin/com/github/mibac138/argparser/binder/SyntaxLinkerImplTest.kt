@@ -18,7 +18,7 @@ class SyntaxLinkerImplTest {
         val syntax = syntaxElement(A::class.java)
         val linker = SyntaxLinkerImpl(syntax)
 
-        assertEquals<Map<SyntaxElement<*>, Any?>>(
+        assertEquals<Map<SyntaxElement, Any?>>(
                 mapOf(syntax to bInstance),
                 linker.link(bInstance))
     }
@@ -30,7 +30,7 @@ class SyntaxLinkerImplTest {
         val syntax = syntaxElement(A::class.java)
         val linker = SyntaxLinkerImpl(syntax)
 
-        assertEquals<Map<SyntaxElement<*>, Any?>>(
+        assertEquals<Map<SyntaxElement, Any?>>(
                 mapOf(syntax to aInstance),
                 linker.link(aInstance))
     }

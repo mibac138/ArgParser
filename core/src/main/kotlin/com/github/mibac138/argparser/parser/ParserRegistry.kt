@@ -30,7 +30,7 @@ import com.github.mibac138.argparser.syntax.SyntaxElement
  */
 interface ParserRegistry : Parser {
     override fun getSupportedTypes(): Set<Class<*>>
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Any
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement): Any
 
     fun registerParser(parser: Parser)
     fun removeParser(parser: Parser)

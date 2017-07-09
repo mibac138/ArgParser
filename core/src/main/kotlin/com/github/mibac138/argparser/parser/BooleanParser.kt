@@ -46,7 +46,7 @@ class BooleanParser : Parser {
             "0" to false
     )
 
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Boolean? {
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement): Boolean? {
         return input.readUntilCharOrDefault(syntax, {
             values[it] ?: throw ParserInvalidInputException("Couldn't match text \"$it\". Valid values are: $values")
         })

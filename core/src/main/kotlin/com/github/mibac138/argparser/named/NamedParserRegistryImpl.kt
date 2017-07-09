@@ -38,7 +38,7 @@ class NamedParserRegistryImpl : NamedParserRegistry {
 
     override var matcher: ArgumentMatcher = PatternArgumentMatcher(Pattern.compile("--([a-zA-Z][a-zA-Z\\d]*)(?:=|: ?)"))
 
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Map<String, *> {
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement): Map<String, *> {
         if (syntax.get(NameComponent::class.java) == null && syntax !is SyntaxContainer)
             throw IllegalArgumentException("I only accept SyntaxElements with NameComponent (and SyntaxContainers with" +
                     "all elements having NameComponent)")
@@ -76,7 +76,7 @@ class NamedParserRegistryImpl : NamedParserRegistry {
         return map
     }
 
-    private fun parseElement(input: ArgumentReader, element: SyntaxElement<*>, parser: Parser): Any? {
+    private fun parseElement(input: ArgumentReader, element: SyntaxElement, parser: Parser): Any? {
         input.skipChar(' ')
         input.mark()
         val parsed: Any?
@@ -136,7 +136,7 @@ class NamedParserRegistryImpl : NamedParserRegistry {
         nameToParserMap[name] = parser
     }
 
-    private fun getParserForElement(element: SyntaxElement<*>): Parser
+    private fun getParserForElement(element: SyntaxElement): Parser
             = element.parser ?:
             getParserForName(element.name ?: throw IllegalArgumentException())
 
@@ -156,7 +156,7 @@ class NamedParserRegistryImpl : NamedParserRegistry {
         throw IllegalArgumentException("Couldn't find parser for name '$name'")
     }
 
-    private fun SyntaxElement<*>.findElementByName(name: String): SyntaxElement<*> {
+    private fun SyntaxElement.findElementByName(name: String): SyntaxElement {
         for (element in iterator()) {
             if (element.name == name)
                 return element

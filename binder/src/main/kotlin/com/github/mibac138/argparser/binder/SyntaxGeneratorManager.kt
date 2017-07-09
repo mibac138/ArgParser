@@ -55,7 +55,7 @@ class SyntaxGeneratorManager() : SyntaxGenerator {
         generators.clear()
     }
 
-    override fun generate(dsl: SyntaxElementDSL<*>, param: KParameter) {
+    override fun generate(dsl: SyntaxElementDSL, param: KParameter) {
         for (generator in generators)
             generator.generate(dsl, param)
     }

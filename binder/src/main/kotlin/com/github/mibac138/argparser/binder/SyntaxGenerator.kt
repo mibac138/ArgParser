@@ -29,5 +29,5 @@ import kotlin.reflect.KParameter
  * Created by mibac138 on 22-05-2017.
  */
 interface SyntaxGenerator {
-    fun generate(dsl: SyntaxElementDSL<*>, param: KParameter)
+    fun generate(dsl: SyntaxElementDSL, param: KParameter)
 }

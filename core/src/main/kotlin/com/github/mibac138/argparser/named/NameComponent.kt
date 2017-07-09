@@ -39,14 +39,14 @@ data class NameComponent(val name: String) : SyntaxComponent {
 /**
  * Returns this element's [NameComponent]'s name or null
  */
-val SyntaxElement<*>?.name: String?
+val SyntaxElement?.name: String?
     get() = this?.get(NameComponent::class.java)?.name
 
 
-var SyntaxElementDSL<*>.name by SyntaxDSLComponentProperty<String?, NameComponent>(NameComponent::class.java,
+var SyntaxElementDSL.name by SyntaxDSLComponentProperty<String?, NameComponent>(NameComponent::class.java,
         { this?.let { NameComponent(this) } },
         { this?.let { name } })
 
-inline fun <T> SyntaxElementDSL<T>.name(init: SyntaxElementDSL<T>.() -> String) = apply {
+inline fun SyntaxElementDSL.name(init: SyntaxElementDSL.() -> String) = apply {
     name = init()
 }

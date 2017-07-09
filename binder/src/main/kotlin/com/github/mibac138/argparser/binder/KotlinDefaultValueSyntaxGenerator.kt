@@ -29,7 +29,7 @@ import kotlin.reflect.KParameter
  * Generates relevant syntax for optional [KParameter]s
  */
 class KotlinDefaultValueSyntaxGenerator : SyntaxGenerator {
-    override fun generate(dsl: SyntaxElementDSL<*>, param: KParameter) {
+    override fun generate(dsl: SyntaxElementDSL, param: KParameter) {
         // If a param is optional it means that when no value is provided for it
         // then the default one is called
         if (param.isOptional)

@@ -7,8 +7,8 @@ import com.github.mibac138.argparser.syntax.SyntaxElement;
 import java.util.List;
 
 import static com.github.mibac138.argparser.reader.ArgumentReaderUtil.asReader;
-import static com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSLKt.element;
-import static com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSLKt.syntaxContainer;
+import static com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSLCreator.element;
+import static com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSLCreator.syntaxContainer;
 
 /**
  * Created by mibac138 on 03-05-2017.
@@ -23,7 +23,7 @@ public class JavaExample {
 		JavaExample example = new JavaExample();
 		SimpleParserRegistry parser = new SimpleParserRegistry();
 		ArgumentReader reader = asReader("Luke 100");
-		SyntaxElement<?> syntax = syntaxContainer(container -> {
+		SyntaxElement syntax = syntaxContainer(container -> {
 			element(container, String.class);
 			element(container, int.class);
 		});
@@ -32,7 +32,7 @@ public class JavaExample {
 		example.lendMoney(((String) result.get(0)), ((Integer) result.get(1)));
 	}
 	
-	public void lendMoney(String name, int amount) {
+	private void lendMoney(String name, int amount) {
 		System.out.println("Lent $" + amount + " to " + name);
 	}
 }

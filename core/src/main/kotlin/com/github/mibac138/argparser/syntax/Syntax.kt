@@ -29,11 +29,11 @@ import java.util.*
 /**
  * Syntax element consisting of other nested syntax elements
  */
-interface SyntaxContainer<T> : SyntaxElement<T> {
-    val content: List<SyntaxElement<*>>
+interface SyntaxContainer : SyntaxElement {
+    val content: List<SyntaxElement>
 }
 
-interface SyntaxElement<T> {
+interface SyntaxElement {
 
     /**
      * Indicate whether this element is required.
@@ -42,15 +42,9 @@ interface SyntaxElement<T> {
     val required: Boolean
 
     /**
-     * Return element's default value if [required] equals `false`
-     * otherwise usually equals `null`
-     */
-    val defaultValue: T?
-
-    /**
      * Returns the required object type for this element
      */
-    val outputType: Class<T>
+    val outputType: Class<*>
 
     fun <T : SyntaxComponent> get(clazz: Class<T>): T?
 }
@@ -75,7 +69,7 @@ interface SyntaxComponent {
  * - otherwise: 1
  */
 
-fun SyntaxElement<*>?.getSize(): Int {
+fun SyntaxElement?.getSize(): Int {
     if (this == null) return 0
     if (this is SyntaxContainer) return content.size
     return 1
@@ -84,7 +78,7 @@ fun SyntaxElement<*>?.getSize(): Int {
 /**
  * Returns this SyntaxElement's required size (i.e. amount of required elements)
  */
-fun SyntaxElement<*>?.getRequiredSize(): Int {
+fun SyntaxElement?.getRequiredSize(): Int {
     if (this == null) return 0
     if (!required) return 0
     if (this is SyntaxContainer)
@@ -99,7 +93,7 @@ fun SyntaxElement<*>?.getRequiredSize(): Int {
  * Otherwise returns a [SingleSyntaxElementIterator]
  *
  */
-operator fun SyntaxElement<*>?.iterator(): Iterator<SyntaxElement<*>> {
+operator fun SyntaxElement?.iterator(): Iterator<SyntaxElement> {
     if (this == null || getSize() == 0)
         return Collections.emptyIterator()
     if (this is SyntaxContainer)
@@ -111,7 +105,7 @@ operator fun SyntaxElement<*>?.iterator(): Iterator<SyntaxElement<*>> {
 /**
  * Returns a iterator for given [SyntaxElement] consisting of only required elements
  */
-fun SyntaxElement<*>?.requiredIterator(): Iterator<SyntaxElement<*>> {
+fun SyntaxElement?.requiredIterator(): Iterator<SyntaxElement> {
     if (this == null || !required || getRequiredSize() == 0)
         return Collections.emptyIterator()
     if (this is SyntaxContainer)
@@ -124,7 +118,7 @@ fun SyntaxElement<*>?.requiredIterator(): Iterator<SyntaxElement<*>> {
 /**
  *
  */
-fun SyntaxElement<*>?.content(): List<SyntaxElement<*>> {
+fun SyntaxElement?.content(): List<SyntaxElement> {
     if (this == null) return emptyList()
     if (this !is SyntaxContainer) return listOf(this)
     return this.content

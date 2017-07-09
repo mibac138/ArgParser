@@ -33,58 +33,58 @@ import java.util.function.Consumer
 
 fun SyntaxContainerDSL(): SyntaxContainerDSL<*> = SyntaxContainerDSL(Any::class.java)
 
-class SyntaxContainerDSL<T>(type: Class<T>) : SyntaxElementDSL<T>(type) {
-    var elements: MutableList<SyntaxElement<*>> = ArrayList()
+class SyntaxContainerDSL<T>(type: Class<T>) : SyntaxElementDSL(type) {
+    var elements: MutableList<SyntaxElement> = ArrayList()
 
-    fun add(element: SyntaxElement<*>) {
+    fun add(element: SyntaxElement) {
         elements.add(element)
     }
 
-    fun add(dsl: SyntaxElementDSL<*>) {
+    fun add(dsl: SyntaxElementDSL) {
         add(dsl.build())
     }
 
-    fun addAll(elements: Collection<SyntaxElement<*>>) {
+    fun addAll(elements: Collection<SyntaxElement>) {
         this.elements.addAll(elements)
     }
 
-    inline fun add(init: SyntaxContainerDSL<T>.() -> SyntaxElement<*>) = apply { elements.add(init()) }
-    inline fun addAll(init: SyntaxContainerDSL<T>.() -> Collection<SyntaxElement<*>>) = apply { elements.addAll(init()) }
+    inline fun add(init: SyntaxContainerDSL<T>.() -> SyntaxElement) = apply { elements.add(init()) }
+    inline fun addAll(init: SyntaxContainerDSL<T>.() -> Collection<SyntaxElement>) = apply { elements.addAll(init()) }
 
-    override fun build(): SyntaxContainer<T> {
+    override fun build(): SyntaxContainer {
         return SyntaxContainerImpl(super.build(), elements)
     }
 }
 
 
-fun syntaxContainer(): SyntaxContainer<*>
+fun syntaxContainer(): SyntaxContainer
         = EmptySyntaxContainer
 
-fun syntaxContainer(init: SyntaxContainerDSL<*>.() -> Unit = {}): SyntaxContainer<*> {
+fun syntaxContainer(init: SyntaxContainerDSL<*>.() -> Unit = {}): SyntaxContainer {
     val element = SyntaxContainerDSL(Any::class.java)
     element.init()
     return element.build()
 }
 
-fun syntaxContainer(init: Consumer<SyntaxContainerDSL<*>> = Consumer {}): SyntaxContainer<*> {
+fun syntaxContainer(init: Consumer<SyntaxContainerDSL<*>> = Consumer {}): SyntaxContainer {
     val element = SyntaxContainerDSL(Any::class.java)
     init.accept(element)
     return element.build()
 }
 
-fun <T> syntaxContainer(type: Class<T>, init: SyntaxContainerDSL<T>.() -> Unit = {}): SyntaxContainer<T> {
+fun <T> syntaxContainer(type: Class<T>, init: SyntaxContainerDSL<T>.() -> Unit = {}): SyntaxContainer {
     val element = SyntaxContainerDSL(type)
     element.init()
     return element.build()
 }
 
-fun <T> syntaxContainer(type: Class<T>, init: Consumer<SyntaxContainerDSL<T>> = Consumer {}): SyntaxContainer<*> {
+fun <T> syntaxContainer(type: Class<T>, init: Consumer<SyntaxContainerDSL<T>> = Consumer {}): SyntaxContainer {
     val element = SyntaxContainerDSL(type)
     init.accept(element)
     return element.build()
 }
 
 @JvmOverloads
-fun <T> SyntaxContainerDSL<*>.element(type: Class<T>, init: SyntaxElementDSL<T>.() -> Unit = {}) = apply {
+fun <T> SyntaxContainerDSL<*>.element(type: Class<T>, init: SyntaxElementDSL.() -> Unit = {}) = apply {
     elements.add(syntaxElement(type, init))
 }

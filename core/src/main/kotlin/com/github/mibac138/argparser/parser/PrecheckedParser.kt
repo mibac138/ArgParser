@@ -22,7 +22,14 @@
 
 package com.github.mibac138.argparser.parser
 
+import com.github.mibac138.argparser.exception.ParserInternalException
+import com.github.mibac138.argparser.exception.ParserInvalidInputException
+import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.skipChar
+import com.github.mibac138.argparser.syntax.SyntaxElement
+import com.github.mibac138.argparser.syntax.defaultValue
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * Created by mibac138 on 05-04-2017.
@@ -37,14 +44,14 @@ abstract class PrecheckedParser<out T : Any> : Parser {
      */
     protected open fun getMatchingLength(alreadyRead: Int): Int = if (alreadyRead == NO_LENGTH) 25 else 25
 
-    protected abstract fun getPattern(): java.util.regex.Pattern
+    protected abstract fun getPattern(): Pattern
 
-    protected abstract fun parse(matcher: java.util.regex.Matcher, element: com.github.mibac138.argparser.syntax.SyntaxElement<*>): T
+    protected abstract fun parse(matcher: Matcher, element: SyntaxElement): T
 
-    override fun parse(input: com.github.mibac138.argparser.reader.ArgumentReader, syntax: com.github.mibac138.argparser.syntax.SyntaxElement<*>): T {
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement): T? {
         input.mark()
 
-        val output: Pair<java.util.regex.Matcher, String>
+        val output: Pair<Matcher, String>
         try {
             input.skipChar(' ')
             output = matchInput(input)
@@ -56,10 +63,10 @@ abstract class PrecheckedParser<out T : Any> : Parser {
         if (!output.first.find()) {
             input.reset()
             if (syntax.required)
-                throw com.github.mibac138.argparser.exception.ParserInvalidInputException("Pattern [${output.first.pattern()}] didn't match the input [${output.second}]")
+                throw ParserInvalidInputException("Pattern [${output.first.pattern()}] didn't match the input [${output.second}]")
 
             @Suppress("UNCHECKED_CAST")
-            return syntax.defaultValue!! as T
+            return syntax.defaultValue as T?
         }
 
         // Revert if matcher took too much text
@@ -78,13 +85,13 @@ abstract class PrecheckedParser<out T : Any> : Parser {
         }
     }
 
-    private fun matchInput(input: com.github.mibac138.argparser.reader.ArgumentReader): Pair<java.util.regex.Matcher, String> {
+    private fun matchInput(input: ArgumentReader): Pair<Matcher, String> {
         if (input.getAvailableCount() == 0)
-            throw com.github.mibac138.argparser.exception.ParserInternalException()
+            throw ParserInternalException()
 
         var total = NO_LENGTH
         var read: String = ""
-        val matcher: java.util.regex.Matcher = getPattern().matcher("")
+        val matcher: Matcher = getPattern().matcher("")
         var available = input.getAvailableCount()
 
         do {

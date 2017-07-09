@@ -25,26 +25,23 @@ package com.github.mibac138.argparser.syntax
 /**
  * Created by mibac138 on 05-05-2017.
  */
-class SyntaxElementImpl<T> : SyntaxElement<T> {
+class SyntaxElementImpl<T> : SyntaxElement {
     override val outputType: Class<T>
     override val required: Boolean
-    override val defaultValue: T?
     private val components: Map<Class<out SyntaxComponent>, SyntaxComponent>
 
 
     @JvmOverloads
-    constructor(outputType: Class<T>, defaultValue: T? = null, required: Boolean = defaultValue == null) {
+    constructor(outputType: Class<T>, required: Boolean = true) {
         this.outputType = outputType
         this.required = required
-        this.defaultValue = defaultValue
         this.components = emptyMap()
     }
 
     @JvmOverloads
-    constructor(outputType: Class<T>, defaultValue: T? = null, required: Boolean = defaultValue == null, vararg components: SyntaxComponent) {
+    constructor(outputType: Class<T>, required: Boolean = true, vararg components: SyntaxComponent) {
         this.outputType = outputType
         this.required = required
-        this.defaultValue = defaultValue
         this.components = HashMap(components.size)
         components.forEach {
             checkInstance(it)
@@ -53,10 +50,9 @@ class SyntaxElementImpl<T> : SyntaxElement<T> {
     }
 
     @JvmOverloads
-    constructor(outputType: Class<T>, defaultValue: T? = null, required: Boolean = defaultValue == null, components: Collection<SyntaxComponent>) {
+    constructor(outputType: Class<T>, required: Boolean = true, components: Collection<SyntaxComponent>) {
         this.outputType = outputType
         this.required = required
-        this.defaultValue = defaultValue
         this.components = HashMap(components.size)
         components.forEach {
             checkInstance(it)

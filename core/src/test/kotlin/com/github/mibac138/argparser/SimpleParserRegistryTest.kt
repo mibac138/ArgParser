@@ -7,10 +7,7 @@ import com.github.mibac138.argparser.parser.SimpleParserRegistry
 import com.github.mibac138.argparser.parser.readUntilCharOrDefault
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.asReader
-import com.github.mibac138.argparser.syntax.EmptySyntaxContainer
-import com.github.mibac138.argparser.syntax.ParserComponent
-import com.github.mibac138.argparser.syntax.SyntaxElement
-import com.github.mibac138.argparser.syntax.SyntaxElementImpl
+import com.github.mibac138.argparser.syntax.*
 import com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSL
 import com.github.mibac138.argparser.syntax.dsl.element
 import com.github.mibac138.argparser.syntax.dsl.syntaxContainer
@@ -94,10 +91,10 @@ class SimpleParserRegistryTest {
     }
 
     @Test fun testCustomParser2() {
-        val syntax = SyntaxElementImpl(Boolean::class.java, null, components = ParserComponent(object : Parser {
+        val syntax = SyntaxElementImpl(Boolean::class.java, components = ParserComponent(object : Parser {
             override fun getSupportedTypes(): Set<Class<*>> = setOf(Boolean::class.java)
 
-            override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Boolean?
+            override fun parse(input: ArgumentReader, syntax: SyntaxElement): Boolean?
                     = input.readUntilCharOrDefault(syntax, { !java.lang.Boolean.parseBoolean(it) })
         }))
 

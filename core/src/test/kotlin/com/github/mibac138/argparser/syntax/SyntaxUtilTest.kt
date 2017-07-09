@@ -25,7 +25,7 @@ class SyntaxUtilTest {
         assertEquals(0, EmptySyntaxContainer.getRequiredSize())
 
         assertEquals(1, SyntaxElementImpl(Any::class.java).getRequiredSize())
-        assertEquals(0, SyntaxElementImpl(Any::class.java, Any()).getRequiredSize())
+        assertEquals(0, SyntaxElementImpl(Any::class.java, false).getRequiredSize())
 
         assertEquals(5, SyntaxContainerDSL(Any::class.java)
                 .element(Any::class.java).element(Any::class.java)

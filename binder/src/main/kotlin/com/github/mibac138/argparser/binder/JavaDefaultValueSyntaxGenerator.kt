@@ -20,26 +20,22 @@
  * SOFTWARE.
  */
 
-package com.github.mibac138.argparser.syntax
+package com.github.mibac138.argparser.binder
 
+import com.github.mibac138.argparser.syntax.defaultValue
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
+import kotlin.reflect.KParameter
 
-open class SyntaxDSLComponentProperty<T, COMPONENT : SyntaxComponent>(
-        protected val componentType: Class<COMPONENT>,
-        protected var toComponent: T?.() -> COMPONENT?,
-        protected var toValue: COMPONENT?.() -> T?
-) : ReadWriteProperty<SyntaxElementDSL, T?> {
+/**
+ * Created by mibac138 on 09-07-2017.
+ */
+class JavaDefaultValueSyntaxGenerator(private vararg val defaultValues: Any?) : SyntaxGenerator {
+    override fun generate(dsl: SyntaxElementDSL, param: KParameter) {
+        val defaultValue = defaultValues[param.index]
 
-    @Suppress("UNCHECKED_CAST")
-    override fun getValue(thisRef: SyntaxElementDSL, property: KProperty<*>)
-            = (thisRef.components.firstOrNull { componentType.isInstance(it) } as COMPONENT?).toValue()
-
-    override fun setValue(thisRef: SyntaxElementDSL, property: KProperty<*>, value: T?) {
-        thisRef.components.removeIf { componentType.isInstance(it) }
-        value.toComponent()?.let {
-            thisRef.components.add(it)
-        }
+        if (defaultValue != NO_DEFAULT_VALUE)
+            dsl.defaultValue = defaultValue
     }
+
+    object NO_DEFAULT_VALUE
 }

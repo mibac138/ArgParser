@@ -34,7 +34,7 @@ import kotlin.reflect.KParameter
 class ParamNameSyntaxGenerator : SyntaxGenerator {
     private val pattern = Regex("arg\\d+")
 
-    override fun generate(dsl: SyntaxElementDSL<*>, param: KParameter) {
+    override fun generate(dsl: SyntaxElementDSL, param: KParameter) {
         // Check first as this is intended to be a last resort name generator
         val paramName = param.name ?: return
 

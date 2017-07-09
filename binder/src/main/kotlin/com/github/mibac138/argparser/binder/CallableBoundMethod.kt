@@ -40,8 +40,8 @@ import kotlin.reflect.jvm.jvmName
  * Kotlin's reflection based bound method
  */
 class CallableBoundMethod(override val method: KCallable<*>, private val owner: Any? = null, generator: SyntaxGenerator = MethodBinder.generator) : BoundMethod {
-    override val syntax: SyntaxElement<*>
-    private val syntaxToParamMap: Map<SyntaxElement<*>, KParameter>
+    override val syntax: SyntaxElement
+    private val syntaxToParamMap: Map<SyntaxElement, KParameter>
     private val instanceParam: KParameter? = method.instanceParameter ?: method.extensionReceiverParameter
 
     init {
@@ -57,7 +57,7 @@ class CallableBoundMethod(override val method: KCallable<*>, private val owner: 
         }
 
         val builder = SyntaxContainerDSL(Any::class.java)
-        val mutableSyntaxToParamMap = mutableMapOf<SyntaxElement<*>, KParameter>()
+        val mutableSyntaxToParamMap = mutableMapOf<SyntaxElement, KParameter>()
 
         for (parameter in method.valueParameters) {
             if (parameter.index == 0 && parameter.kind == KParameter.Kind.INSTANCE) continue
@@ -82,7 +82,7 @@ class CallableBoundMethod(override val method: KCallable<*>, private val owner: 
         else return this
     }
 
-    override fun invoke(parameters: Map<SyntaxElement<*>, Any?>): Any? {
+    override fun invoke(parameters: Map<SyntaxElement, Any?>): Any? {
         var paramMap = mapSyntaxMapToParamMap(parameters)
 
         if (instanceParam != null)
@@ -91,7 +91,7 @@ class CallableBoundMethod(override val method: KCallable<*>, private val owner: 
         return method.callBy(paramMap)
     }
 
-    private fun mapSyntaxMapToParamMap(syntax: Map<SyntaxElement<*>, Any?>): Map<KParameter, Any?>
+    private fun mapSyntaxMapToParamMap(syntax: Map<SyntaxElement, Any?>): Map<KParameter, Any?>
             // filter allows optional parameters with null value to use default value instead
             = syntax.mapKeys { syntaxToParamMap[it.key]!! }.filter { !it.key.isOptional || it.value != null }
 
