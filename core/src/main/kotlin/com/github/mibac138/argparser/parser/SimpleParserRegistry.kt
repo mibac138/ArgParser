@@ -60,15 +60,8 @@ class SimpleParserRegistry : OrderedParserRegistry {
     }
 
     override fun removeParser(parser: Parser) {
-        for (clazz in parser.getSupportedTypes()) {
-            val owner = classToParserMap[clazz]
-
-            if (owner == null || parser !== owner) {
-                continue
-            }
-
-            classToParserMap.remove(clazz)
-        }
+        for (clazz in parser.getSupportedTypes())
+            classToParserMap.remove(clazz, parser)
     }
 
     override fun removeAllParsers() {
