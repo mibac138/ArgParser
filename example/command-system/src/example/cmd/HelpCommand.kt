@@ -17,7 +17,7 @@ class HelpCommand(registry: CommandRegistry) : BoundCommand() {
 
     fun printHelp(cmd: Command? = null) {
         if (cmd == null)
-            println("Sorry, I can't help you with this command - I don't know it :(")
+            println("To get help for a command type \"help <command>\"")
         else {
             println("Help for command '${cmd.name}'")
             println(cmd.description)
@@ -28,7 +28,7 @@ class HelpCommand(registry: CommandRegistry) : BoundCommand() {
 class CommandParser(private val registry: CommandRegistry) : Parser {
     override fun getSupportedTypes(): Set<Class<*>> = setOf(Command::class.java)
 
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement<*>): Command? {
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement): Command? {
         return registry.getCommand(input.readUntilChar(' '))
     }
 }

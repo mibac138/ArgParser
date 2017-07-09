@@ -9,7 +9,8 @@ fun main(args: Array<String>) {
     cmdRegistry.addCommand(HelpCommand(cmdRegistry))
     cmdRegistry.addCommand(CommandListCommand(cmdRegistry))
 
-    println("Hello!")
+    println("Hello! Type \"list\" for a list of commands and \"help <command>\" for details of how to use it")
+    println("You can also type \"exit\" to turn me off")
 
     while (true) {
         val input = scanner.nextLine()

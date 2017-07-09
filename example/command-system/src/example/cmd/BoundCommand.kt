@@ -14,7 +14,7 @@ abstract class BoundCommand : Command {
     override fun run(args: String) {
         val parsed = parser.parse(args.asReader(), method.syntax)
 
-        val linked: Map<SyntaxElement<*>, Any?>
+        val linked: Map<SyntaxElement, Any?>
         if (parsed != null)
             linked = linker.link(parsed)
         else
