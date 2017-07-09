@@ -36,5 +36,9 @@ abstract class AnnotationBasedSyntaxGenerator<in T : Annotation>(private val typ
         generate(dsl, annotation)
     }
 
+    /**
+     * This is called only when the annotation is found. If it's not then the [AnnotationBasedSyntaxGenerator] just
+     * doesn't do anything
+     */
     abstract fun generate(dsl: SyntaxElementDSL, annotation: T)
 }

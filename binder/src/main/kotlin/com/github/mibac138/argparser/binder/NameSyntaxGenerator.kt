@@ -26,7 +26,7 @@ import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 
 /**
- * Generates relevant syntax basing on [Name] annotation
+ * Generates relevant syntax using [Name] annotation
  */
 class NameSyntaxGenerator : AnnotationBasedSyntaxGenerator<Name>(Name::class.java) {
     override fun generate(dsl: SyntaxElementDSL, annotation: Name) {

@@ -26,7 +26,7 @@ import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 import kotlin.reflect.KParameter
 
 /**
- * Generates relevant syntax for optional [KParameter]s
+ * Generates relevant syntax for [optional](https://kotlinlang.org/docs/reference/functions.html#default-arguments) [KParameter]s
  */
 class KotlinDefaultValueSyntaxGenerator : SyntaxGenerator {
     override fun generate(dsl: SyntaxElementDSL, param: KParameter) {

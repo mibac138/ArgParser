@@ -22,13 +22,14 @@
 
 package com.github.mibac138.argparser.binder
 
+import com.github.mibac138.argparser.named.NameComponent
 import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 import kotlin.reflect.KParameter
 
 /**
  * Generates syntax based on [KParameter]'s name.
- * Works as a last resort option (generates syntax [[NameComponent]]
+ * Works as a last resort option (generates syntax ([NameComponent])
  * only if it hasn't been already generated)
  */
 class ParamNameSyntaxGenerator : SyntaxGenerator {

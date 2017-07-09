@@ -35,9 +35,12 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.valueParameters
 import kotlin.reflect.jvm.jvmErasure
 import kotlin.reflect.jvm.jvmName
+import kotlin.reflect.jvm.kotlinFunction
 
 /**
- * Kotlin's reflection based bound method
+ * Kotlin's reflection based bound method (works for Java too*)
+ *
+ * *if [kotlinFunction] works (basically method can't be synthetic)
  */
 class CallableBoundMethod(override val method: KCallable<*>, private val owner: Any? = null, generator: SyntaxGenerator = MethodBinder.generator) : BoundMethod {
     override val syntax: SyntaxElement
