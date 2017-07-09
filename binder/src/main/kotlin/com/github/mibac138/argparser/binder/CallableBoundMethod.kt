@@ -41,6 +41,25 @@ import kotlin.reflect.jvm.kotlinFunction
  * Kotlin's reflection based bound method (works for Java too*)
  *
  * *if [kotlinFunction] works (basically method can't be synthetic)
+ *
+ *
+ * @constructor
+ *
+ * Example [method] requiring [owner]
+ * ```
+ * Object::toString
+ * ```
+ * Example [method] *not* requiring [owner] (the function reference
+ * is on a instance, not on a class as in the previous example)
+ * ```
+ * Object()::toString
+ * ```
+ *
+ *
+ * @param method the method to bound
+ * @param owner instance parameter or extension receiver parameter. Required only if the [method] requires it
+ * @param generator the [SyntaxGenerator]  you want to use when generating syntax
+ *
  */
 class CallableBoundMethod(override val method: KCallable<*>, private val owner: Any? = null, generator: SyntaxGenerator = MethodBinder.generator) : BoundMethod {
     override val syntax: SyntaxElement
@@ -48,16 +67,7 @@ class CallableBoundMethod(override val method: KCallable<*>, private val owner: 
     private val instanceParam: KParameter? = method.instanceParameter ?: method.extensionReceiverParameter
 
     init {
-        if (instanceParam != null) {
-            if (owner == null)
-                throw IllegalArgumentException("Method requires instance variable or extension receiver but it's null")
-
-            val paramTypeClass = instanceParam.type.jvmErasure
-            val ownerClass = owner::class
-            if (!ownerClass.isSubclassOf(paramTypeClass))
-                throw IllegalArgumentException("Provided owner (${ownerClass.jvmName}) isn't an subclass of required " +
-                        "instance param's value's class (${paramTypeClass.jvmName})")
-        }
+        verifyInstanceParam()
 
         val builder = SyntaxContainerDSL(Any::class.java)
         val mutableSyntaxToParamMap = mutableMapOf<SyntaxElement, KParameter>()
@@ -77,6 +87,19 @@ class CallableBoundMethod(override val method: KCallable<*>, private val owner: 
 
         syntax = builder.build()
         syntaxToParamMap = mutableSyntaxToParamMap
+    }
+
+    private fun verifyInstanceParam() {
+        if (instanceParam != null) {
+            if (owner == null)
+                throw IllegalArgumentException("Method requires instance variable or extension receiver but it's null")
+
+            val paramTypeClass = instanceParam.type.jvmErasure
+            val ownerClass = owner::class
+            if (!ownerClass.isSubclassOf(paramTypeClass))
+                throw IllegalArgumentException("Provided owner (${ownerClass.jvmName}) isn't an subclass of required " +
+                        "instance param's value's class (${paramTypeClass.jvmName})")
+        }
     }
 
     private fun Class<*>.boxClass(): Class<*> {

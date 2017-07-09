@@ -28,7 +28,15 @@ import java.util.*
 import kotlin.reflect.KParameter
 
 /**
- * Created by mibac138 on 09-07-2017.
+ * Basically a port of Kotlin's [optional](https://kotlinlang.org/docs/reference/functions.html#default-arguments) [KParameter]s.
+ * When setting default values parsers *should* return them if they couldn't parse the input
+ *
+ * @constructor
+ * @param defaultValues the array of default values.
+ *        Must be in the same order as the method's parameters.
+ *        In case you, e.g. want to have a default value for the
+ *        2nd parameter but not for the 1st then pass [NO_DEFAULT_VALUE]
+ *        as the 1st default value
  */
 class JavaDefaultValueSyntaxGenerator(private vararg val defaultValues: Any?) : SyntaxGenerator {
     /**

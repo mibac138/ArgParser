@@ -26,8 +26,12 @@ import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 import kotlin.reflect.KParameter
 
 /**
- * Created by mibac138 on 22-05-2017.
+ * Used by [BoundMethod]s to generate syntax.
  */
 interface SyntaxGenerator {
+    /**
+     * Adds (or changes) values and components of the given [dsl]
+     * basing on [param]'s annotations, and other properties
+     */
     fun generate(dsl: SyntaxElementDSL, param: KParameter)
 }

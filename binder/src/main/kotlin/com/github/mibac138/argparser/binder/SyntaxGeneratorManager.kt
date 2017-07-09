@@ -26,7 +26,8 @@ import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 import kotlin.reflect.KParameter
 
 /**
- * Created by mibac138 on 22-05-2017.
+ * Syntax generator consisting of other generators. Does nothing on it's own.
+ * When running [generate] it invokes all of the added [generators].
  */
 class SyntaxGeneratorManager() : SyntaxGenerator {
     private val generators = mutableListOf<SyntaxGenerator>()
