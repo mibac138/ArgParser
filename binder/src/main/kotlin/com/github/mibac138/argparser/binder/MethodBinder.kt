@@ -30,6 +30,7 @@ import kotlin.reflect.jvm.kotlinFunction
  * Created by mibac138 on 10-05-2017.
  */
 object MethodBinder {
+    @JvmStatic
     val generator = SyntaxGeneratorManager(
             NameSyntaxGenerator(),
             KotlinDefaultValueSyntaxGenerator()/*,
