@@ -33,8 +33,7 @@ import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
  * Used in [NamedParserRegistry] to name [SyntaxElement]s
  */
 data class NameComponent(val name: String) : SyntaxComponent {
-    override val id: Class<out SyntaxComponent>
-        get() = NameComponent::class.java
+    override val id = NameComponent::class.java
 }
 
 /**
