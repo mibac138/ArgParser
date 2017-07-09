@@ -11,6 +11,7 @@ import com.github.mibac138.argparser.syntax.*
 import com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSL
 import com.github.mibac138.argparser.syntax.dsl.element
 import com.github.mibac138.argparser.syntax.dsl.syntaxContainer
+import com.github.mibac138.argparser.syntax.dsl.syntaxElement
 import com.nhaarman.mockito_kotlin.any
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -144,6 +145,21 @@ class SimpleParserRegistryTest {
 
 
         assertEquals(listOf("yes", "default"), output)
+    }
+
+    @Test fun testOrderedParser() {
+        registry.registerParser(SequenceParser())
+        registry.registerParser(customSequenceParser(), 0)
+
+        val output = registry.parse("!Hello, World!".asReader(), syntaxElement(String::class.java))
+
+        assertEquals(listOf("!Hello, World!"), output)
+    }
+
+    private fun customSequenceParser(): SequenceParser {
+        val parser = SequenceParser()
+        parser.addQuotationMark('!')
+        return parser
     }
 
     private fun parserOf(vararg clazz: Class<*>): Parser {

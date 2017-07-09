@@ -28,14 +28,13 @@ import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.getSize
 import com.github.mibac138.argparser.syntax.iterator
 import com.github.mibac138.argparser.syntax.parser
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by mibac138 on 05-04-2017.
  */
-class SimpleParserRegistry : ParserRegistry {
-    private val classToParserMap: MutableMap<Class<*>, Parser> = HashMap()
+class SimpleParserRegistry : OrderedParserRegistry {
+    private val classToParserMap = mutableMapOf<Class<*>, Parser>()
+    private val positionToParserMap = mutableMapOf<Int, Parser>()
 
     init {
         registerParser(SequenceParser())
@@ -47,6 +46,14 @@ class SimpleParserRegistry : ParserRegistry {
     override fun getSupportedTypes(): Set<Class<*>>
             = classToParserMap.keys
 
+
+    override fun registerParser(parser: Parser, position: Int) {
+        positionToParserMap[position] = parser
+    }
+
+    override fun removeParser(position: Int) {
+        positionToParserMap.remove(position)
+    }
 
     override fun registerParser(parser: Parser) {
         parser.getSupportedTypes().forEach { clazz -> classToParserMap.put(clazz, parser) }
@@ -66,6 +73,7 @@ class SimpleParserRegistry : ParserRegistry {
 
     override fun removeAllParsers() {
         classToParserMap.clear()
+        positionToParserMap.clear()
     }
 
     override fun parse(input: ArgumentReader, syntax: SyntaxElement)
@@ -74,8 +82,8 @@ class SimpleParserRegistry : ParserRegistry {
     private fun parseSyntax(input: ArgumentReader, size: Int, iterator: Iterator<SyntaxElement>): List<*> {
         val result = ArrayList<Any?>(size)
 
-        for (element in iterator) {
-            val parser = getParserForElement(element)
+        for ((i, element) in iterator.withIndex()) {
+            val parser = getParserForElement(element, i)
 
             result += parseElement(input, element, parser)
         }
@@ -99,8 +107,8 @@ class SimpleParserRegistry : ParserRegistry {
         return parsed
     }
 
-    private fun getParserForElement(element: SyntaxElement): Parser
-            = element.parser ?: getParserForType(element.outputType)
+    private fun getParserForElement(element: SyntaxElement, position: Int): Parser
+            = element.parser ?: positionToParserMap[position] ?: getParserForType(element.outputType)
 
     private fun getParserForType(type: Class<*>): Parser {
         val parser = classToParserMap[type]

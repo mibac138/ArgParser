@@ -22,8 +22,12 @@
 
 package com.github.mibac138.argparser.named
 
+import com.github.mibac138.argparser.named.ArgumentMatcher.ArgumentMatchResult
 import com.github.mibac138.argparser.reader.ArgumentReader
 
+/**
+ *
+ */
 interface ArgumentMatcher {
     /**
      * Result of argument matching.
@@ -46,3 +50,5 @@ interface ArgumentMatcher {
      */
     fun match(reader: ArgumentReader): ArgumentMatchResult?
 }
+
+data class BasicArgumentMatchResult(override val name: String, override val value: ArgumentReader) : ArgumentMatchResult

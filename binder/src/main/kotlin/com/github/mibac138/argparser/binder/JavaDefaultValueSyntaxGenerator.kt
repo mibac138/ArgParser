@@ -42,7 +42,6 @@ class JavaDefaultValueSyntaxGenerator(private vararg val defaultValues: Any?) : 
     /**
      * Use this when you don't want the param to have a default value
      * but want a next param (or any after this one) to have it
-     *
      */
     object NO_DEFAULT_VALUE
 
