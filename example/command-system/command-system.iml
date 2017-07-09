@@ -8,5 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
+    <orderEntry type="module" module-name="argparser-binder_main" />
+    <orderEntry type="module" module-name="argparser-core_main" />
   </component>
 </module>
