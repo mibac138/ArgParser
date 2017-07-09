@@ -26,7 +26,6 @@ import java.lang.reflect.Method
 import kotlin.reflect.KCallable
 import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.full.functions
-import kotlin.reflect.jvm.kotlinFunction
 
 /**
  * Common entry point for binding methods.
@@ -60,9 +59,13 @@ object Binder {
      * To be used with Java code
      */
     @JvmStatic
-    fun bind(owner: Any, method: Method): Binding {
-        return bind(method.kotlinFunction!!, owner)
-    }
+    fun bind(owner: Any, method: Method, vararg defaultValues: Any? = emptyArray())
+            = bind(MethodBinder.bindMethod(owner, method, defaultValues))
+
+    @JvmStatic
+    @JvmOverloads
+    fun bind(owner: Any, name: String, vararg defaultValues: Any? = emptyArray())
+            = MethodBinder.bindMethod(owner, name, defaultValues)?.let { bind(it) }
 
     /**
      * Binds the given [method] and returns a [Binding].
@@ -77,7 +80,6 @@ object Binder {
      * Binds the given [method] and returns a [Binding]
      */
     @JvmStatic
-    fun bind(method: BoundMethod): Binding {
-        return BindingImpl(method)
-    }
+    fun bind(method: BoundMethod)
+            = BindingImpl(method)
 }
