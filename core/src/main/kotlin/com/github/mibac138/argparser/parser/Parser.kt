@@ -42,7 +42,7 @@ fun <T> parseOrDefault(syntax: SyntaxElement, action: () -> T): T? {
         return action()
     } catch (e: Exception) {
         @Suppress("UNCHECKED_CAST")
-        if (!syntax.required && syntax.defaultValue != null)
+        if (!syntax.required)
             return syntax.defaultValue as T?
         else
             throw e
