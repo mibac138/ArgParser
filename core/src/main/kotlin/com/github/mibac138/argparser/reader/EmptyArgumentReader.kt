@@ -51,7 +51,8 @@ object EmptyArgumentReader : ArgumentReader {
     override fun reset(): Boolean
             = false
 
-    private fun <T> throwIf(cond: Boolean): T? {
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun <T> throwIf(cond: Boolean): T? {
         if (cond)
             throw IllegalArgumentException("I'm EmptyArgumentReader. That means that I have no " +
                     "content (length and available count always equals 0, skip and read throw if count > 0)")
