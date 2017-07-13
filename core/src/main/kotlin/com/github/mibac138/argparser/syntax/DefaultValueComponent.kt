@@ -23,9 +23,12 @@
 package com.github.mibac138.argparser.syntax
 
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
+import kotlin.reflect.KParameter
 
 /**
- * Created by mibac138 on 09-07-2017.
+ * Makes the parser return you your defined default value instead of you doing some if-null checks and doing it yourself
+ *
+ * This is basically a port of Kotlin's [optional](https://kotlinlang.org/docs/reference/functions.html#default-arguments) [KParameter]s.
  */
 data class DefaultValueComponent(val defaultValue: Any?) : SyntaxComponent {
     override val id = DefaultValueComponent::class.java

@@ -25,9 +25,13 @@ package com.github.mibac138.argparser.binder
 import com.github.mibac138.argparser.syntax.SyntaxElement
 
 /**
- * Created by mibac138 on 19-06-2017.
+ * Used to connect ("link") some input to [SyntaxElement]s
  */
 interface SyntaxLinker {
+    /**
+     * Links the given [input] to [SyntaxElement]s and returns
+     * a [Map] of the linked input to the syntax elements
+     */
     fun link(input: Any): Map<SyntaxElement, Any?>
 }
 
