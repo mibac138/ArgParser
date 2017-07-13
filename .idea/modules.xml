@@ -3,8 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/example/Example.iml" filepath="$PROJECT_DIR$/example/Example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/binder/argparser-binder.iml" filepath="$PROJECT_DIR$/.idea/modules/binder/argparser-binder.iml" group="argparser-binder" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/binder/argparser-binder_main.iml" filepath="$PROJECT_DIR$/.idea/modules/binder/argparser-binder_main.iml" group="argparser-binder" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/binder/argparser-binder_test.iml" filepath="$PROJECT_DIR$/.idea/modules/binder/argparser-binder_test.iml" group="argparser-binder" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/argparser-core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/argparser-core.iml" group="argparser-core" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/argparser-core_main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/argparser-core_main.iml" group="argparser-core" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/argparser-core_test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/argparser-core_test.iml" group="argparser-core" />
       <module fileurl="file://$PROJECT_DIR$/example/command-system/command-system.iml" filepath="$PROJECT_DIR$/example/command-system/command-system.iml" />
