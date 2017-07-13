@@ -36,13 +36,15 @@ class ParamNameSyntaxGenerator : SyntaxGenerator {
     private val pattern = Regex("arg\\d+")
 
     override fun generate(dsl: SyntaxElementDSL, param: KParameter) {
-        // Check first as this is intended to be a last resort name generator
         val paramName = param.name ?: return
 
-        // JVM's default param names are argN (arg0, arg1, etc)
-        // (Oracle JDK doesn't save param names, don't know about other JDKs)
-        // we probably don't want to use the default ones
-        if (dsl.name == null && !pattern.matches(paramName))
-            dsl.name = paramName
+        // 1. JVM's default param names are argN (arg0, arg1, etc)
+        //    (Oracle JDK doesn't save param names, don't know about other JDKs)
+        //    we probably don't want to use the default ones
+        // 2. Check if name is null first as this is intended to be a last resort name generator
+        //    (meaning it only generates name if it isn't already generated)
+        if (dsl.name == null)
+            if (!pattern.matches(paramName))
+                dsl.name = paramName
     }
 }
