@@ -20,7 +20,7 @@ class SequenceParserTest : ParserTest() {
     }
 
     @Test fun supportedTypes() {
-        assertTrue(parser.getSupportedTypes() == setOf(String::class.java))
+        assertTrue(parser.supportedTypes == setOf(String::class.java))
     }
 
     @Test fun parse() {

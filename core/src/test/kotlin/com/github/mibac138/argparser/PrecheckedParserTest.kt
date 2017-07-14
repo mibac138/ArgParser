@@ -22,7 +22,7 @@ class PrecheckedParserTest : ParserTest() {
     val parser: BasicBooleanParser = BasicBooleanParser()
 
     @Test fun supportedTypes() {
-        assertEquals(parser.getSupportedTypes(), setOf(Boolean::class.java))
+        assertEquals(parser.supportedTypes, setOf(Boolean::class.java))
     }
 
     @Test fun simpleParse() {
@@ -99,7 +99,7 @@ class PrecheckedParserTest : ParserTest() {
 
         fun matchingLength(lastLength: Int): Int = super.getMatchingLength(lastLength)
 
-        override fun getSupportedTypes(): Set<Class<*>> = setOf(Boolean::class.java)
+        override val supportedTypes = setOf(Boolean::class.java)
 
         override fun getPattern(): Pattern
                 = Pattern.compile("^(yes|no)")
@@ -115,7 +115,7 @@ class PrecheckedParserTest : ParserTest() {
     }
 
     class ProblematicParser : PrecheckedParser<Any>() {
-        override fun getSupportedTypes(): Set<Class<*>> = setOf(Any::class.java)
+        override val supportedTypes = setOf(Any::class.java)
 
         override fun getPattern(): Pattern = Pattern.compile("")
 

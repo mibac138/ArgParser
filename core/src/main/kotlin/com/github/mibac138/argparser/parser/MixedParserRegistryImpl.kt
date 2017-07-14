@@ -39,13 +39,14 @@ class MixedParserRegistryImpl : MixedParserRegistry {
     private val positionToParserMap: MutableMap<Int, Parser> = HashMap()
     override var matcher: ArgumentMatcher = PatternArgumentMatcher(Pattern.compile("--([a-zA-Z_0-9]+)(?:=|: ?)"))
 
-    override fun getSupportedTypes(): Set<Class<*>> {
-        val output = mutableSetOf<Class<*>>()
-        nameToParserMap.values.map { it.getSupportedTypes() }.forEach { output += it }
-        positionToParserMap.values.map { it.getSupportedTypes() }.forEach { output += it }
+    override val supportedTypes: Set<Class<*>>
+        get() {
+            val output = mutableSetOf<Class<*>>()
+            nameToParserMap.values.map { it.supportedTypes }.forEach { output += it }
+            positionToParserMap.values.map { it.supportedTypes }.forEach { output += it }
 
-        return output
-    }
+            return output
+        }
 
     override fun parse(input: ArgumentReader, syntax: SyntaxElement): Map<String?, *> {
         val named = mutableMapOf<String?, Any?>()

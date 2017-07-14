@@ -31,7 +31,7 @@ import com.github.mibac138.argparser.syntax.defaultValue
  * Created by mibac138 on 05-04-2017.
  */
 class SequenceParser : Parser {
-    override fun getSupportedTypes(): Set<Class<*>> = setOf(String::class.java)
+    override val supportedTypes = setOf(String::class.java)
 
     private val quotationMarks: MutableSet<Char> = mutableSetOf('\'', '"')
 

@@ -91,23 +91,22 @@ class NamedParserRegistryImpl : NamedParserRegistry {
         return parsed
     }
 
-    override fun getSupportedTypes(): Set<Class<*>>
-            = typeToParserMap.keys
+    override val supportedTypes: Set<Class<*>> = typeToParserMap.keys
 
     override fun registerParser(parser: Parser) {
-        for (type in parser.getSupportedTypes())
+        for (type in parser.supportedTypes)
             typeToParserMap[type] = parser
     }
 
     override fun registerParser(parser: Parser, name: String) {
         nameToParserMap[name] = parser
 
-        for (type in parser.getSupportedTypes())
+        for (type in parser.supportedTypes)
             typeToParserMap[type] = parser
     }
 
     override fun removeParser(parser: Parser) {
-        for (type in parser.getSupportedTypes()) {
+        for (type in parser.supportedTypes) {
             typeToParserMap.removeIfMatches(type, parser)
         }
 

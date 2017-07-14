@@ -13,7 +13,7 @@ class IntParserTest : ParserTest() {
     private val parser = IntParser()
 
     @Test fun supportedTypes() {
-        assertEquals(setOf(Int::class.java, Integer::class.java), parser.getSupportedTypes())
+        assertEquals(setOf(Int::class.java, Integer::class.java), parser.supportedTypes)
     }
 
     @Test fun parse() {

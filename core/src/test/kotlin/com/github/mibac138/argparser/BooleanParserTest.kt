@@ -14,7 +14,7 @@ class BooleanParserTest : ParserTest() {
     private val parser = BooleanParser()
 
     @Test fun supportedTypes() {
-        assertTrue(parser.getSupportedTypes() == setOf(Boolean::class.java, Boolean::class.javaObjectType))
+        assertTrue(parser.supportedTypes == setOf(Boolean::class.java, Boolean::class.javaObjectType))
     }
 
     @Test fun parse() {

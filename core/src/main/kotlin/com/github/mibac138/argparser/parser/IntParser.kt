@@ -29,7 +29,7 @@ import com.github.mibac138.argparser.syntax.SyntaxElement
  * Created by mibac138 on 05-04-2017.
  */
 class IntParser : Parser {
-    override fun getSupportedTypes(): Set<Class<*>> = setOf(Int::class.java, Int::class.javaObjectType)
+    override val supportedTypes = setOf(Int::class.java, Int::class.javaObjectType)
 
     /**
      * Reads text until hits space and tries to parse it as a [Int] then.

@@ -33,7 +33,7 @@ import com.github.mibac138.argparser.syntax.defaultValue
  *
  */
 interface Parser {
-    fun getSupportedTypes(): Set<Class<*>>
+    val supportedTypes: Set<Class<*>>
     fun parse(input: ArgumentReader, syntax: SyntaxElement): Any?
 }
 

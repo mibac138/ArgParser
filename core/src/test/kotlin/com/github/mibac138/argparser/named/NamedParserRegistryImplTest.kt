@@ -30,15 +30,15 @@ class NamedParserRegistryImplTest {
     }
 
     @Test fun testSupportedTypes() {
-        assertEquals(emptySet(), parser.getSupportedTypes())
+        assertEquals(emptySet(), parser.supportedTypes)
 
         parser.registerParser(BooleanParser())
 
-        assertEquals(setOf(Boolean::class.java, Boolean::class.javaObjectType), parser.getSupportedTypes())
+        assertEquals(setOf(Boolean::class.java, Boolean::class.javaObjectType), parser.supportedTypes)
 
         parser.removeParser(BooleanParser())
 
-        assertEquals(emptySet(), parser.getSupportedTypes())
+        assertEquals(emptySet(), parser.supportedTypes)
     }
 
     @Test fun testCustomParser() {
@@ -79,7 +79,7 @@ class NamedParserRegistryImplTest {
 
     @Test(expected = Exception::class) fun testProblematicParser1() {
         parser.registerParser(object : Parser {
-            override fun getSupportedTypes(): Set<Class<*>> = setOf(Any::class.java)
+            override val supportedTypes = setOf(Any::class.java)
 
             override fun parse(input: ArgumentReader, syntax: SyntaxElement): Any
                     = throw Exception()
@@ -91,7 +91,7 @@ class NamedParserRegistryImplTest {
 
     @Test(expected = ParserInvalidInputException::class) fun testProblematicParser2() {
         parser.registerParser(object : Parser {
-            override fun getSupportedTypes(): Set<Class<*>> = setOf(Any::class.java)
+            override val supportedTypes = setOf(Any::class.java)
 
             override fun parse(input: ArgumentReader, syntax: SyntaxElement): Any
                     = throw ParserInvalidInputException()

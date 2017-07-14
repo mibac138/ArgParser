@@ -30,7 +30,7 @@ import com.github.mibac138.argparser.syntax.SyntaxElement
  * Created by mibac138 on 06-04-2017.
  */
 class BooleanParser : Parser {
-    override fun getSupportedTypes(): Set<Class<*>> = setOf(Boolean::class.java, Boolean::class.javaObjectType)
+    override val supportedTypes = setOf(Boolean::class.java, Boolean::class.javaObjectType)
 
     private val values = mapOf(
             "yes" to true,

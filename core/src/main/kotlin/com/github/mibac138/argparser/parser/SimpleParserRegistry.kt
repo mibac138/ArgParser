@@ -42,9 +42,7 @@ class SimpleParserRegistry : OrderedParserRegistry {
         registerParser(IntParser())
     }
 
-
-    override fun getSupportedTypes(): Set<Class<*>>
-            = classToParserMap.keys
+    override val supportedTypes: Set<Class<*>> = classToParserMap.keys
 
 
     override fun registerParser(parser: Parser, position: Int) {
@@ -56,11 +54,11 @@ class SimpleParserRegistry : OrderedParserRegistry {
     }
 
     override fun registerParser(parser: Parser) {
-        parser.getSupportedTypes().forEach { clazz -> classToParserMap.put(clazz, parser) }
+        parser.supportedTypes.forEach { clazz -> classToParserMap.put(clazz, parser) }
     }
 
     override fun removeParser(parser: Parser) {
-        for (clazz in parser.getSupportedTypes())
+        for (clazz in parser.supportedTypes)
             classToParserMap.remove(clazz, parser)
     }
 

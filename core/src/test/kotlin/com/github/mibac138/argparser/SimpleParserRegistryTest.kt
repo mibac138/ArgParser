@@ -32,10 +32,10 @@ class SimpleParserRegistryTest {
         val parser = parserOf(Any::class.java, BigInteger::class.java, Mockito::class.java)
 
         registry.registerParser(parser)
-        assertTrue(registry.getSupportedTypes().containsAll(parser.getSupportedTypes()))
+        assertTrue(registry.supportedTypes.containsAll(parser.supportedTypes))
 
         registry.removeParser(parser)
-        assertTrue(Collections.disjoint(registry.getSupportedTypes(), parser.getSupportedTypes()))
+        assertTrue(Collections.disjoint(registry.supportedTypes, parser.supportedTypes))
     }
 
     @Test(expected = NumberFormatException::class) fun testInvalidInput() {
@@ -48,27 +48,27 @@ class SimpleParserRegistryTest {
     @Test fun testRemove() {
         val parser = parserOf(Date::class.java)
 
-        assertFalse(registry.getSupportedTypes().contains(Date::class.java))
+        assertFalse(registry.supportedTypes.contains(Date::class.java))
 
         registry.removeParser(parser)
 
-        assertFalse(registry.getSupportedTypes().contains(Date::class.java))
+        assertFalse(registry.supportedTypes.contains(Date::class.java))
     }
 
     @Test fun testRemoveNotOwnType() {
         val parser1 = parserOf(Mockito::class.java)
         val parser2 = parserOf(Mockito::class.java)
 
-        assertFalse(registry.getSupportedTypes().contains(Mockito::class.java))
+        assertFalse(registry.supportedTypes.contains(Mockito::class.java))
 
         registry.registerParser(parser1)
-        assertTrue(registry.getSupportedTypes().contains(Mockito::class.java))
+        assertTrue(registry.supportedTypes.contains(Mockito::class.java))
 
         registry.removeParser(parser2)
-        assertTrue(registry.getSupportedTypes().contains(Mockito::class.java))
+        assertTrue(registry.supportedTypes.contains(Mockito::class.java))
 
         registry.removeParser(parser1)
-        assertFalse(registry.getSupportedTypes().contains(Mockito::class.java))
+        assertFalse(registry.supportedTypes.contains(Mockito::class.java))
     }
 
     @Test fun testEmptyParse() {
@@ -93,7 +93,7 @@ class SimpleParserRegistryTest {
 
     @Test fun testCustomParser2() {
         val syntax = SyntaxElementImpl(Boolean::class.java, components = ParserComponent(object : Parser {
-            override fun getSupportedTypes(): Set<Class<*>> = setOf(Boolean::class.java)
+            override val supportedTypes = setOf(Boolean::class.java)
 
             override fun parse(input: ArgumentReader, syntax: SyntaxElement): Boolean?
                     = input.readUntilCharOrDefault(syntax, { !java.lang.Boolean.parseBoolean(it) })
@@ -164,7 +164,7 @@ class SimpleParserRegistryTest {
 
     private fun parserOf(vararg clazz: Class<*>): Parser {
         val parser = mock(Parser::class.java)
-        `when`(parser.getSupportedTypes()).thenReturn(setOf(*clazz))
+        `when`(parser.supportedTypes).thenReturn(setOf(*clazz))
         `when`(parser.toString()).thenReturn("Fake parser of $clazz")
         return parser
     }
@@ -172,7 +172,7 @@ class SimpleParserRegistryTest {
     private fun problematicParser(exception: Throwable, vararg clazz: Class<*>): Parser {
         val parser = mock(Parser::class.java)
         `when`(parser.parse(any(), any())).thenThrow(exception)
-        `when`(parser.getSupportedTypes()).thenReturn(setOf(*clazz))
+        `when`(parser.supportedTypes).thenReturn(setOf(*clazz))
         return parser
     }
 }
