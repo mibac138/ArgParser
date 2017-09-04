@@ -64,7 +64,7 @@ class NamedParserRegistryImpl : NamedParserRegistry {
         }
 
         for (element in unprocessedSyntax) {
-            // Every element here *must* have name
+            // Every element here *must* have a name
             val name = element.name!!
 
             val parser = getParserForElement(element)

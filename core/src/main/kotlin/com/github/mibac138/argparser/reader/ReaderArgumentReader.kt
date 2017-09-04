@@ -24,14 +24,16 @@ package com.github.mibac138.argparser.reader
 
 import com.github.mibac138.argparser.reader.ArgumentString.Companion.NOT_REQUIRED
 import java.io.Reader
+import java.util.*
 
 class ReaderArgumentReader(private val stream: Reader, private var buffer: ArgumentString) : ArgumentReader {
     private val MIN_READ_AMOUNT: Int = 20
 
-    private val marks: IntQueue = IntQueue()
+    private val marks = LinkedList<Int>()
 
     @JvmOverloads
-    constructor(stream: Reader, recycleString: Boolean = true) : this(stream, if (recycleString) EcoFriendlyString() else RegularString())
+    constructor(stream: Reader, recycleString: Boolean = true) :
+            this(stream, if (recycleString) EcoFriendlyString() else RegularString())
 
     init {
         feedBuffer(1)
@@ -76,31 +78,31 @@ class ReaderArgumentReader(private val stream: Reader, private var buffer: Argum
     }
 
     override fun mark() {
-        if (marks.size() == 0)
+        if (marks.isEmpty())
             buffer.markRequiredPosition()
 
-        marks.add(buffer.getPosition())
+        marks.addLast(buffer.getPosition())
     }
 
     override fun removeMark(): Boolean {
-        if (marks.size() == 0)
+        if (marks.isEmpty())
             return false
 
-        if (marks.size() == 1)
+        if (marks.size == 1)
             buffer.removeRequiredPosition()
 
-        marks.remove()
+        marks.removeLast()
         return true
     }
 
     override fun reset(): Boolean {
-        if (marks.size() == 0)
+        if (marks.isEmpty())
             return false
 
-        if (marks.size() == 1)
+        if (marks.size == 1)
             buffer.resetToRequiredPosition()
 
-        buffer.setPosition(marks.remove())
+        buffer.setPosition(marks.removeLast())
         return true
     }
 

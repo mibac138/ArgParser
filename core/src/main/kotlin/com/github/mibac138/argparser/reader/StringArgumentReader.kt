@@ -23,12 +23,13 @@
 package com.github.mibac138.argparser.reader
 
 import com.github.mibac138.argparser.reader.ArgumentString.Companion.NOT_REQUIRED
+import java.util.*
 
 class StringArgumentReader(private var string: String) : ArgumentReader {
     private var position: Int = 0
     private var minPosition: Int = -1
     private var length: Int = string.length
-    private val marks: IntQueue = IntQueue()
+    private val marks = LinkedList<Int>()
 
 
     override fun skip(count: Int) {
@@ -63,25 +64,25 @@ class StringArgumentReader(private var string: String) : ArgumentReader {
             = string.length - position
 
     override fun mark() {
-        if (marks.size() == 0)
+        if (marks.isEmpty())
             minPosition = position
-        marks.add(position)
+        marks.addLast(position)
     }
 
     override fun removeMark(): Boolean {
-        if (marks.size() == 1) {
+        if (marks.size == 1) {
             minPosition = NOT_REQUIRED
             cleanBuffer()
         }
 
-        return marks.poll() != null
+        return marks.pollLast() != null
     }
 
     override fun reset(): Boolean {
-        marks.poll()?.let {
+        marks.pollLast()?.let {
             position = it
 
-            if (marks.size() == 0) {
+            if (marks.isEmpty()) {
                 minPosition = NOT_REQUIRED
                 cleanBuffer()
             }

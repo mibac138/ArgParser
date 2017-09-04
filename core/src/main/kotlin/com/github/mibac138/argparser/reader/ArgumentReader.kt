@@ -28,6 +28,7 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.Reader
 import java.nio.charset.Charset
+import java.util.*
 import java.util.regex.MatchResult
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -193,7 +194,7 @@ fun ArgumentReader.matchMatcher(matcher: Matcher, readStep: Int = 30): MatchResu
         } while (!matcher.hitEnd() && available != 0)
 
         read = currentlyRead
-    } catch(e: Exception) {
+    } catch (e: Exception) {
         reset()
         throw e
     }
@@ -234,4 +235,11 @@ fun InputStream?.asReader(charset: Charset = Charsets.UTF_8): ArgumentReader {
 fun Reader?.asReader(): ArgumentReader {
     if (this == null) return EmptyArgumentReader
     return ReaderArgumentReader(this)
+}
+
+
+internal fun LinkedList<Int>.shift/*Left*/(amount: Int) {
+    for (i in this.indices) {
+        this[i] = this[i] - amount
+    }
 }
