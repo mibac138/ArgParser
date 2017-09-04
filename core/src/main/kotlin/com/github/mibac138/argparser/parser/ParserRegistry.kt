@@ -30,3 +30,10 @@ interface ParserRegistry : Parser {
     fun removeParser(parser: Parser)
     fun removeAllParsers()
 }
+
+fun <T : ParserRegistry> T.withParsers(vararg parsers: Parser): T {
+    for (parser in parsers)
+        registerParser(parser)
+
+    return this
+}

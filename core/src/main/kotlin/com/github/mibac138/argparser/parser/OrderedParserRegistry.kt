@@ -43,3 +43,17 @@ interface OrderedParserRegistry : ParserRegistry {
      */
     fun removeParser(position: Position)
 }
+
+fun <T : OrderedParserRegistry> T.withOrderedParsers(vararg parsers: Pair<Parser, Position>): T {
+    for ((parser, pos) in parsers)
+        registerParser(parser, pos)
+
+    return this
+}
+
+fun <T : OrderedParserRegistry> T.withOrderedParsers(vararg parsers: Parser, offset: Position = 0): T {
+    for (i in 0 until parsers.size)
+        registerParser(parsers[i], i + offset)
+
+    return this
+}

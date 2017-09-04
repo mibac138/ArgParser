@@ -35,3 +35,10 @@ interface NamedParserRegistry : ParserRegistry {
     fun removeParser(name: String)
 }
 
+typealias Name = String
+fun <T : NamedParserRegistry> T.withNamedParsers(vararg parsers: Pair<Parser, Name>): T {
+    for ((parser, name) in parsers)
+        registerParser(parser, name)
+
+    return this
+}
