@@ -5,6 +5,7 @@
     <content url="file://$MODULE_DIR$/../../../binder">
       <excludeFolder url="file://$MODULE_DIR$/../../../binder/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/../../../binder/build" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../binder/out" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
