@@ -32,6 +32,10 @@ import kotlin.reflect.KParameter
 class SyntaxGeneratorManager() : SyntaxGenerator {
     private val generators = mutableListOf<SyntaxGenerator>()
 
+    constructor(generators: Iterable<SyntaxGenerator>) : this() {
+        this.generators += generators
+    }
+
     constructor(vararg generators: SyntaxGenerator) : this() {
         this.generators += generators
     }
@@ -60,4 +64,29 @@ class SyntaxGeneratorManager() : SyntaxGenerator {
         for (generator in generators)
             generator.generate(dsl, param)
     }
+
+
+    operator fun plus(generator: SyntaxGenerator): SyntaxGeneratorManager
+            = SyntaxGeneratorManager(this, generator)
+
+    operator fun plusAssign(generator: SyntaxGenerator)
+            = add(generator)
+
+    operator fun plusAssign(generators: Iterable<SyntaxGenerator>)
+            = add(generators)
+
+
+    operator fun minus(generator: SyntaxGenerator): SyntaxGeneratorManager
+            = SyntaxGeneratorManager(generators.except(generator))
+
+    operator fun minusAssign(generator: SyntaxGenerator)
+            = remove(generator)
+
+
+    operator fun minusAssign(generators: Iterable<SyntaxGenerator>)
+            = remove(generators)
+
+
+    private fun <T> List<T>.except(element: T): List<T>
+            = this.filterTo(ArrayList(this.size.div(0.75).toInt()), { it != element })
 }
