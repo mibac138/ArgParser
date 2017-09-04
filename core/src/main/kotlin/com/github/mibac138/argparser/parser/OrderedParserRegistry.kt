@@ -23,9 +23,23 @@
 package com.github.mibac138.argparser.parser
 
 /**
+ * Must be `>= 0`
+ */
+typealias Position = Int
+
+/**
  * Created by mibac138 on 07-05-2017.
  */
 interface OrderedParserRegistry : ParserRegistry {
-    fun registerParser(parser: Parser, position: Int)
-    fun removeParser(position: Int)
+    /**
+     *
+     * @param position must be `>= 0`, otherwise a exception will be thrown (commonly `ArrayIndexOutOfBoundsException`)
+     */
+    fun registerParser(parser: Parser, position: Position)
+
+    /**
+     *
+     * @param position must be `>= 0`, otherwise a exception will be thrown (commonly `ArrayIndexOutOfBoundsException`)
+     */
+    fun removeParser(position: Position)
 }
