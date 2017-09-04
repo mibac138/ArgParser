@@ -82,7 +82,6 @@ class SyntaxGeneratorManager() : SyntaxGenerator {
     operator fun minusAssign(generator: SyntaxGenerator)
             = remove(generator)
 
-
     operator fun minusAssign(generators: Iterable<SyntaxGenerator>)
             = remove(generators)
 

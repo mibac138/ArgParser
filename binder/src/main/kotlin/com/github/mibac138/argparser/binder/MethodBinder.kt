@@ -30,6 +30,9 @@ import kotlin.reflect.jvm.kotlinFunction
  * Created by mibac138 on 10-05-2017.
  */
 object MethodBinder {
+    /**
+     * Default [SyntaxGenerator] used by [BoundMethod]s when generating syntax.
+     */
     @JvmStatic
     val generator = SyntaxGeneratorManager(
             NameSyntaxGenerator(),
@@ -37,8 +40,35 @@ object MethodBinder {
             Disabled by default as it might cause
             unexpected results
             ParamNameSyntaxGenerator()*/
-    )
+                                          )
 
+    /**
+     * Binds the given [method]
+     *
+     * @param owner required only when the method is instanceless (e.g. `String::substring`).
+     *              When it has a instance bound though (e.g. `"Something"::substring`) the parameter is ignored
+     */
+    @JvmStatic
+    fun bindMethod(method: KCallable<*>, owner: Any? = null): BoundMethod
+            = CallableBoundMethod(method, owner, generator)
+
+    /**
+     * Binds the given [method]. Intended to be used with Java.
+     *
+     * @param defaultValues when input isn't specified this will be used by default (port of Kotlin's default parameters)
+     */
+    @JvmStatic
+    @JvmOverloads
+    fun bindMethod(owner: Any, method: Method, vararg defaultValues: Any? = emptyArray()): BoundMethod
+            = CallableBoundMethod(method.kotlinFunction!!, owner,
+                                  generator + JavaDefaultValueSyntaxGenerator(defaultValues))
+
+    /**
+     * Searches for a method with the given [name] inside that class's methods. Returns null on failure (method not found)
+     * Intended to be used with Java.
+     *
+     * @param defaultValues when input isn't specified this will be used by default (port of Kotlin's default parameters)
+     */
     @JvmStatic
     @JvmOverloads
     fun bindMethod(owner: Any, name: String, vararg defaultValues: Any? = emptyArray()): BoundMethod? {
@@ -46,14 +76,4 @@ object MethodBinder {
 
         return bindMethod(owner, func, defaultValues)
     }
-
-    @JvmStatic
-    fun bindMethod(method: KCallable<*>, owner: Any? = null): BoundMethod
-            = CallableBoundMethod(method, owner, generator)
-
-    @JvmStatic
-    @JvmOverloads
-    fun bindMethod(owner: Any, method: Method, vararg defaultValues: Any? = emptyArray()): BoundMethod
-            = CallableBoundMethod(method.kotlinFunction!!, owner,
-            SyntaxGeneratorManager(generator, JavaDefaultValueSyntaxGenerator(defaultValues)))
 }
