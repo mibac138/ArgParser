@@ -25,16 +25,13 @@ package com.github.mibac138.argparser.binder
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSL
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
-import java.lang.reflect.Array.get
-import java.lang.reflect.Array.newInstance
+import kotlin.collections.set
 import kotlin.reflect.KCallable
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.extensionReceiverParameter
 import kotlin.reflect.full.instanceParameter
-import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.valueParameters
 import kotlin.reflect.jvm.jvmErasure
-import kotlin.reflect.jvm.jvmName
 import kotlin.reflect.jvm.kotlinFunction
 
 /**
@@ -45,37 +42,36 @@ import kotlin.reflect.jvm.kotlinFunction
  *
  * @constructor
  *
- * Example [method] requiring [owner]
+ * Example [method] that *won't* work
  * ```
  * Object::toString
  * ```
- * Example [method] *not* requiring [owner] (the function reference
+ * Example [method] that will work (the function reference
  * is on a instance, not on a class as in the previous example)
  * ```
  * Object()::toString
  * ```
  *
- *
  * @param method the method to bound
- * @param owner instance parameter or extension receiver parameter. Required only if the [method] requires it
  * @param generator the [SyntaxGenerator]  you want to use when generating syntax
  *
  */
-class CallableBoundMethod(override val method: KCallable<*>, private val owner: Any? = null, generator: SyntaxGenerator = MethodBinder.generator) : BoundMethod {
+class CallableBoundMethod(override val method: KCallable<*>,
+                          generator: SyntaxGenerator = MethodBinder.generator
+                         ) : BoundMethod {
     override val syntax: SyntaxElement
     private val syntaxToParamMap: Map<SyntaxElement, KParameter>
-    private val instanceParam: KParameter? = method.instanceParameter ?: method.extensionReceiverParameter
 
     init {
-        verifyInstanceParam()
+        if ((method.instanceParameter ?: method.extensionReceiverParameter) != null)
+            throw IllegalArgumentException(
+                    "CallableBoundMethod doesn't accept methods with instance (or extension) params")
 
         val builder = SyntaxContainerDSL(Any::class.java)
         val mutableSyntaxToParamMap = mutableMapOf<SyntaxElement, KParameter>()
 
         for (parameter in method.valueParameters) {
-            if (parameter.index == 0 && parameter.kind == KParameter.Kind.INSTANCE) continue
-
-            val type = parameter.type.jvmErasure.java.boxClass()
+            val type = parameter.type.jvmErasure.javaObjectType
             val element = SyntaxElementDSL(type)
 
             generator.generate(element, parameter)
@@ -89,37 +85,15 @@ class CallableBoundMethod(override val method: KCallable<*>, private val owner: 
         syntaxToParamMap = mutableSyntaxToParamMap
     }
 
-    private fun verifyInstanceParam() {
-        if (instanceParam != null) {
-            if (owner == null)
-                throw IllegalArgumentException("Method requires instance variable or extension receiver but it's null")
-
-            val paramTypeClass = instanceParam.type.jvmErasure
-            val ownerClass = owner::class
-            if (!ownerClass.isSubclassOf(paramTypeClass))
-                throw IllegalArgumentException("Provided owner (${ownerClass.jvmName}) isn't an subclass of required " +
-                        "instance param's value's class (${paramTypeClass.jvmName})")
-        }
-    }
-
-    private fun Class<*>.boxClass(): Class<*> {
-        if (this.isPrimitive)
-            return get(newInstance(this, 1), 0).javaClass
-        else return this
-    }
-
-    override fun invoke(parameters: Map<SyntaxElement, Any?>): Any? {
-        var paramMap = mapSyntaxMapToParamMap(parameters)
-
-        if (instanceParam != null)
-            paramMap = paramMap.plus(instanceParam to owner)
-
-        return method.callBy(paramMap)
-    }
+    override fun invoke(parameters: Map<SyntaxElement, Any?>): Any?
+            = method.callBy(mapSyntaxMapToParamMap(parameters))
 
     private fun mapSyntaxMapToParamMap(syntax: Map<SyntaxElement, Any?>): Map<KParameter, Any?>
             // filter allows optional parameters with null value to use default value instead
-            = syntax.mapKeys { syntaxToParamMap[it.key]!! }.filter { !it.key.isOptional || it.value != null }
+            = syntax.mapKeys {
+        /* TODO some more meaningful exception */
+        syntaxToParamMap[it.key]!!
+    }.filter { !it.key.isOptional || it.value != null }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

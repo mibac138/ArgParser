@@ -24,6 +24,11 @@ package com.github.mibac138.argparser.binder
 
 import java.lang.reflect.Method
 import kotlin.reflect.KCallable
+import kotlin.reflect.KParameter
+import kotlin.reflect.full.extensionReceiverParameter
+import kotlin.reflect.full.instanceParameter
+import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.jvm.jvmErasure
 import kotlin.reflect.jvm.kotlinFunction
 
 /**
@@ -50,7 +55,7 @@ object MethodBinder {
      */
     @JvmStatic
     fun bindMethod(method: KCallable<*>, owner: Any? = null): BoundMethod
-            = CallableBoundMethod(method, owner, generator)
+            = CallableBoundMethod(method.withInstanceIfNeeded(owner))
 
     /**
      * Binds the given [method]. Intended to be used with Java.
@@ -60,7 +65,7 @@ object MethodBinder {
     @JvmStatic
     @JvmOverloads
     fun bindMethod(owner: Any, method: Method, vararg defaultValues: Any? = emptyArray()): BoundMethod
-            = CallableBoundMethod(method.kotlinFunction!!, owner,
+            = CallableBoundMethod(method.kotlinFunction!!.withInstance(owner),
                                   generator + JavaDefaultValueSyntaxGenerator(defaultValues))
 
     /**
@@ -76,4 +81,37 @@ object MethodBinder {
 
         return bindMethod(owner, func, defaultValues)
     }
+
+    private fun <T> KCallable<T>.withInstanceIfNeeded(owner: Any?): KCallable<T> =
+            if (/* no instance params */(instanceParameter ?: extensionReceiverParameter) == null) this
+            else this.withInstance(owner ?: throw IllegalArgumentException("Owner is null when required"))
 }
+
+
+private class KCallableWithInstance<out T>(private val func: KCallable<T>,
+                                           private val instance: Any
+                                          ) : KCallable<T> by func {
+    private val instanceParam = func.instanceParameter ?:
+            func.extensionReceiverParameter ?:
+            throw IllegalArgumentException("Given function must not have a instance already bound")
+
+    init {
+        val instanceParamType = instanceParam.type.jvmErasure
+        if (!instance::class.isSubclassOf(instanceParamType))
+            throw IllegalArgumentException(
+                    "Provided instance (${instance::class.qualifiedName}) isn't an subclass of " +
+                            "instance param's value's class (${instanceParamType::class.qualifiedName})")
+    }
+
+    override fun call(vararg args: Any?): T
+            = func.call(instance, *args)
+
+
+    override fun callBy(args: Map<KParameter, Any?>): T
+            = func.callBy(args + (instanceParam to instance))
+
+    override val parameters = func.parameters.filter { it != instanceParam }
+}
+
+private fun <T> KCallable<T>.withInstance(instance: Any): KCallable<T>
+        = KCallableWithInstance(this, instance)
