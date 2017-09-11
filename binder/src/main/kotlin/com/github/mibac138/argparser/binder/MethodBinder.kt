@@ -88,9 +88,9 @@ object MethodBinder {
 }
 
 
-private class KCallableWithInstance<out T>(private val func: KCallable<T>,
-                                           private val instance: Any
-                                          ) : KCallable<T> by func {
+internal class KCallableWithInstance<out T>(private val func: KCallable<T>,
+                                            private val instance: Any
+                                           ) : KCallable<T> by func {
     private val instanceParam = func.instanceParameter ?:
             func.extensionReceiverParameter ?:
             throw IllegalArgumentException("Given function must not have a instance already bound")
@@ -113,5 +113,5 @@ private class KCallableWithInstance<out T>(private val func: KCallable<T>,
     override val parameters = func.parameters.filter { it != instanceParam }
 }
 
-private fun <T> KCallable<T>.withInstance(instance: Any): KCallable<T>
+internal fun <T> KCallable<T>.withInstance(instance: Any): KCallable<T>
         = KCallableWithInstance(this, instance)

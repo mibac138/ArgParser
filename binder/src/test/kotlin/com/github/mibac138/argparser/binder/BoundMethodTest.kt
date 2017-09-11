@@ -1,9 +1,6 @@
 package com.github.mibac138.argparser.binder
 
-import com.github.mibac138.argparser.parser.IntParser
-import com.github.mibac138.argparser.parser.MixedParserRegistryImpl
-import com.github.mibac138.argparser.parser.SequenceParser
-import com.github.mibac138.argparser.parser.SimpleParserRegistry
+import com.github.mibac138.argparser.parser.*
 import com.github.mibac138.argparser.reader.asReader
 import com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSL
 import com.github.mibac138.argparser.syntax.dsl.element
@@ -63,13 +60,13 @@ class BoundMethodTest(private val producer: (KFunction<*>) -> BoundMethod) {
     }
 
     @Test fun testInstanceParameterWithOwner() {
-        val binding = Binder.bind(CallableBoundMethod(Tested::method, Tested()))
+        val binding = Binder.bind(CallableBoundMethod(Tested()::method))
 
         assertEquals(Pair("Hello!", 10), binding.invoke("Hello! 10".asReader(), SimpleParserRegistry()))
     }
 
     @Test fun testExtensionParameterWithOwner() {
-        val binding = Binder.bind(CallableBoundMethod(String::extension, "Instance param"))
+        val binding = Binder.bind(CallableBoundMethod("Instance param"::extension))
 
         assertEquals(Pair("Hello!", 10), binding.invoke("Hello! 10".asReader(), SimpleParserRegistry()))
     }
@@ -83,7 +80,7 @@ class BoundMethodTest(private val producer: (KFunction<*>) -> BoundMethod) {
     }
 
     @Test(expected = IllegalArgumentException::class) fun testWithWrongOwner() {
-        CallableBoundMethod(String::extension, 123456)
+        CallableBoundMethod(String::extension.withInstance(123456))
     }
 
     @Test fun testSyntax() {
