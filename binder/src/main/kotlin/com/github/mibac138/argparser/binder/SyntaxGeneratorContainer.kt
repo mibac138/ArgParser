@@ -29,7 +29,7 @@ import kotlin.reflect.KParameter
  * Syntax generator consisting of other generators. Does nothing on it's own.
  * When running [generate] it invokes all of the added [generators].
  */
-class SyntaxGeneratorManager() : SyntaxGenerator {
+class SyntaxGeneratorContainer() : SyntaxGenerator {
     private val generators = mutableListOf<SyntaxGenerator>()
 
     constructor(generators: Iterable<SyntaxGenerator>) : this() {
@@ -48,11 +48,11 @@ class SyntaxGeneratorManager() : SyntaxGenerator {
             generator.generate(dsl, param)
     }
 
-    operator fun plus(generator: SyntaxGenerator): SyntaxGeneratorManager
-            = SyntaxGeneratorManager(this, generator)
+    operator fun plus(generator: SyntaxGenerator): SyntaxGeneratorContainer
+            = SyntaxGeneratorContainer(this, generator)
 
-    operator fun minus(generator: SyntaxGenerator): SyntaxGeneratorManager
-            = SyntaxGeneratorManager(generators.except(generator))
+    operator fun minus(generator: SyntaxGenerator): SyntaxGeneratorContainer
+            = SyntaxGeneratorContainer(generators.except(generator))
 
 
     operator fun plusAssign(generator: SyntaxGenerator) {

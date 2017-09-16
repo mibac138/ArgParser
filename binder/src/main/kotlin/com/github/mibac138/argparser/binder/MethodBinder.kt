@@ -39,13 +39,13 @@ object MethodBinder {
      * Default [SyntaxGenerator] used by [BoundMethod]s when generating syntax.
      */
     @JvmStatic
-    val generator = SyntaxGeneratorManager(
+    val generator = SyntaxGeneratorContainer(
             NameSyntaxGenerator(),
             KotlinDefaultValueSyntaxGenerator()/*,
             Disabled by default as it might cause
             unexpected results
             ParamNameSyntaxGenerator()*/
-                                          )
+                                            )
 
     /**
      * Binds the given [method]
