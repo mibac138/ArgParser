@@ -40,22 +40,6 @@ class SyntaxGeneratorManager() : SyntaxGenerator {
         this.generators += generators
     }
 
-    fun add(vararg add: SyntaxGenerator) {
-        generators += add
-    }
-
-    fun add(add: Iterable<SyntaxGenerator>) {
-        generators += add
-    }
-
-    fun remove(vararg remove: SyntaxGenerator) {
-        generators -= remove
-    }
-
-    fun remove(remove: Iterable<SyntaxGenerator>) {
-        generators -= remove
-    }
-
     fun clear() {
         generators.clear()
     }
@@ -65,27 +49,29 @@ class SyntaxGeneratorManager() : SyntaxGenerator {
             generator.generate(dsl, param)
     }
 
-
     operator fun plus(generator: SyntaxGenerator): SyntaxGeneratorManager
             = SyntaxGeneratorManager(this, generator)
-
-    operator fun plusAssign(generator: SyntaxGenerator)
-            = add(generator)
-
-    operator fun plusAssign(generators: Iterable<SyntaxGenerator>)
-            = add(generators)
-
 
     operator fun minus(generator: SyntaxGenerator): SyntaxGeneratorManager
             = SyntaxGeneratorManager(generators.except(generator))
 
-    operator fun minusAssign(generator: SyntaxGenerator)
-            = remove(generator)
 
-    operator fun minusAssign(generators: Iterable<SyntaxGenerator>)
-            = remove(generators)
+    operator fun plusAssign(generator: SyntaxGenerator) {
+        this.generators.add(generator)
+    }
 
+    operator fun plusAssign(generators: Iterable<SyntaxGenerator>) {
+        this.generators.addAll(generators)
+    }
+
+    operator fun minusAssign(generator: SyntaxGenerator) {
+        this.generators.remove(generator)
+    }
+
+    operator fun minusAssign(generators: Iterable<SyntaxGenerator>) {
+        this.generators.removeAll(generators)
+    }
 
     private fun <T> List<T>.except(element: T): List<T>
-            = this.filterTo(ArrayList(this.size.div(0.75).toInt()), { it != element })
+            = this.filterTo(ArrayList(((size - 1) / 0.75).toInt()), { it != element })
 }
