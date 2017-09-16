@@ -64,8 +64,8 @@ class SyntaxLinkerImpl(syntax: SyntaxElement) : ReusableSyntaxLinker {
                     if (key.isNullOrEmpty() && value != null) {
                         linkMap(value.entryIterator(true), map)
                         continue
-                    } else throw IllegalArgumentException("Parser returned " +
-                            "result which I can't map to the syntax: [key='$key', value='$value']")
+                    } else throw IllegalArgumentException("Parser returned result which I can't map " +
+                                                                  "to the syntax: [key='$key', value='$value']")
 
             if (map.containsKey(element))
                 throw IllegalStateException("Can't pass two values to one argument")
@@ -120,7 +120,8 @@ class SyntaxLinkerImpl(syntax: SyntaxElement) : ReusableSyntaxLinker {
         is Map<*, *> -> (this.entries.iterator() as Iterator<Map.Entry<String?, *>>).withIndex()
         else -> if (nested)
         // if the object is nested and has got here it means the linker couldn't resolve it
-            throw UnsupportedOperationException("The given input type [$this (${this::class.qualifiedName})] isn't supported")
+            throw UnsupportedOperationException(
+                    "The given input type [$this (${this::class.qualifiedName})] isn't supported")
         else
             listOf(this).iterator().asEntryBasedIterator().withIndex()
     }

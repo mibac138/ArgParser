@@ -40,9 +40,8 @@ class SyntaxGeneratorManager() : SyntaxGenerator {
         this.generators += generators
     }
 
-    fun clear() {
-        generators.clear()
-    }
+    fun clear()
+            = this.generators.clear()
 
     override fun generate(dsl: SyntaxElementDSL, param: KParameter) {
         for (generator in generators)
