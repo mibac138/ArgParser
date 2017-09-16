@@ -87,12 +87,11 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         return named
     }
 
-    private fun SyntaxElement.parseAtPosition(index: Int, input: ArgumentReader): Any? {
-        val parser = positionToParserMap[index] ?: this.parser
-        return this.parseOrDefault(input, parser)
-    }
+    private fun SyntaxElement.parseAtPosition(index: Int, input: ArgumentReader): Any?
+            = this.parseOrDefault(input, positionToParserMap[index] ?: this.parser)
 
-    private fun SyntaxElement.parseOrDefault(input: ArgumentReader, parser: Parser?): Any? = when (parser) {
+    private fun SyntaxElement.parseOrDefault(input: ArgumentReader, parser: Parser?): Any?
+            = when (parser) {
         null -> this.defaultValue
         else -> this.parse(input, parser)
     }
@@ -142,8 +141,7 @@ class MixedParserRegistryImpl : MixedParserRegistry {
     }
 
     private fun getParserForElement(element: SyntaxElement)
-            = element.parser ?: getParserForName(element.name ?:
-                                                         throw IllegalArgumentException())
+            = element.parser ?: getParserForName(element.name ?: throw IllegalArgumentException())
 
     private fun getParserForName(name: String): Parser {
         val parser = nameToParserMap[name]
@@ -154,7 +152,7 @@ class MixedParserRegistryImpl : MixedParserRegistry {
     }
 
     private fun SyntaxElement.findElementById(id: Int): SyntaxElement =
-            this.content().getOrNull(id) ?:
+            this.content().filter { it.name == null }.getOrNull(id) ?:
                     throw Exception("Couldn't find syntax element with id $id inside $this")
 
     private fun SyntaxElement.findElementByName(name: String): SyntaxElement {

@@ -16,7 +16,8 @@ import kotlin.test.assertTrue
 class MixedParserRegistryImplTest {
     val parser = MixedParserRegistryImpl()
 
-    @Test fun basicTest() {
+    @Test
+    fun basicTest() {
         parser.registerParser(SequenceParser(), 0)
         parser.registerParser(SequenceParser(), 1)
         val output = parser.parse("Hello! :)".asReader(), syntaxContainer {
@@ -27,7 +28,8 @@ class MixedParserRegistryImplTest {
         assertEquals(listOf("Hello!", ":)"), output[null])
     }
 
-    @Test fun mediumTest() {
+    @Test
+    fun mediumTest() {
         parser.registerParser(IntParser(), 0)
         parser.registerParser(SequenceParser(), "name")
         val syntax = syntaxContainer {
@@ -39,7 +41,8 @@ class MixedParserRegistryImplTest {
         assertEquals(mapOf<String?, Any>(null to listOf(15), "name" to "Mike"), output)
     }
 
-    @Test fun complexTest() {
+    @Test
+    fun complexTest() {
         parser.registerParser(BooleanParser(), 0)
         parser.registerParser(IntParser(), 1)
         parser.registerParser(BooleanParser(), 2)
@@ -61,10 +64,12 @@ class MixedParserRegistryImplTest {
                 "seq1" to "'Hiya!'",
                 "seq2" to "'Lorem ipsum'",
                 "seq3" to "Hi"
-        ), output)
+                                 ), output)
     }
 
-    @Test fun issue10() {
+
+    @Test
+    fun issue10() {
         parser.registerParser(SequenceParser(), 0)
         parser.registerParser(SequenceParser(), 1)
         parser.registerParser(SequenceParser(), "seq")
@@ -76,13 +81,16 @@ class MixedParserRegistryImplTest {
 
         val output = parser.parse("yes --seq:sequence".asReader(), syntax)
 
-        assertContentEquals(mapOf(
-                null to listOf("yes", "default"),
-                "seq" to "sequence"
-        ), output)
+        assertContentEquals(
+                mapOf(
+                        null to listOf("yes", "default"),
+                        "seq" to "sequence"
+                     ),
+                output)
     }
 
-    @Test fun issue9() {
+    @Test
+    fun issue9() {
         parser.registerParser(SequenceParser(), 0)
 
         val syntax = syntaxElement(String::class.java) {
@@ -91,9 +99,11 @@ class MixedParserRegistryImplTest {
         }
 
         val output = parser.parse(" ".asReader(), syntax)
-        assertContentEquals(mapOf(
-                null to listOf("default")
-        ), output)
+        assertContentEquals(
+                mapOf(
+                        null to listOf("default")
+                     ),
+                output)
     }
 
     private fun assertContentEquals(a: Map<String?, Any>, b: Map<String?, *>) {
