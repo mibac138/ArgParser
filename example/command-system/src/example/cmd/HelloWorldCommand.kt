@@ -18,7 +18,7 @@ class HelloWorldCommand : BoundCommand() {
 }
 
 class ReadLineParser : Parser {
-    override fun getSupportedTypes(): Set<Class<*>> = setOf(String::class.java)
+    override val supportedTypes: Set<Class<*>> = setOf(String::class.java)
 
     override fun parse(input: ArgumentReader, syntax: SyntaxElement): Any?
             = input.readUntilChar('\n').notEmptyOrNull()

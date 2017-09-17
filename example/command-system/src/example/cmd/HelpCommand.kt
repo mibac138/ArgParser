@@ -26,7 +26,7 @@ class HelpCommand(registry: CommandRegistry) : BoundCommand() {
 }
 
 class CommandParser(private val registry: CommandRegistry) : Parser {
-    override fun getSupportedTypes(): Set<Class<*>> = setOf(Command::class.java)
+    override val supportedTypes: Set<Class<*>> = setOf(Command::class.java)
 
     override fun parse(input: ArgumentReader, syntax: SyntaxElement): Command? {
         return registry.getCommand(input.readUntilChar(' '))
