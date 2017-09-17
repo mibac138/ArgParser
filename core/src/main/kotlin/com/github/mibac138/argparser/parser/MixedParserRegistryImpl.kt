@@ -52,10 +52,10 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         val named = mutableMapOf<String?, Any?>()
         val unnamed = mutableListOf<Any?>()
         // LinkedList has O(1) add, remove and Iterator.next (the only used methods here)
-        val unprocessedSyntax = LinkedList(syntax.content())
+        val unprocessedSyntax = LinkedList(syntax.content)
 
         var index = 0
-        for (i in 0 until syntax.getSize()) {
+        for (i in 0 until syntax.size) {
 
             input.skipChar(' ')
             val matched = matcher.match(input)
@@ -152,7 +152,7 @@ class MixedParserRegistryImpl : MixedParserRegistry {
     }
 
     private fun SyntaxElement.findElementById(id: Int): SyntaxElement =
-            this.content().filter { it.name == null }.getOrNull(id) ?:
+            this.content.filter { it.name == null }.getOrNull(id) ?:
                     throw Exception("Couldn't find syntax element with id $id inside $this")
 
     private fun SyntaxElement.findElementByName(name: String): SyntaxElement {

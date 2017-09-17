@@ -10,27 +10,29 @@ import kotlin.test.assertFalse
  * Created by mibac138 on 02-05-2017.
  */
 class SyntaxUtilTest {
-    @Test fun testGetSize() {
-        assertEquals(0, null.getSize())
-        assertEquals(0, EmptySyntaxContainer.getSize())
-        assertEquals(1, SyntaxElementImpl(Any::class.java).getSize())
+    @Test
+    fun testGetSize() {
+        assertEquals(0, null.size)
+        assertEquals(0, EmptySyntaxContainer.size)
+        assertEquals(1, SyntaxElementImpl(Any::class.java).size)
         assertEquals(5, SyntaxContainerDSL(Any::class.java)
                 .element(Any::class.java).element(Any::class.java)
                 .element(Any::class.java).element(Any::class.java)
-                .element(Any::class.java).build().getSize())
+                .element(Any::class.java).build().size)
     }
 
-    @Test fun testGetRequiredSize() {
-        assertEquals(0, null.getRequiredSize())
-        assertEquals(0, EmptySyntaxContainer.getRequiredSize())
+    @Test
+    fun testGetRequiredSize() {
+        assertEquals(0, null.requiredSize)
+        assertEquals(0, EmptySyntaxContainer.requiredSize)
 
-        assertEquals(1, SyntaxElementImpl(Any::class.java).getRequiredSize())
-        assertEquals(0, SyntaxElementImpl(Any::class.java, false).getRequiredSize())
+        assertEquals(1, SyntaxElementImpl(Any::class.java).requiredSize)
+        assertEquals(0, SyntaxElementImpl(Any::class.java, false).requiredSize)
 
         assertEquals(5, SyntaxContainerDSL(Any::class.java)
                 .element(Any::class.java).element(Any::class.java)
                 .element(Any::class.java).element(Any::class.java)
-                .element(Any::class.java).build().getRequiredSize())
+                .element(Any::class.java).build().requiredSize)
 
         assertEquals(3, SyntaxContainerDSL(Any::class.java)
                 .element(Any::class.java) { required = false }
@@ -38,15 +40,15 @@ class SyntaxUtilTest {
                 .element(Any::class.java)
                 .element(Any::class.java)
                 .element(Any::class.java)
-                .build().getRequiredSize())
-
+                .build().requiredSize)
     }
 
-    @Test fun testIterator() {
+    @Test
+    fun testIterator() {
         assertContentEquals(emptyList<Any>(), EmptySyntaxContainer.iterator())
         assertContentEquals(emptyList<Any>(), null.iterator())
         assertContentEquals(listOf(SyntaxElementImpl(Any::class.java)),
-                SyntaxContainerDSL(Any::class.java).element(Any::class.java).build().iterator())
+                            SyntaxContainerDSL(Any::class.java).element(Any::class.java).build().iterator())
         assertContentEquals(listOf(SyntaxElementImpl(Any::class.java)), SyntaxElementImpl(Any::class.java).iterator())
     }
 

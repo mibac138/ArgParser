@@ -24,10 +24,7 @@ package com.github.mibac138.argparser.parser
 
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.skipChar
-import com.github.mibac138.argparser.syntax.SyntaxElement
-import com.github.mibac138.argparser.syntax.getSize
-import com.github.mibac138.argparser.syntax.iterator
-import com.github.mibac138.argparser.syntax.parser
+import com.github.mibac138.argparser.syntax.*
 
 /**
  * Created by mibac138 on 05-04-2017.
@@ -68,7 +65,7 @@ class SimpleParserRegistry : OrderedParserRegistry {
     }
 
     override fun parse(input: ArgumentReader, syntax: SyntaxElement)
-            = parseSyntax(input, syntax.getSize(), syntax.iterator())
+            = parseSyntax(input, syntax.size, syntax.iterator())
 
     private fun parseSyntax(input: ArgumentReader, size: Int, iterator: Iterator<SyntaxElement>): List<*> {
         val result = ArrayList<Any?>(size)

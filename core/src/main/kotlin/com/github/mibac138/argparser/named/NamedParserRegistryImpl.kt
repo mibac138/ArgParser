@@ -45,9 +45,9 @@ class NamedParserRegistryImpl : NamedParserRegistry {
 
         val map = mutableMapOf<String, Any?>()
         // LinkedList has O(1) add, remove and Iterator.next (the only used methods here)
-        val unprocessedSyntax = LinkedList(syntax.content())
+        val unprocessedSyntax = LinkedList(syntax.content)
 
-        for (i in 0 until syntax.getSize()) {
+        for (i in 0 until syntax.size) {
             if (!input.hasNext()) break
 
             input.skipChar(' ')

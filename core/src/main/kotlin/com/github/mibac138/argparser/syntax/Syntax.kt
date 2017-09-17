@@ -68,23 +68,24 @@ interface SyntaxComponent {
  * - [SyntaxContainer]: content's size
  * - otherwise: 1
  */
-
-fun SyntaxElement?.getSize(): Int {
-    if (this == null) return 0
-    if (this is SyntaxContainer) return content.size
-    return 1
-}
+val SyntaxElement?.size: Int
+    get() {
+        if (this == null) return 0
+        if (this is SyntaxContainer) return content.size
+        return 1
+    }
 
 /**
  * Returns this SyntaxElement's required size (i.e. amount of required elements)
  */
-fun SyntaxElement?.getRequiredSize(): Int {
-    if (this == null) return 0
-    if (!required) return 0
-    if (this is SyntaxContainer)
-        return content.count { it.required }
-    return 1
-}
+val SyntaxElement?.requiredSize: Int
+    get() {
+        if (this == null) return 0
+        if (!required) return 0
+        if (this is SyntaxContainer)
+            return content.count { it.required }
+        return 1
+    }
 
 /**
  * Returns a iterator for given [SyntaxElement].
@@ -94,7 +95,7 @@ fun SyntaxElement?.getRequiredSize(): Int {
  *
  */
 operator fun SyntaxElement?.iterator(): Iterator<SyntaxElement> {
-    if (this == null || getSize() == 0)
+    if (this == null || size == 0)
         return Collections.emptyIterator()
     if (this is SyntaxContainer)
         return content.iterator()
@@ -106,7 +107,7 @@ operator fun SyntaxElement?.iterator(): Iterator<SyntaxElement> {
  * Returns a iterator for given [SyntaxElement] consisting of only required elements
  */
 fun SyntaxElement?.requiredIterator(): Iterator<SyntaxElement> {
-    if (this == null || !required || getRequiredSize() == 0)
+    if (this == null || !required)
         return Collections.emptyIterator()
     if (this is SyntaxContainer)
         return content.filter { required }.iterator()
@@ -118,8 +119,9 @@ fun SyntaxElement?.requiredIterator(): Iterator<SyntaxElement> {
 /**
  *
  */
-fun SyntaxElement?.content(): List<SyntaxElement> {
-    if (this == null) return emptyList()
-    if (this !is SyntaxContainer) return listOf(this)
-    return this.content
-}
+val SyntaxElement?.content: List<SyntaxElement>
+    get() {
+        if (this == null) return emptyList()
+        if (this is SyntaxContainer) return this.content
+        return listOf(this)
+    }
