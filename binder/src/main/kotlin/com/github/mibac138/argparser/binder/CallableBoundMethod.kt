@@ -25,6 +25,7 @@ package com.github.mibac138.argparser.binder
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSL
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
+import java.util.*
 import kotlin.collections.set
 import kotlin.reflect.KCallable
 import kotlin.reflect.KParameter
@@ -68,7 +69,7 @@ class CallableBoundMethod(override val method: KCallable<*>,
                     "CallableBoundMethod doesn't accept methods with instance (or extension) params")
 
         val builder = SyntaxContainerDSL(Any::class.java)
-        val mutableSyntaxToParamMap = mutableMapOf<SyntaxElement, KParameter>()
+        val mutableSyntaxToParamMap = IdentityHashMap<SyntaxElement, KParameter>()
 
         for (parameter in method.valueParameters) {
             val type = parameter.type.jvmErasure.javaObjectType

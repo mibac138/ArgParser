@@ -25,13 +25,14 @@ package com.github.mibac138.argparser.binder
 import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.iterator
+import java.util.*
 
 /**
  * Created by mibac138 on 23-06-2017.
  */
 class SyntaxLinkerImpl(syntax: SyntaxElement) : ReusableSyntaxLinker {
     private val argsMap: MutableMap<String, IndexedValue<SyntaxElement>> = HashMap()
-    private val noNameArgsMap: MutableMap<Class<*>, IndexedValue<SyntaxElement>> = HashMap()
+    private val noNameArgsMap: MutableMap<Class<*>, MutableMap<Int, SyntaxElement>> = HashMap()
 
     init {
         recreate(syntax)
@@ -45,17 +46,19 @@ class SyntaxLinkerImpl(syntax: SyntaxElement) : ReusableSyntaxLinker {
             val name = element.name
 
             if (name != null) argsMap[name] = IndexedValue(i, element)
-            else noNameArgsMap[element.outputType] = IndexedValue(i, element)
+            else noNameArgsMap.getOrPut(element.outputType, { mutableMapOf() })[i] = element
         }
     }
 
+    // region Linking
 
     override fun link(input: Any): Map<SyntaxElement, Any?> =
             linkMap(input.entryIterator(false))
 
 
     private fun linkMap(iterator: Iterator<IndexedValue<Map.Entry<String?, *>>>,
-                        map: MutableMap<SyntaxElement, Any?> = mutableMapOf()): Map<SyntaxElement, Any?> {
+                        map: MutableMap<SyntaxElement, Any?> = IdentityHashMap()
+                       ): Map<SyntaxElement, Any?> {
 
         for ((i, entry) in iterator) {
             val (key, value) = entry
@@ -64,8 +67,10 @@ class SyntaxLinkerImpl(syntax: SyntaxElement) : ReusableSyntaxLinker {
                     if (key.isNullOrEmpty() && value != null) {
                         linkMap(value.entryIterator(true), map)
                         continue
-                    } else throw IllegalArgumentException("Parser returned result which I can't map " +
-                                                                  "to the syntax: [key='$key', value='$value']")
+                    } else if (key != null || value != null) throw IllegalArgumentException(
+                            "Parser returned result [key='$key', value='$value'] which I can't map " +
+                                    "to the syntax")
+                    else continue
 
             if (map.containsKey(element))
                 throw IllegalStateException("Can't pass two values to one argument")
@@ -76,42 +81,35 @@ class SyntaxLinkerImpl(syntax: SyntaxElement) : ReusableSyntaxLinker {
         return map
     }
 
+    //endregion
+
+    // region Resolving arguments
+
     private fun resolveArg(key: String?, value: Any?, index: Int): SyntaxElement? {
         if (key != null) return getArgByName(key)
-        if (value != null) return getArgByType(value)
-        return getArgByIndex(index)
+        return getArgByTypeAndIndex(value, index)
     }
 
     private fun getArgByName(name: String): SyntaxElement?
             = argsMap[name]?.value
 
 
-    private fun getArgByType(instance: Any): SyntaxElement? {
-        argsMap.values
-                .firstOrNull { it.value.outputType.isInstance(instance) }
-                ?.let { return it.value }
+    private fun getArgByTypeAndIndex(instance: Any?, index: Int): SyntaxElement? {
+        for ((currentIndex, value) in argsMap.values)
+            if (currentIndex == index && instance?.let { value.outputType.isInstance(it) } != false)
+                return value
 
-        for ((key, value) in noNameArgsMap) {
-            if (key.isInstance(instance))
-                return value.value
-        }
-
-        return null
-    }
-
-
-    private fun getArgByIndex(index: Int): SyntaxElement? {
-        for (value in noNameArgsMap.values)
-            if (value.index == index)
-                return value.value
-
-
-        for (value in argsMap.values)
-            if (value.index == index)
-                return value.value
+        if (instance != null)
+            for ((key, value) in noNameArgsMap)
+                if (key.isInstance(instance))
+                    return value[index]
 
         return null
     }
+
+// endregion
+
+    // region Iteration
 
     private fun Any.entryIterator(nested: Boolean): Iterator<IndexedValue<Map.Entry<String?, *>>>
             = when (this) {
@@ -139,4 +137,6 @@ class SyntaxLinkerImpl(syntax: SyntaxElement) : ReusableSyntaxLinker {
                 get() = null
         }
     }
+
+    // endregion
 }
