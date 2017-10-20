@@ -22,7 +22,8 @@
 
 package com.github.mibac138.argparser.binder
 
-import com.github.mibac138.argparser.parser.*
+import com.github.mibac138.argparser.parser.Parser
+import com.github.mibac138.argparser.parser.parseReturnSyntaxLinkedMap
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.syntax.SyntaxElement
 
@@ -30,10 +31,9 @@ import com.github.mibac138.argparser.syntax.SyntaxElement
  * Default [Binding] implementation.
  */
 open class BindingImpl constructor(
-        protected val boundMethod: BoundMethod,
-        private val linker: SyntaxLinker = SyntaxLinkerImpl(
-                boundMethod.syntax))
-    : Binding {
+        protected val boundMethod: BoundMethod
+//        private val linker: SyntaxLinker = SyntaxLinkerImpl(boundMethod.syntax)
+                                  ) : Binding {
     private var syntax: SyntaxElement = boundMethod.syntax
 
 
@@ -41,11 +41,7 @@ open class BindingImpl constructor(
         if (boundMethod.syntax != syntax)
             updateSyntax()
 
-        if (parser !is ParserRegistry) throw Error()
-
-        val parsed = parser.parse(reader, syntax)
-//        val args: Map<SyntaxElement, Any?>
-//                = if (parsed == null) emptyMap() else linker.link(parsed)
+        val parsed = parser.parseReturnSyntaxLinkedMap(reader, syntax)
 
         return boundMethod.invoke(parsed.syntaxToValueMap)
     }
@@ -54,10 +50,10 @@ open class BindingImpl constructor(
      * Recreates internal syntax representation
      */
     fun updateSyntax() {
-        if (linker !is ReusableSyntaxLinker)
-            throw IllegalStateException("Can't update syntax if the SyntaxLinker isn't reusable")
-
-        syntax = boundMethod.syntax
-        linker.recreate(syntax)
+//        if (linker !is ReusableSyntaxLinker)
+//            throw IllegalStateException("Can't update syntax if the SyntaxLinker isn't reusable")
+//
+//        syntax = boundMethod.syntax
+//        linker.recreate(syntax)
     }
 }
