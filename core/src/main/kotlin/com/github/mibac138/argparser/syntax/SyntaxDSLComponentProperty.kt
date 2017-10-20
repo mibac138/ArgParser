@@ -29,15 +29,20 @@ import kotlin.reflect.KProperty
 open class SyntaxDSLComponentProperty<T, COMPONENT : SyntaxComponent>(
         protected val componentType: Class<COMPONENT>,
         protected var toComponent: T?.() -> COMPONENT?,
-        protected var toValue: COMPONENT?.() -> T?
-) : ReadWriteProperty<SyntaxElementDSL, T?> {
+        protected var toValue: COMPONENT?.() -> T?,
+        protected val allowReassigning: Boolean = false
+                                                                     ) : ReadWriteProperty<SyntaxElementDSL, T?> {
 
     @Suppress("UNCHECKED_CAST")
     override fun getValue(thisRef: SyntaxElementDSL, property: KProperty<*>)
             = (thisRef.components.firstOrNull { componentType.isInstance(it) } as COMPONENT?).toValue()
 
     override fun setValue(thisRef: SyntaxElementDSL, property: KProperty<*>, value: T?) {
-        thisRef.components.removeIf { componentType.isInstance(it) }
+        if (allowReassigning)
+            thisRef.components.removeIf { componentType.isInstance(it) }
+        else if (thisRef.components.firstOrNull { componentType.isInstance(it) } != null)
+            throw IllegalStateException("Can't reassign ${componentType.simpleName}'s value")
+
         value.toComponent()?.let {
             thisRef.components.add(it)
         }
