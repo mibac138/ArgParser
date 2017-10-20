@@ -78,8 +78,12 @@ inline fun SyntaxElementDSL.index(init: SyntaxElementDSL.() -> Int) = apply {
 }
 
 fun SyntaxElementDSL.autoIndex() = apply {
-    if (parent == null) throw IllegalArgumentException(
-            "Can't auto-assign an index to a single syntax element")
+    if (parent == null) {
+        index = 0
+        return@apply
+        //        throw IllegalArgumentException(
+        //            "Can't auto-assign an index to a single syntax element")
+    }
 
     val highestIndex = parent.elements.maxBy {
         it.index ?: -1
