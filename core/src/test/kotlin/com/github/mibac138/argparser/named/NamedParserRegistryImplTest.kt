@@ -4,10 +4,12 @@ import com.github.mibac138.argparser.exception.ParserInvalidInputException
 import com.github.mibac138.argparser.parser.*
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.asReader
-import com.github.mibac138.argparser.syntax.*
+import com.github.mibac138.argparser.syntax.SyntaxElement
+import com.github.mibac138.argparser.syntax.defaultValue
 import com.github.mibac138.argparser.syntax.dsl.element
 import com.github.mibac138.argparser.syntax.dsl.syntaxContainer
 import com.github.mibac138.argparser.syntax.dsl.syntaxElement
+import com.github.mibac138.argparser.syntax.parser
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -17,14 +19,16 @@ import kotlin.test.assertEquals
 class NamedParserRegistryImplTest {
     private val parser = NamedParserRegistryImpl()
 
-    @Test fun test() {
+    @Test
+    fun test() {
         parser.registerParser(BooleanParser())
         parser.associateParserWithName(Boolean::class.java, "hi")
         val result = parser.parse("--hi: true".asReader(), syntaxElement(Boolean::class.java) { name = "hi" })
         assertEquals(mapOf("hi" to true), result.keyToValueMap)
     }
 
-    @Test fun testSupportedTypes() {
+    @Test
+    fun testSupportedTypes() {
         assertEquals(emptySet(), parser.supportedTypes)
 
         parser.registerParser(BooleanParser())
@@ -36,7 +40,8 @@ class NamedParserRegistryImplTest {
         assertEquals(emptySet(), parser.supportedTypes)
     }
 
-    @Test fun testCustomParser() {
+    @Test
+    fun testCustomParser() {
         val output = parser.parse("--hi: true".asReader(), syntaxElement(Boolean::class.java, {
             name = "hi"
             parser = InvertedBooleanParser(BooleanParser())
@@ -45,7 +50,8 @@ class NamedParserRegistryImplTest {
         assertEquals(mapOf("hi" to false), output.keyToValueMap)
     }
 
-    @Test(expected = IllegalArgumentException::class) fun testRemoveParserWithAssociatedNames() {
+    @Test(expected = IllegalArgumentException::class)
+    fun testRemoveParserWithAssociatedNames() {
         parser.registerParser(BooleanParser(), "bool")
         parser.associateParserWithName(Boolean::class.java, "value")
         parser.associateParserWithName(Boolean::class.java, "boolean")
@@ -53,26 +59,31 @@ class NamedParserRegistryImplTest {
         parser.removeParser(BooleanParser())
 
         // Expected to throw here. (couldn't find parser for name value)
-        parser.parse("--value: true".asReader(), SyntaxElementImpl(Boolean::class.java, components = NameComponent("value")))
+        parser.parse("--value: true".asReader(), syntaxElement(Boolean::class.java) { name = "value" })
     }
 
-    @Test(expected = IllegalArgumentException::class) fun testAssocParserWithNameInvalid() {
+    @Test(expected = IllegalArgumentException::class)
+    fun testAssocParserWithNameInvalid() {
         parser.associateParserWithName(Any::class.java, "object")
     }
 
-    @Test(expected = IllegalArgumentException::class) fun testUnknownType() {
-        println(parser.parse("--hi: Hello!".asReader(), SyntaxElementImpl(String::class.java, components = NameComponent("hi"))))
+    @Test(expected = IllegalArgumentException::class)
+    fun testUnknownType() {
+        println(parser.parse("--hi: Hello!".asReader(), syntaxElement(String::class.java) { name = "hi" }))
     }
 
-    @Test(expected = IllegalArgumentException::class) fun testInvalidSyntax() {
-        parser.parse("".asReader(), SyntaxElementImpl(Any::class.java))
+    @Test(expected = IllegalArgumentException::class)
+    fun testInvalidSyntax() {
+        parser.parse("".asReader(), syntaxElement(Any::class.java))
     }
 
-    @Test(expected = IllegalArgumentException::class) fun testInvalidInput() {
-        parser.parse("--".asReader(), SyntaxElementImpl(Any::class.java, components = NameComponent("")))
+    @Test(expected = IllegalArgumentException::class)
+    fun testInvalidInput() {
+        parser.parse("--".asReader(), syntaxElement(Any::class.java) { name = "" })
     }
 
-    @Test(expected = Exception::class) fun testProblematicParser1() {
+    @Test(expected = Exception::class)
+    fun testProblematicParser1() {
         parser.registerParser(object : Parser {
             override val supportedTypes = setOf(Any::class.java)
 
@@ -80,11 +91,12 @@ class NamedParserRegistryImplTest {
                     = throw Exception()
         }, "color")
 
-        parser.parse("--color:".asReader(), SyntaxElementImpl(Any::class.java, components = NameComponent("color")))
+        parser.parse("--color:".asReader(), syntaxElement(Any::class.java) { name = "color" })
     }
 
 
-    @Test(expected = ParserInvalidInputException::class) fun testProblematicParser2() {
+    @Test(expected = ParserInvalidInputException::class)
+    fun testProblematicParser2() {
         parser.registerParser(object : Parser {
             override val supportedTypes = setOf(Any::class.java)
 
@@ -92,10 +104,11 @@ class NamedParserRegistryImplTest {
                     = throw ParserInvalidInputException()
         }, "color")
 
-        parser.parse("--color:".asReader(), SyntaxElementImpl(Any::class.java, components = NameComponent("color")))
+        parser.parse("--color:".asReader(), syntaxElement(Any::class.java) { name = "color" })
     }
 
-    @Test fun issue10() {
+    @Test
+    fun issue10() {
         parser.registerParser(SequenceParser(), "arg1")
         parser.registerParser(SequenceParser(), "arg2")
         val syntax = syntaxContainer {
@@ -111,7 +124,8 @@ class NamedParserRegistryImplTest {
                           ), output.keyToValueMap)
     }
 
-    @Test fun testEquality() {
+    @Test
+    fun testEquality() {
         val a = NamedParserRegistryImpl()
         val b = NamedParserRegistryImpl()
 
