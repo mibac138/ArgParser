@@ -2,6 +2,7 @@ package com.github.mibac138.argparser.syntax
 
 import com.github.mibac138.argparser.syntax.dsl.element
 import com.github.mibac138.argparser.syntax.dsl.syntaxContainer
+import com.github.mibac138.argparser.syntax.dsl.syntaxElement
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -26,6 +27,13 @@ class IndexComponentTest {
 
         assertEquals(0, syntax.content[0].index)
         assertEquals(1, syntax.content[1].index)
+    }
+
+    @Test
+    fun autoAssign3() {
+        val syntax = syntaxElement(Any::class.java) { autoIndex() }
+
+        assertEquals(0, syntax.index)
     }
 
     @Test(expected = IllegalArgumentException::class)
