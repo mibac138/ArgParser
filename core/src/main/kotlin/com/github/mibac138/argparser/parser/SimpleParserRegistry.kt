@@ -113,15 +113,12 @@ class SimpleParserRegistry : OrderedParserRegistry {
         other as SimpleParserRegistry
 
         if (classToParserMap != other.classToParserMap) return false
+        if (positionToParserMap != other.positionToParserMap) return false
 
         return true
     }
 
-    override fun hashCode(): Int {
-        return classToParserMap.hashCode()
-    }
+    override fun hashCode(): Int = classToParserMap.hashCode()
 
-    override fun toString(): String {
-        return "SimpleParserRegistry(classToParserMap=$classToParserMap)"
-    }
+    override fun toString(): String = "SimpleParserRegistry(classToParserMap=$classToParserMap)"
 }

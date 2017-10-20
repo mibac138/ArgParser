@@ -23,6 +23,7 @@
 package com.github.mibac138.argparser.binder
 
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
+import org.jetbrains.annotations.Contract
 import kotlin.reflect.KParameter
 
 /**
@@ -48,9 +49,11 @@ class SyntaxGeneratorContainer() : SyntaxGenerator {
             generator.generate(dsl, param)
     }
 
+    @Contract(pure = true)
     operator fun plus(generator: SyntaxGenerator): SyntaxGeneratorContainer
             = SyntaxGeneratorContainer(this, generator)
 
+    @Contract(pure = true)
     operator fun minus(generator: SyntaxGenerator): SyntaxGeneratorContainer
             = SyntaxGeneratorContainer(generators.except(generator))
 

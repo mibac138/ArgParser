@@ -46,8 +46,12 @@ val SyntaxElement?.parser: Parser?
  * times overwrites the previous value
  */
 var SyntaxElementDSL.parser: Parser? by SyntaxDSLComponentProperty<Parser?, ParserComponent>(ParserComponent::class.java,
-        { this?.let { ParserComponent(this) } },
-        { this?.let { parser } })
+                                                                                             {
+                                                                                                 this?.let {
+                                                                                                     ParserComponent(it)
+                                                                                                 }
+                                                                                             },
+                                                                                             { this?.parser })
 
 /**
  * Adds given parser upon creation. Note: there can be only one parser per syntax element and setting this multiple

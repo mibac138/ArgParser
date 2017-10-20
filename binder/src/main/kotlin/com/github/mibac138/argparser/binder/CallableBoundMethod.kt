@@ -96,6 +96,7 @@ class CallableBoundMethod(override val method: KCallable<*>,
         syntaxToParamMap[it.key]!!
     }.filter { !it.key.isOptional || it.value != null }
 
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other?.javaClass != javaClass) return false
@@ -107,11 +108,7 @@ class CallableBoundMethod(override val method: KCallable<*>,
         return true
     }
 
-    override fun hashCode(): Int {
-        return method.hashCode()
-    }
+    override fun hashCode(): Int = method.hashCode()
 
-    override fun toString(): String {
-        return "CallableBoundMethod(method=$method, syntax=$syntax)"
-    }
+    override fun toString(): String = "CallableBoundMethod(method=$method, syntax=$syntax)"
 }
