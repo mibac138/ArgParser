@@ -25,10 +25,7 @@
 
 package com.github.mibac138.argparser.syntax.dsl
 
-import com.github.mibac138.argparser.syntax.EmptySyntaxContainer
-import com.github.mibac138.argparser.syntax.SyntaxContainer
-import com.github.mibac138.argparser.syntax.SyntaxContainerImpl
-import com.github.mibac138.argparser.syntax.SyntaxElement
+import com.github.mibac138.argparser.syntax.*
 import java.util.function.Consumer
 
 fun SyntaxContainerDSL(): SyntaxContainerDSL<*> = SyntaxContainerDSL(Any::class.java)
@@ -84,7 +81,14 @@ fun <T> syntaxContainer(type: Class<T>, init: Consumer<SyntaxContainerDSL<T>> = 
     return element.build()
 }
 
-@JvmOverloads
-fun <T> SyntaxContainerDSL<*>.element(type: Class<T>, init: SyntaxElementDSL.() -> Unit = {}) = apply {
-    elements.add(syntaxElement(type, init))
+fun <T> SyntaxContainerDSL<*>.element(type: Class<T>) = apply {
+    elements.add(syntaxElement(type, this))
+}
+
+fun <T> SyntaxContainerDSL<*>.element(type: Class<T>, init: SyntaxElementDSL.() -> Unit) = apply {
+    elements.add(syntaxElement(type, this, init))
+}
+
+fun <T> SyntaxContainerDSL<*>.element(type: Class<T>, init: Consumer<SyntaxElementDSL>) = apply {
+    elements.add(syntaxElement(type, this, init))
 }
