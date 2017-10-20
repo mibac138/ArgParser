@@ -131,8 +131,7 @@ class SyntaxLinkerImpl(syntax: SyntaxElement) : ReusableSyntaxLinker {
     private class ListAsEntryIterator<out T>(private val iterator: Iterator<T>) : Iterator<Map.Entry<String?, T>> {
         override fun hasNext() = iterator.hasNext()
 
-        override fun next() = ValueOnlyEntry(
-                iterator.next())
+        override fun next() = ValueOnlyEntry(iterator.next())
 
         private class ValueOnlyEntry<out T>(override val value: T) : Map.Entry<String?, T> {
             override val key

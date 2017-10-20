@@ -52,7 +52,6 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         val valuesMap = mutableMapOf<String?, Any?>()
         val syntaxMap = mutableMapOf<SyntaxElement, Any?>()
 
-//        val named = mutableMapOf<String?, Any?>()
         val unnamed = mutableListOf<Any?>()
         // LinkedList has O(1) add, remove and Iterator.next (the only used methods here)
         // TODO is it really better?
@@ -77,7 +76,6 @@ class MixedParserRegistryImpl : MixedParserRegistry {
 
                 valuesMap[matched.name] = parsed
                 syntaxMap[element] = parsed
-//                named[matched.name] = parsed
                 unprocessedSyntax -= element
             }
         }
@@ -95,12 +93,10 @@ class MixedParserRegistryImpl : MixedParserRegistry {
 
                 valuesMap[name] = parsed
                 syntaxMap[element] = parsed
-//              named[name] = parsed
             }
         }
 
         valuesMap[null] = unnamed
-//        named[null] = unnamed
         return SyntaxLinkedMap(valuesMap, syntaxMap)
     }
 

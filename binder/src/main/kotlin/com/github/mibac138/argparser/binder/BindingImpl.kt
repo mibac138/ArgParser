@@ -32,28 +32,13 @@ import com.github.mibac138.argparser.syntax.SyntaxElement
  */
 open class BindingImpl constructor(
         protected val boundMethod: BoundMethod
-//        private val linker: SyntaxLinker = SyntaxLinkerImpl(boundMethod.syntax)
                                   ) : Binding {
     private var syntax: SyntaxElement = boundMethod.syntax
 
 
     override fun invoke(reader: ArgumentReader, parser: Parser): Any? {
-        if (boundMethod.syntax != syntax)
-            updateSyntax()
-
         val parsed = parser.parseReturnSyntaxLinkedMap(reader, syntax)
 
         return boundMethod.invoke(parsed.syntaxToValueMap)
-    }
-
-    /**
-     * Recreates internal syntax representation
-     */
-    fun updateSyntax() {
-//        if (linker !is ReusableSyntaxLinker)
-//            throw IllegalStateException("Can't update syntax if the SyntaxLinker isn't reusable")
-//
-//        syntax = boundMethod.syntax
-//        linker.recreate(syntax)
     }
 }

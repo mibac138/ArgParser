@@ -24,7 +24,9 @@ class MixedParserRegistryImplTest {
             element(String::class.java)
         })
 
-        assertEquals(listOf("Hello!", ":)"), output[null])
+        assertEquals(
+                listOf("Hello!", ":)"),
+                output[null])
     }
 
     @Test
@@ -37,7 +39,11 @@ class MixedParserRegistryImplTest {
         }
         val output = parser.parse("15 --name:Mike".asReader(), syntax)
 
-        assertEquals(mapOf(null to listOf(15), "name" to "Mike"), output.keyToValueMap)
+        assertEquals(
+                mapOf(
+                        null to listOf(15), "name" to "Mike"
+                     ),
+                output.keyToValueMap)
     }
 
     @Test
@@ -58,12 +64,13 @@ class MixedParserRegistryImplTest {
         }
         val output = parser.parse("true --seq1='Hiya!' --seq2: 'Lorem ipsum' 100 false --seq3=Hi".asReader(), syntax)
 
-        assertEquals<Map<String?, Any?>>(mapOf(
-                null to listOf(true, 100, false),
-                "seq1" to "'Hiya!'",
-                "seq2" to "'Lorem ipsum'",
-                "seq3" to "Hi"
-                                              ), output)
+        assertEquals(
+                mapOf(
+                        null to listOf(true, 100, false),
+                        "seq1" to "'Hiya!'",
+                        "seq2" to "'Lorem ipsum'",
+                        "seq3" to "Hi"
+                     ), output.keyToValueMap)
     }
 
 
@@ -80,12 +87,12 @@ class MixedParserRegistryImplTest {
 
         val output = parser.parse("yes --seq:sequence".asReader(), syntax)
 
-        assertEquals<Map<String?, Any?>>(
+        assertEquals(
                 mapOf(
                         null to listOf("yes", "default"),
                         "seq" to "sequence"
                      ),
-                output)
+                output.keyToValueMap)
     }
 
     @Test
@@ -104,12 +111,4 @@ class MixedParserRegistryImplTest {
                      ),
                 output.keyToValueMap)
     }
-
-//    private fun assertContentEquals(a: Map<String?, Any>, b: Map<String?, *>) {
-//        a.forEach { (key, value) ->
-//            if (value is List<*>)
-//                assertTrue(value.containsAll(b[key] as List<*>) && (b[key] as List<*>).containsAll(value))
-//            assertEquals(value, b[key])
-//        }
-//    }
 }

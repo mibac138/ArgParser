@@ -68,8 +68,7 @@ class SimpleParserRegistry : OrderedParserRegistry {
     override fun parse(input: ArgumentReader, syntax: SyntaxElement): SyntaxLinkedMap<Int, *>
             = parse(input, syntax.iterator())
 
-    private fun parse(input: ArgumentReader,
-                      iterator: Iterator<SyntaxElement>)
+    private fun parse(input: ArgumentReader, iterator: Iterator<SyntaxElement>)
             : SyntaxLinkedMap<Int, *> {
         val syntaxMap = mutableMapOf<SyntaxElement, Any?>()
         val valuesMap = mutableMapOf<Int, Any?>()
