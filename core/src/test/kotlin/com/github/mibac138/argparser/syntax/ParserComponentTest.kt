@@ -2,7 +2,6 @@ package com.github.mibac138.argparser.syntax
 
 import com.github.mibac138.argparser.parser.BooleanParser
 import com.github.mibac138.argparser.parser.IntParser
-import com.github.mibac138.argparser.parser.SequenceParser
 import com.github.mibac138.argparser.syntax.dsl.syntaxElement
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -21,14 +20,11 @@ class ParserComponentTest {
         assertEquals(parser, syntax.get(ParserComponent::class.java)?.parser)
     }
 
-    @Test fun dsl() {
-        val parser = SequenceParser()
-        val syntax = syntaxElement(Any::class.java) {
+    @Test(expected = IllegalStateException::class)
+    fun dsl() {
+        syntaxElement(Any::class.java) {
             parser { BooleanParser() }
             parser { IntParser() }
-            parser { parser }
         }
-
-        assertEquals(parser, syntax.parser)
     }
 }

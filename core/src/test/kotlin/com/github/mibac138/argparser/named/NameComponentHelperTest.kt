@@ -18,14 +18,12 @@ class NameComponentHelperTest {
         assertEquals("Hello", syntax.get(NameComponent::class.java)?.name)
     }
 
-    @Test fun dsl() {
-        val syntax = syntaxElement(Any::class.java) {
+    @Test(expected = IllegalStateException::class)
+    fun dsl() {
+        syntaxElement(Any::class.java) {
             name = "Hey"
             name = "Hi"
-            name = "Hello"
         }
-
-        assertEquals("Hello", syntax.name)
     }
 
     @Test fun dslDefaultValueShouldBeNull() {
