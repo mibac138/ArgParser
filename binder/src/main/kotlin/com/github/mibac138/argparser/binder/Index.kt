@@ -25,6 +25,7 @@ package com.github.mibac138.argparser.binder
 import com.github.mibac138.argparser.syntax.autoIndex
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 import com.github.mibac138.argparser.syntax.index
+import kotlin.reflect.KParameter
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
@@ -39,4 +40,20 @@ class IndexSyntaxGenerator : AnnotationBasedSyntaxGenerator<Index>(Index::class.
         else
             dsl.index = annotation.value
     }
+}
+
+/**
+ * Generates syntax for element's which have neither [@Name][Name] nor [@Index][Index] annotations using [auto index][autoIndex]
+ */
+class AutoIndexSyntaxGenerator : SyntaxGenerator {
+    private val nameClass = Name::class.java
+    private val indexClass = Index::class.java
+
+    override fun generate(dsl: SyntaxElementDSL, param: KParameter) {
+        if (param.annotations.any(this::isInapplicable)) return
+
+        dsl.autoIndex()
+    }
+
+    private fun isInapplicable(a: Annotation) = nameClass.isInstance(a) || indexClass.isInstance(a)
 }
