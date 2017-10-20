@@ -48,10 +48,14 @@ class MixedParserRegistryImpl : MixedParserRegistry {
             return output
         }
 
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement): Map<String?, *> {
-        val named = mutableMapOf<String?, Any?>()
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement): SyntaxLinkedMap<String?, *> {
+        val valuesMap = mutableMapOf<String?, Any?>()
+        val syntaxMap = mutableMapOf<SyntaxElement, Any?>()
+
+//        val named = mutableMapOf<String?, Any?>()
         val unnamed = mutableListOf<Any?>()
         // LinkedList has O(1) add, remove and Iterator.next (the only used methods here)
+        // TODO is it really better?
         val unprocessedSyntax = LinkedList(syntax.content)
 
         var index = 0
@@ -62,13 +66,18 @@ class MixedParserRegistryImpl : MixedParserRegistry {
 
             if (matched == null) {
                 val element = syntax.findElementById(index)
+                val parsed = element.parseAtPosition(index++, input)
 
-                unnamed += element.parseAtPosition(index++, input)
+                syntaxMap[element] = parsed
+                unnamed += parsed
                 unprocessedSyntax -= element
             } else {
                 val element = syntax.findElementByName(matched.name)
+                val parsed = element.parse(matched.value)
 
-                named[matched.name] = element.parse(matched.value)
+                valuesMap[matched.name] = parsed
+                syntaxMap[element] = parsed
+//                named[matched.name] = parsed
                 unprocessedSyntax -= element
             }
         }
@@ -77,14 +86,22 @@ class MixedParserRegistryImpl : MixedParserRegistry {
             val name = element.name
 
             if (name == null) {
-                unnamed += element.parseAtPosition(index++, input)
+                val parsed = element.parseAtPosition(index++, input)
+
+                syntaxMap[element] = parsed
+                unnamed += parsed
             } else {
-                named[name] = element.parse(input)
+                val parsed = element.parse(input)
+
+                valuesMap[name] = parsed
+                syntaxMap[element] = parsed
+//              named[name] = parsed
             }
         }
 
-        named[null] = unnamed
-        return named
+        valuesMap[null] = unnamed
+//        named[null] = unnamed
+        return SyntaxLinkedMap(valuesMap, syntaxMap)
     }
 
     private fun SyntaxElement.parseAtPosition(index: Int, input: ArgumentReader): Any?

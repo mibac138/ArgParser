@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.github.mibac138.argparser.binder
+package com.github.mibac138.argparser.parser
 
 import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.syntax.SyntaxElement
@@ -111,6 +111,7 @@ class SyntaxLinkerImpl(syntax: SyntaxElement) : ReusableSyntaxLinker {
 
     // region Iteration
 
+    @Suppress("UNCHECKED_CAST")
     private fun Any.entryIterator(nested: Boolean): Iterator<IndexedValue<Map.Entry<String?, *>>>
             = when (this) {
         is Collection<*> -> this.iterator().asEntryBasedIterator().withIndex()
@@ -119,7 +120,7 @@ class SyntaxLinkerImpl(syntax: SyntaxElement) : ReusableSyntaxLinker {
         else -> if (nested)
         // if the object is nested and has got here it means the linker couldn't resolve it
             throw UnsupportedOperationException(
-                    "The given input type [$this (${this::class.qualifiedName})] isn't supported")
+                    "The given input type [$this (${this::class})] isn't supported")
         else
             listOf(this).iterator().asEntryBasedIterator().withIndex()
     }
@@ -130,7 +131,8 @@ class SyntaxLinkerImpl(syntax: SyntaxElement) : ReusableSyntaxLinker {
     private class ListAsEntryIterator<out T>(private val iterator: Iterator<T>) : Iterator<Map.Entry<String?, T>> {
         override fun hasNext() = iterator.hasNext()
 
-        override fun next() = ValueOnlyEntry(iterator.next())
+        override fun next() = ValueOnlyEntry(
+                iterator.next())
 
         private class ValueOnlyEntry<out T>(override val value: T) : Map.Entry<String?, T> {
             override val key

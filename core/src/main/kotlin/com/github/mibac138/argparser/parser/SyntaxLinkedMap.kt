@@ -20,21 +20,24 @@
  * SOFTWARE.
  */
 
-package com.github.mibac138.argparser.binder
+package com.github.mibac138.argparser.parser
 
 import com.github.mibac138.argparser.syntax.SyntaxElement
 
-/**
- * Used to connect ("link") some input to [SyntaxElement]s
- */
-interface SyntaxLinker {
-    /**
-     * Links the given [input] to [SyntaxElement]s and returns
-     * a [Map] of the linked input to the syntax elements
-     */
-    fun link(input: Any): Map<SyntaxElement, Any?>
+interface SyntaxLinkedMap<K, out V> : Map<K, V> {
+    val syntaxToValueMap: Map<SyntaxElement, V>
 }
 
-interface ReusableSyntaxLinker : SyntaxLinker {
-    fun recreate(syntax: SyntaxElement)
-}
+// Used to remove ambiguity when using generics
+// (this is considered better than explicit casting)
+val <K, V> SyntaxLinkedMap<K, V>.keyToValueMap: Map<K, V>
+    get() = this
+
+fun <K, V> SyntaxLinkedMap(keyToValueMap: Map<K, V>, syntaxToValueMap: Map<SyntaxElement, V>)
+        = SyntaxLinkedMapImpl(keyToValueMap, syntaxToValueMap)
+
+data class SyntaxLinkedMapImpl<K, out V>(
+        private val keyToValueMap: Map<K, V>,
+        override val syntaxToValueMap: Map<SyntaxElement, V>
+                                        ) : SyntaxLinkedMap<K, V>, Map<K, V> by keyToValueMap
+

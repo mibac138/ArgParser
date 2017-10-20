@@ -1,17 +1,11 @@
 package com.github.mibac138.argparser
 
 import com.github.mibac138.argparser.exception.ParserInvalidInputException
-import com.github.mibac138.argparser.parser.Parser
-import com.github.mibac138.argparser.parser.SequenceParser
-import com.github.mibac138.argparser.parser.SimpleParserRegistry
-import com.github.mibac138.argparser.parser.readUntilCharOrDefault
+import com.github.mibac138.argparser.parser.*
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.asReader
 import com.github.mibac138.argparser.syntax.*
-import com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSL
-import com.github.mibac138.argparser.syntax.dsl.element
-import com.github.mibac138.argparser.syntax.dsl.syntaxContainer
-import com.github.mibac138.argparser.syntax.dsl.syntaxElement
+import com.github.mibac138.argparser.syntax.dsl.*
 import com.nhaarman.mockito_kotlin.any
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -99,7 +93,7 @@ class SimpleParserRegistryTest {
                     = input.readUntilCharOrDefault(syntax, { !java.lang.Boolean.parseBoolean(it) })
         }))
 
-        assertEquals(listOf(false), registry.parse("true".asReader(), syntax))
+        assertEquals(mapOf(0 to false), registry.parse("true".asReader(), syntax))
     }
 
     @Test(expected = IllegalArgumentException::class) fun testUnknownParser() {
@@ -144,7 +138,7 @@ class SimpleParserRegistryTest {
         val output = registry.parse("yes".asReader(), syntax)
 
 
-        assertEquals(listOf("yes", "default"), output)
+        assertEquals(mapOf(0 to "yes", 1 to "default"), output)
     }
 
     @Test fun testOrderedParser() {
@@ -153,7 +147,7 @@ class SimpleParserRegistryTest {
 
         val output = registry.parse("!Hello, World!".asReader(), syntaxElement(String::class.java))
 
-        assertEquals(listOf("!Hello, World!"), output)
+        assertEquals(mapOf(0 to "!Hello, World!"), output.keyToValueMap)
     }
 
     private fun customSequenceParser(): SequenceParser {

@@ -1,5 +1,6 @@
 package com.github.mibac138.argparser.binder
 
+import com.github.mibac138.argparser.parser.SyntaxLinkerImpl
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.dsl.syntaxElement
 import org.junit.Test

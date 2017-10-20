@@ -1,18 +1,13 @@
 package com.github.mibac138.argparser.named
 
 import com.github.mibac138.argparser.exception.ParserInvalidInputException
-import com.github.mibac138.argparser.parser.BooleanParser
-import com.github.mibac138.argparser.parser.Parser
-import com.github.mibac138.argparser.parser.SequenceParser
+import com.github.mibac138.argparser.parser.*
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.asReader
-import com.github.mibac138.argparser.syntax.SyntaxElement
-import com.github.mibac138.argparser.syntax.SyntaxElementImpl
-import com.github.mibac138.argparser.syntax.defaultValue
+import com.github.mibac138.argparser.syntax.*
 import com.github.mibac138.argparser.syntax.dsl.element
 import com.github.mibac138.argparser.syntax.dsl.syntaxContainer
 import com.github.mibac138.argparser.syntax.dsl.syntaxElement
-import com.github.mibac138.argparser.syntax.parser
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -25,8 +20,8 @@ class NamedParserRegistryImplTest {
     @Test fun test() {
         parser.registerParser(BooleanParser())
         parser.associateParserWithName(Boolean::class.java, "hi")
-        val result = parser.parse("--hi: true".asReader(), SyntaxElementImpl(Boolean::class.java, components = NameComponent("hi")))
-        assertEquals(mapOf("hi" to true), result)
+        val result = parser.parse("--hi: true".asReader(), syntaxElement(Boolean::class.java) { name = "hi" })
+        assertEquals(mapOf("hi" to true), result.keyToValueMap)
     }
 
     @Test fun testSupportedTypes() {
@@ -47,7 +42,7 @@ class NamedParserRegistryImplTest {
             parser = InvertedBooleanParser(BooleanParser())
         }))
 
-        assertEquals(mapOf("hi" to false), output)
+        assertEquals(mapOf("hi" to false), output.keyToValueMap)
     }
 
     @Test(expected = IllegalArgumentException::class) fun testRemoveParserWithAssociatedNames() {
@@ -113,7 +108,7 @@ class NamedParserRegistryImplTest {
         assertEquals(mapOf(
                 "arg1" to "yes",
                 "arg2" to "default"
-        ), output)
+                          ), output.keyToValueMap)
     }
 
     @Test fun testEquality() {

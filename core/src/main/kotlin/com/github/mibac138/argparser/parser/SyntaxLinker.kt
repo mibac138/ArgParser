@@ -22,22 +22,20 @@
 
 package com.github.mibac138.argparser.parser
 
-import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.syntax.SyntaxElement
 
 /**
- * Created by mibac138 on 05-04-2017.
+ * Used to connect ("link") some input to [SyntaxElement]s. Usually parsers (ParserRegistries) do it by themselves
+ * but if you do want to you can implement it yourself or link some additional input
  */
-interface ParserRegistry : Parser {
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement): SyntaxLinkedMap<*, *>
-    fun registerParser(parser: Parser)
-    fun removeParser(parser: Parser)
-    fun removeAllParsers()
+interface SyntaxLinker {
+    /**
+     * Links the given [input] to [SyntaxElement]s and returns
+     * a [Map] of the linked input to the syntax elements
+     */
+    fun link(input: Any): Map<SyntaxElement, Any?>
 }
 
-fun <T : ParserRegistry> T.withParsers(vararg parsers: Parser): T {
-    for (parser in parsers)
-        registerParser(parser)
-
-    return this
+interface ReusableSyntaxLinker : SyntaxLinker {
+    fun recreate(syntax: SyntaxElement)
 }

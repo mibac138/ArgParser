@@ -22,7 +22,7 @@
 
 package com.github.mibac138.argparser.binder
 
-import com.github.mibac138.argparser.parser.Parser
+import com.github.mibac138.argparser.parser.*
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.syntax.SyntaxElement
 
@@ -31,7 +31,8 @@ import com.github.mibac138.argparser.syntax.SyntaxElement
  */
 open class BindingImpl constructor(
         protected val boundMethod: BoundMethod,
-        private val linker: SyntaxLinker = SyntaxLinkerImpl(boundMethod.syntax))
+        private val linker: SyntaxLinker = SyntaxLinkerImpl(
+                boundMethod.syntax))
     : Binding {
     private var syntax: SyntaxElement = boundMethod.syntax
 
@@ -40,11 +41,13 @@ open class BindingImpl constructor(
         if (boundMethod.syntax != syntax)
             updateSyntax()
 
-        val parsed = parser.parse(reader, syntax)
-        val args: Map<SyntaxElement, Any?>
-                = if (parsed == null) emptyMap() else linker.link(parsed)
+        if (parser !is ParserRegistry) throw Error()
 
-        return boundMethod.invoke(args)
+        val parsed = parser.parse(reader, syntax)
+//        val args: Map<SyntaxElement, Any?>
+//                = if (parsed == null) emptyMap() else linker.link(parsed)
+
+        return boundMethod.invoke(parsed.syntaxToValueMap)
     }
 
     /**

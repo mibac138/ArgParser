@@ -23,6 +23,7 @@
 package com.github.mibac138.argparser.named
 
 import com.github.mibac138.argparser.parser.Parser
+import com.github.mibac138.argparser.parser.SyntaxLinkedMap
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.skipChar
 import com.github.mibac138.argparser.syntax.*
@@ -38,13 +39,16 @@ class NamedParserRegistryImpl : NamedParserRegistry {
 
     override var matcher: ArgumentMatcher = PatternArgumentMatcher(Pattern.compile("--([a-zA-Z][a-zA-Z\\d]*)(?:=|: ?)"))
 
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement): Map<String, *> {
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement): SyntaxLinkedMap<String, *> {
         if (syntax.get(NameComponent::class.java) == null && syntax !is SyntaxContainer)
-            throw IllegalArgumentException("I only accept SyntaxElements with NameComponent (and SyntaxContainers with" +
-                    "all elements having NameComponent)")
+            throw IllegalArgumentException(
+                    "I only accept SyntaxElements with NameComponent (and SyntaxContainers with" +
+                            "all elements having NameComponent)")
 
-        val map = mutableMapOf<String, Any?>()
+        val syntaxMap = mutableMapOf<SyntaxElement, Any?>()
+        val valuesMap = mutableMapOf<String, Any?>()
         // LinkedList has O(1) add, remove and Iterator.next (the only used methods here)
+        // TODO is it really better?
         val unprocessedSyntax = LinkedList(syntax.content)
 
         for (i in 0 until syntax.size) {
@@ -59,7 +63,9 @@ class NamedParserRegistryImpl : NamedParserRegistry {
             val element = syntax.findElementByName(name)
             val parser = getParserForElement(element)
             val parsed = parseElement(matched.value, element, parser)
-            map[name] = parsed
+
+            valuesMap[name] = parsed
+            syntaxMap[element] = parsed
             unprocessedSyntax -= element
         }
 
@@ -70,10 +76,11 @@ class NamedParserRegistryImpl : NamedParserRegistry {
             val parser = getParserForElement(element)
             val parsed = parseElement(input, element, parser)
 
-            map[name] = parsed
+            valuesMap[name] = parsed
+            syntaxMap[element] = parsed
         }
 
-        return map
+        return SyntaxLinkedMap(valuesMap, syntaxMap)
     }
 
     private fun parseElement(input: ArgumentReader, element: SyntaxElement, parser: Parser): Any? {
@@ -184,7 +191,6 @@ class NamedParserRegistryImpl : NamedParserRegistry {
         return result
     }
 
-    override fun toString(): String {
-        return "NamedParserRegistry(typeToParserMap=$typeToParserMap, nameToParserMap=$nameToParserMap, matcher=$matcher)"
-    }
+    override fun toString(): String =
+            "NamedParserRegistry(typeToParserMap=$typeToParserMap, nameToParserMap=$nameToParserMap, matcher=$matcher)"
 }
