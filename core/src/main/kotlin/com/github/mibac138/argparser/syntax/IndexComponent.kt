@@ -23,8 +23,14 @@
 package com.github.mibac138.argparser.syntax
 
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
+import kotlin.reflect.KProperty
 
 data class IndexComponent(val index: Int) : SyntaxComponent {
+    init {
+        if (index < 0)
+            throw IllegalArgumentException("Index must be greater than or equal 0")
+    }
+
     override val id: Class<out SyntaxComponent> = IndexComponent::class.java
 }
 
@@ -34,18 +40,47 @@ data class IndexComponent(val index: Int) : SyntaxComponent {
 val SyntaxElement?.index: Int?
     get() = this?.get(IndexComponent::class.java)?.index
 
-
-var SyntaxElementDSL.index: Int? by SyntaxDSLComponentProperty<Int?, IndexComponent>(
+/**
+ * Use `index = <int >= 0>` to define a index. If you want to autoassign an index just write `index` as if you
+ * wanted to get the value (assigns index based on the highest one already assigned plus 1 or 0 if there are no
+ * indexed syntax elements yet)
+ */
+var SyntaxElementDSL.index: Int? by object : SyntaxDSLComponentProperty<Int?, IndexComponent>(
         IndexComponent::class.java,
         {
             this?.let {
                 IndexComponent(it)
             }
         },
-        { this?.index })
+        { this?.index }) {
+
+    override fun getValue(thisRef: SyntaxElementDSL, property: KProperty<*>): Int {
+        if (thisRef.parent == null) throw IllegalArgumentException(
+                "Can't auto-assign an index to a single syntax element")
+
+        val highestIndex = thisRef.parent.elements.maxBy {
+            it.index ?: -1
+        }.index
+
+        val nextIndex =
+                if (highestIndex != null) {
+                    highestIndex + 1
+                } else {
+                    0
+                }
+
+        setValue(thisRef, property, nextIndex)
+        return nextIndex
+    }
+}
 
 
 inline fun SyntaxElementDSL.index(init: SyntaxElementDSL.() -> Int) = apply {
     index = init()
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun SyntaxElementDSL.autoIndex() = apply {
+    index
 }
 
