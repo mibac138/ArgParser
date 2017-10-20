@@ -70,6 +70,7 @@ class SyntaxElementImpl<T> : SyntaxElement {
         return components[clazz] as T?
     }
 
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other?.javaClass != javaClass) return false
@@ -90,7 +91,6 @@ class SyntaxElementImpl<T> : SyntaxElement {
         return result
     }
 
-    override fun toString(): String {
-        return "SyntaxElementImpl(outputType=$outputType, defaultValue=$defaultValue, components=$components)"
-    }
+    override fun toString(): String =
+            "SyntaxElementImpl(outputType=$outputType, defaultValue=$defaultValue, components=$components)"
 }

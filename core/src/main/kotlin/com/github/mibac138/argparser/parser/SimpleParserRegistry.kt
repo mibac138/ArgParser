@@ -24,7 +24,9 @@ package com.github.mibac138.argparser.parser
 
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.skipChar
-import com.github.mibac138.argparser.syntax.*
+import com.github.mibac138.argparser.syntax.SyntaxElement
+import com.github.mibac138.argparser.syntax.iterator
+import com.github.mibac138.argparser.syntax.parser
 
 /**
  * Created by mibac138 on 05-04-2017.
@@ -32,14 +34,13 @@ import com.github.mibac138.argparser.syntax.*
 class SimpleParserRegistry : OrderedParserRegistry {
     private val classToParserMap = mutableMapOf<Class<*>, Parser>()
     private val positionToParserMap = mutableMapOf<Int, Parser>()
+    override val supportedTypes: Set<Class<*>> = classToParserMap.keys
 
     init {
         registerParser(SequenceParser())
         registerParser(BooleanParser())
         registerParser(IntParser())
     }
-
-    override val supportedTypes: Set<Class<*>> = classToParserMap.keys
 
 
     override fun registerParser(parser: Parser, position: Int) {
@@ -64,19 +65,23 @@ class SimpleParserRegistry : OrderedParserRegistry {
         positionToParserMap.clear()
     }
 
-    override fun parse(input: ArgumentReader, syntax: SyntaxElement)
-            = parseSyntax(input, syntax.size, syntax.iterator())
+    override fun parse(input: ArgumentReader, syntax: SyntaxElement): SyntaxLinkedMap<Int, *>
+            = parse(input, syntax.iterator())
 
-    private fun parseSyntax(input: ArgumentReader, size: Int, iterator: Iterator<SyntaxElement>): List<*> {
-        val result = ArrayList<Any?>(size)
+    private fun parse(input: ArgumentReader, iterator: Iterator<SyntaxElement>)
+            : SyntaxLinkedMap<Int, *> {
+        val syntaxMap = mutableMapOf<SyntaxElement, Any?>()
+        val valuesMap = mutableMapOf<Int, Any?>()
 
         for ((i, element) in iterator.withIndex()) {
             val parser = getParserForElement(element, i)
+            val parsed = parseElement(input, element, parser)
 
-            result += parseElement(input, element, parser)
+            valuesMap[i] = parsed
+            syntaxMap[element] = parsed
         }
 
-        return result
+        return SyntaxLinkedMap(valuesMap, syntaxMap)
     }
 
     private fun parseElement(reader: ArgumentReader, element: SyntaxElement, parser: Parser): Any? {
@@ -106,22 +111,24 @@ class SimpleParserRegistry : OrderedParserRegistry {
         throw IllegalArgumentException("Tried to parse ${type.name} but no eligible parsers were registered")
     }
 
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other?.javaClass != javaClass) return false
+        if (javaClass != other?.javaClass) return false
 
         other as SimpleParserRegistry
 
         if (classToParserMap != other.classToParserMap) return false
+        if (positionToParserMap != other.positionToParserMap) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return classToParserMap.hashCode()
+        var result = classToParserMap.hashCode()
+        result = 31 * result + positionToParserMap.hashCode()
+        return result
     }
 
-    override fun toString(): String {
-        return "SimpleParserRegistry(classToParserMap=$classToParserMap)"
-    }
+    override fun toString(): String = "SimpleParserRegistry(classToParserMap=$classToParserMap)"
 }

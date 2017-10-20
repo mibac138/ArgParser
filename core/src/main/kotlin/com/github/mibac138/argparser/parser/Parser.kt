@@ -37,6 +37,14 @@ interface Parser {
     fun parse(input: ArgumentReader, syntax: SyntaxElement): Any?
 }
 
+fun Parser.parseReturnSyntaxLinkedMap(input: ArgumentReader, syntax: SyntaxElement): SyntaxLinkedMap<*, *> {
+    if (this is ParserRegistry) return parse(input, syntax)
+
+    val value = parse(input, syntax)
+
+    return SyntaxLinkedMap(mapOf(null to value), mapOf(syntax to value))
+}
+
 fun <T> parseOrDefault(syntax: SyntaxElement, action: () -> T): T? {
     try {
         return action()
