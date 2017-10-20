@@ -23,7 +23,6 @@
 package com.github.mibac138.argparser.syntax
 
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
-import kotlin.reflect.KProperty
 
 data class IndexComponent(val index: Int) : SyntaxComponent {
     init {
@@ -41,18 +40,17 @@ val SyntaxElement?.index: Int?
     get() = this?.get(IndexComponent::class.java)?.index
 
 /**
- * Use `index = <int >= 0>` to define a index. If you want to autoassign an index just write `index` as if you
- * wanted to get the value (assigns index based on the highest one already assigned plus 1 or 0 if there are no
- * indexed syntax elements yet)
+ * Use `index = <int >= 0>` to define a index. If you want to auto assign an index just write `autoIndex()`
+ * (assigns index based on the highest one already assigned plus 1 or 0 if there are no indexed syntax elements yet)
  */
-var SyntaxElementDSL.index: Int? by object : SyntaxDSLComponentProperty<Int?, IndexComponent>(
+var SyntaxElementDSL.index: Int? by /*object :*/ SyntaxDSLComponentProperty<Int?, IndexComponent>(
         IndexComponent::class.java,
         {
             this?.let {
                 IndexComponent(it)
             }
         },
-        { this?.index }) {
+        { this?.index }) /*{
 
     override fun getValue(thisRef: SyntaxElementDSL, property: KProperty<*>): Int {
         if (thisRef.parent == null) throw IllegalArgumentException(
@@ -72,15 +70,28 @@ var SyntaxElementDSL.index: Int? by object : SyntaxDSLComponentProperty<Int?, In
         setValue(thisRef, property, nextIndex)
         return nextIndex
     }
-}
+}*/
 
 
 inline fun SyntaxElementDSL.index(init: SyntaxElementDSL.() -> Int) = apply {
     index = init()
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun SyntaxElementDSL.autoIndex() = apply {
-    index
+fun SyntaxElementDSL.autoIndex() = apply {
+    if (parent == null) throw IllegalArgumentException(
+            "Can't auto-assign an index to a single syntax element")
+
+    val highestIndex = parent.elements.maxBy {
+        it.index ?: -1
+    }.index
+
+    val nextIndex =
+            if (highestIndex != null) {
+                highestIndex + 1
+            } else {
+                0
+            }
+
+    index = nextIndex
 }
 

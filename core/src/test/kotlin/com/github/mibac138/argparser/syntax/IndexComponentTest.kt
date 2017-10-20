@@ -10,7 +10,7 @@ class IndexComponentTest {
     fun autoAssign1() {
         val syntax = syntaxContainer {
             element(Any::class.java) { index = 3 }
-            element(Any::class.java) { index }
+            element(Any::class.java) { autoIndex() }
         }
 
         assertEquals(3, syntax.content[0].index)
@@ -20,8 +20,8 @@ class IndexComponentTest {
     @Test
     fun autoAssign2() {
         val syntax = syntaxContainer {
-            element(Any::class.java) { index }
-            element(Any::class.java) { index }
+            element(Any::class.java) { autoIndex() }
+            element(Any::class.java) { autoIndex() }
         }
 
         assertEquals(0, syntax.content[0].index)
