@@ -39,5 +39,5 @@ class SyntaxContainerDSLTest {
     }
 
 
-    class MyElement : SyntaxElement by SyntaxElementImpl<Any>(Any::class.java)
+    class MyElement : SyntaxElement by SyntaxElementImpl(Any::class.java)
 }

@@ -1,6 +1,5 @@
 package example
 
-import com.github.mibac138.argparser.binder.Binder
 import com.github.mibac138.argparser.parser.SimpleParserRegistry
 import com.github.mibac138.argparser.reader.asReader
 

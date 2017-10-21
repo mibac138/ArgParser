@@ -70,7 +70,13 @@ object MethodBinder {
             = CallableBoundMethod((method.kotlinFunction ?:
             throw IllegalArgumentException("Can't convert method ($method) to a kotlin function"))
                                           .withInstance(owner),
-                                  generator + JavaDefaultValueSyntaxGenerator(defaultValues))
+                                  generator.withDefaultValues(defaultValues))
+
+    private fun SyntaxGeneratorContainer.withDefaultValues(defaultValues: Array<out Any?>): SyntaxGeneratorContainer =
+            if (defaultValues.isNotEmpty())
+                this + JavaDefaultValueSyntaxGenerator(defaultValues)
+            else
+                this
 
     /**
      * Searches for a method with the given [name] inside that class's methods. Returns null on failure (method not found)
@@ -80,8 +86,12 @@ object MethodBinder {
      */
     @JvmStatic
     @JvmOverloads
-    fun bindMethod(owner: Any, name: String, vararg defaultValues: Any? = emptyArray()): BoundMethod? {
-        val func = owner::class.java.declaredMethods.firstOrNull { it.name == name } ?: return null
+    fun bindMethod(owner: Any, name: String, vararg defaultValues: Any? = emptyArray()): BoundMethod {
+        val func = owner::class.java.declaredMethods.let {
+            it.firstOrNull { it.annotations.filterIsInstance(BindMethod::class.java).getOrNull(0)?.name == name } ?:
+                    it.firstOrNull { it.name == name }
+        } ?: throw IllegalArgumentException(
+                "Couldn't find method with name $name in class ${owner::class.java.simpleName}")
 
         return bindMethod(owner, func, defaultValues)
     }
