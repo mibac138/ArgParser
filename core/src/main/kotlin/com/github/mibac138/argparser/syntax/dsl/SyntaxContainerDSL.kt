@@ -104,6 +104,7 @@ fun <T> SyntaxContainerDSL<*>.element(type: Class<T>, init: Consumer<SyntaxEleme
 fun <T> SyntaxContainerDSL<*>.elementDsl(type: Class<T>): SyntaxElementDSL =
         ChildSyntaxElementDSL(type, this)
 
+
 private class ChildSyntaxElementDSL(type: Class<*>, parent: SyntaxContainerDSL<*>) : SyntaxElementDSL(type, parent) {
     override fun build(): SyntaxElement {
         val element = super.build()
