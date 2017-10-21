@@ -33,15 +33,18 @@ fun SyntaxContainerDSL(): SyntaxContainerDSL<*> = SyntaxContainerDSL(Any::class.
 class SyntaxContainerDSL<T>(type: Class<T>) : SyntaxElementDSL(type) {
     var elements: MutableList<SyntaxElement> = ArrayList()
 
-    fun add(element: SyntaxElement) {
+    @JvmName("add")
+    operator fun plusAssign(element: SyntaxElement) {
         elements.add(element)
     }
 
-    fun add(dsl: SyntaxElementDSL) {
-        add(dsl.build())
+    @JvmName("add")
+    operator fun plusAssign(dsl: SyntaxElementDSL) {
+        elements.add(dsl.build())
     }
 
-    fun addAll(elements: Collection<SyntaxElement>) {
+    @JvmName("addAll")
+    operator fun plusAssign(elements: Collection<SyntaxElement>) {
         this.elements.addAll(elements)
     }
 
@@ -108,7 +111,7 @@ fun <T> SyntaxContainerDSL<*>.elementDsl(type: Class<T>): SyntaxElementDSL =
 private class ChildSyntaxElementDSL(type: Class<*>, parent: SyntaxContainerDSL<*>) : SyntaxElementDSL(type, parent) {
     override fun build(): SyntaxElement {
         val element = super.build()
-        parent!!.add(element)
+        parent!! += element
         return element
     }
 }
