@@ -8,12 +8,12 @@ Input parsing made easy
 
 ## Core
 - [Website](https://mibac138.github.io/ArgParser/core)
-- [Documentation](https://mibac138.github.io/ArgParser/javadoc/core)
+- Documentation:  [stable](https://mibac138.github.io/ArgParser/docs/stable/core), [nightly](https://mibac138.github.io/ArgParser/docs/nightly/core)
 - [Source](https://github.com/mibac138/ArgParser/tree/master/core)
 
 ## Binder
 - [Website](https://mibac138.github.io/ArgParser/binder)
-- [Documentation](https://mibac138.github.io/ArgParser/javadoc/binder)
+- Documentation: [stable](https://mibac138.github.io/ArgParser/docs/stable/binder), [nightly](https://mibac138.github.io/ArgParser/docs/nightly/core)
 - [Source](https://github.com/mibac138/ArgParser/tree/master/binder)
 
 

@@ -1,7 +1,7 @@
 # ArgParser Binder: Simple and comfy
 Binder is a layer on top of ArgParser to make working with it easier and more comfortable
 
-- [Documentation](https://mibac138.github.io/ArgParser/javadoc/binder)
+- [Documentation](https://mibac138.github.io/ArgParser/docs/stable/binder)
 - [Source](https://github.com/mibac138/ArgParser/tree/master/binder)
 
 ## Getting started
@@ -16,18 +16,17 @@ compile 'com.github.mibac138.argparser:argparser-binder:1.0.0'
 - or bind the whole class (`Binder.bind(object)`, every method meant to be bound must be annotated with `@BindMethod`)
 
 3. Invoke your binding
-- from Java
+- Java
 ```java
 binding.invoke(asReader("args"), /* parser */ new SimpleParserRegistry())
  ```
- - from Kotlin
+ - Kotlin
  ```kotlin
  binding.invoke("args".asReader(), /* parser */ SimpleParserRegistry())
  ```
 
-## Comunication
+## Communication
 - [Github Issues](https://github.com/mibac138/ArgParser/issues)
-- [Discord](https://discord.gg/9wxjQuv)
 
 
 
