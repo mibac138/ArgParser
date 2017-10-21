@@ -49,7 +49,7 @@ open class SyntaxElementDSL(val type: Class<*>) {
 fun <T> syntaxElement(type: Class<T>): SyntaxElement
         = SyntaxElementImpl(type)
 
-fun <T> syntaxElement(type: Class<T>, init: SyntaxElementDSL.() -> Unit = {}): SyntaxElement {
+fun <T> syntaxElement(type: Class<T>, init: SyntaxElementDSL.() -> Unit): SyntaxElement {
     val element = SyntaxElementDSL(type)
     element.init()
     return element.build()

@@ -25,10 +25,7 @@
 
 package com.github.mibac138.argparser.syntax.dsl
 
-import com.github.mibac138.argparser.syntax.EmptySyntaxContainer
-import com.github.mibac138.argparser.syntax.SyntaxContainer
-import com.github.mibac138.argparser.syntax.SyntaxContainerImpl
-import com.github.mibac138.argparser.syntax.SyntaxElement
+import com.github.mibac138.argparser.syntax.*
 import java.util.function.Consumer
 
 fun SyntaxContainerDSL(): SyntaxContainerDSL<*> = SyntaxContainerDSL(Any::class.java)
@@ -60,31 +57,33 @@ class SyntaxContainerDSL<T>(type: Class<T>) : SyntaxElementDSL(type) {
 fun syntaxContainer(): SyntaxContainer
         = EmptySyntaxContainer
 
-fun syntaxContainer(init: SyntaxContainerDSL<*>.() -> Unit = {}): SyntaxContainer {
+fun syntaxContainer(init: SyntaxContainerDSL<*>.() -> Unit): SyntaxContainer {
     val element = SyntaxContainerDSL(Any::class.java)
     element.init()
     return element.build()
 }
 
-fun syntaxContainer(init: Consumer<SyntaxContainerDSL<*>> = Consumer {}): SyntaxContainer {
+fun syntaxContainer(init: Consumer<SyntaxContainerDSL<*>>): SyntaxContainer {
     val element = SyntaxContainerDSL(Any::class.java)
     init.accept(element)
     return element.build()
 }
 
-fun <T> syntaxContainer(type: Class<T>, init: SyntaxContainerDSL<T>.() -> Unit = {}): SyntaxContainer {
+fun <T> syntaxContainer(type: Class<T>): SyntaxContainer
+        = SyntaxContainerDSL(type).build()
+
+fun <T> syntaxContainer(type: Class<T>, init: SyntaxContainerDSL<T>.() -> Unit): SyntaxContainer {
     val element = SyntaxContainerDSL(type)
     element.init()
     return element.build()
 }
 
-fun <T> syntaxContainer(type: Class<T>, init: Consumer<SyntaxContainerDSL<T>> = Consumer {}): SyntaxContainer {
+fun <T> syntaxContainer(type: Class<T>, init: Consumer<SyntaxContainerDSL<T>>): SyntaxContainer {
     val element = SyntaxContainerDSL(type)
     init.accept(element)
     return element.build()
 }
 
-@JvmOverloads
 fun <T> SyntaxContainerDSL<*>.element(type: Class<T>, init: SyntaxElementDSL.() -> Unit = {}) = apply {
     elements.add(syntaxElement(type, init))
 }
