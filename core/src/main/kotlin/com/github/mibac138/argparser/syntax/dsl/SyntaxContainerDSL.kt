@@ -90,9 +90,6 @@ fun <T> SyntaxContainerDSL<*>.element(type: Class<T>) = apply {
 }
 
 fun <T> SyntaxContainerDSL<*>.element(type: Class<T>, init: SyntaxElementDSL.() -> Unit) = apply {
-    elements.add(syntaxElement(type, init))
-
-fun <T> SyntaxContainerDSL<*>.element(type: Class<T>, init: SyntaxElementDSL.() -> Unit) = apply {
     elements.add(syntaxElement(type, this, init))
 }
 
@@ -106,7 +103,6 @@ fun <T> SyntaxContainerDSL<*>.element(type: Class<T>, init: Consumer<SyntaxEleme
  */
 fun <T> SyntaxContainerDSL<*>.elementDsl(type: Class<T>): SyntaxElementDSL =
         ChildSyntaxElementDSL(type, this)
-
 
 private class ChildSyntaxElementDSL(type: Class<*>, parent: SyntaxContainerDSL<*>) : SyntaxElementDSL(type, parent) {
     override fun build(): SyntaxElement {

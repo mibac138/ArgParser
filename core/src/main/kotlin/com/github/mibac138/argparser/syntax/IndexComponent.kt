@@ -60,25 +60,6 @@ var SyntaxElementDSL.index: Int? by object : SyntaxDSLComponentProperty<Int?, In
 
         super.setValue(thisRef, property, value)
     }
-
-    /*override fun getValue(thisRef: SyntaxElementDSL, property: KProperty<*>): Int {
-          if (thisRef.parent == null) throw IllegalArgumentException(
-                  "Can't auto-assign an index to a single syntax element")
-
-          val highestIndex = thisRef.parent.elements.maxBy {
-              it.index ?: -1
-          }.index
-
-          val nextIndex =
-                  if (highestIndex != null) {
-                      highestIndex + 1
-                  } else {
-                      0
-                  }
-
-          setValue(thisRef, property, nextIndex)
-          return nextIndex
-      }*/
 }
 
 
@@ -90,8 +71,6 @@ fun SyntaxElementDSL.autoIndex() = apply {
     if (parent == null) {
         index = 0
         return@apply
-        //        throw IllegalArgumentException(
-        //            "Can't auto-assign an index to a single syntax element")
     }
 
     val highestIndex = parent.elements.maxBy {

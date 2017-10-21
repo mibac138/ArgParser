@@ -77,9 +77,7 @@ class CallableBoundMethod(override val method: KCallable<*>,
 
             generator.generate(element, parameter)
 
-            val syntaxElement = element.build()
-            mutableSyntaxToParamMap[syntaxElement] = parameter
-//            builder.add(syntaxElement) // done automatically
+            mutableSyntaxToParamMap[element.build()] = parameter
         }
 
         syntax = builder.build()
