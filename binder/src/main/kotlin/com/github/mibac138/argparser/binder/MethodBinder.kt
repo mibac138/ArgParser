@@ -65,7 +65,9 @@ object MethodBinder {
     @JvmStatic
     @JvmOverloads
     fun bindMethod(owner: Any, method: Method, vararg defaultValues: Any? = emptyArray()): BoundMethod
-            = CallableBoundMethod(method.kotlinFunction!!.withInstance(owner),
+            = CallableBoundMethod((method.kotlinFunction ?:
+            throw IllegalArgumentException("Can't convert method ($method) to a kotlin function"))
+                                          .withInstance(owner),
                                   generator + JavaDefaultValueSyntaxGenerator(defaultValues))
 
     /**
@@ -83,8 +85,9 @@ object MethodBinder {
     }
 
     private fun <T> KCallable<T>.withInstanceIfNeeded(owner: Any?): KCallable<T> =
-            if (/* no instance params */(instanceParameter ?: extensionReceiverParameter) == null) this
-            else this.withInstance(owner ?: throw IllegalArgumentException("Owner is null when required"))
+            if (instanceParameter ?: extensionReceiverParameter == null) this
+            else this.withInstance(
+                    owner ?: throw IllegalArgumentException("function has instance param but owner is null"))
 }
 
 
@@ -93,7 +96,7 @@ internal class KCallableWithInstance<out T>(private val func: KCallable<T>,
                                            ) : KCallable<T> by func {
     private val instanceParam = func.instanceParameter ?:
             func.extensionReceiverParameter ?:
-            throw IllegalArgumentException("Given function must not have a instance already bound")
+            throw IllegalArgumentException("Function ($func) already has a instance bound")
 
     init {
         val instanceParamType = instanceParam.type.jvmErasure
