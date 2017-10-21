@@ -33,6 +33,7 @@ import kotlin.reflect.full.functions
  * it's recommended to use these methods
  * when you can
  */
+@Deprecated("Limit usage of this class. See: https://github.com/mibac138/ArgParser/issues/27")
 object Binder {
     /**
      * Binds the whole class by scanning for methods with [BindMethod] annotation.
