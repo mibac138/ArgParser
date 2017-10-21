@@ -35,6 +35,7 @@ import java.util.function.Consumer
 @SyntaxDSL
 open class SyntaxElementDSL(val type: Class<*>, val parent: SyntaxContainerDSL<*>? = null) {
     var required: Boolean = true
+    // TODO shouldn't `components` be val?
     var components: MutableList<SyntaxComponent> = ArrayList()
 
     inline fun required(init: SyntaxElementDSL.() -> Boolean) = apply { required = init() }

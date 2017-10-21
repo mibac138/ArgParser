@@ -46,14 +46,11 @@ class IndexSyntaxGenerator : AnnotationBasedSyntaxGenerator<Index>(Index::class.
  * Generates syntax for element's which have neither [@Name][Name] nor [@Index][Index] annotations using [auto index][autoIndex]
  */
 class AutoIndexSyntaxGenerator : SyntaxGenerator {
-    private val nameClass = Name::class.java
-    private val indexClass = Index::class.java
-
     override fun generate(dsl: SyntaxElementDSL, param: KParameter) {
         if (param.annotations.any(this::isInapplicable)) return
 
         dsl.autoIndex()
     }
 
-    private fun isInapplicable(a: Annotation) = nameClass.isInstance(a) || indexClass.isInstance(a)
+    private fun isInapplicable(a: Annotation) = Name::class.java.isInstance(a) || Index::class.java.isInstance(a)
 }
