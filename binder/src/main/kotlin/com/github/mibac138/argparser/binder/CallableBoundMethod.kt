@@ -24,7 +24,7 @@ package com.github.mibac138.argparser.binder
 
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSL
-import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
+import com.github.mibac138.argparser.syntax.dsl.elementDsl
 import java.util.*
 import kotlin.collections.set
 import kotlin.reflect.KCallable
@@ -73,13 +73,13 @@ class CallableBoundMethod(override val method: KCallable<*>,
 
         for (parameter in method.valueParameters) {
             val type = parameter.type.jvmErasure.javaObjectType
-            val element = SyntaxElementDSL(type)
+            val element = builder.elementDsl(type)
 
             generator.generate(element, parameter)
 
             val syntaxElement = element.build()
             mutableSyntaxToParamMap[syntaxElement] = parameter
-            builder.add(syntaxElement)
+//            builder.add(syntaxElement) // done automatically
         }
 
         syntax = builder.build()
@@ -89,12 +89,21 @@ class CallableBoundMethod(override val method: KCallable<*>,
     override fun invoke(parameters: Map<SyntaxElement, Any?>): Any?
             = method.callBy(mapSyntaxMapToParamMap(parameters))
 
-    private fun mapSyntaxMapToParamMap(syntax: Map<SyntaxElement, Any?>): Map<KParameter, Any?>
-            // filter allows optional parameters with null value to use default value instead
-            = syntax.mapKeys {
-        /* TODO some more meaningful exception */
-        syntaxToParamMap[it.key]!!
-    }.filter { !it.key.isOptional || it.value != null }
+    private fun mapSyntaxMapToParamMap(syntax: Map<SyntaxElement, Any?>): Map<KParameter, Any?> {
+        val paramMap = mutableMapOf<KParameter, Any?>()
+
+        for ((element, value) in syntax) {
+            val param = syntaxToParamMap[element] ?:
+                    throw IllegalArgumentException("Can't map syntax element ($element) to params ($syntaxToParamMap)")
+
+            if (param.isOptional && value == null) continue
+
+            paramMap[param] = value
+
+        }
+
+        return paramMap
+    }
 
 
     override fun equals(other: Any?): Boolean {

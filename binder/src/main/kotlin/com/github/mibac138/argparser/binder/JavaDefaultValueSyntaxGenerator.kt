@@ -39,10 +39,12 @@ import kotlin.reflect.KParameter
  *        as the 1st default value
  */
 class JavaDefaultValueSyntaxGenerator(private vararg val defaultValues: Any?) : SyntaxGenerator {
+
     /**
      * Use this when you don't want the param to have a default value
      * but want a next param (or any after this one) to have it
      */
+    @Suppress("ClassName")
     object NO_DEFAULT_VALUE
 
     override fun generate(dsl: SyntaxElementDSL, param: KParameter) {
@@ -56,6 +58,7 @@ class JavaDefaultValueSyntaxGenerator(private vararg val defaultValues: Any?) : 
         }
     }
 
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other?.javaClass != javaClass) return false
@@ -67,11 +70,7 @@ class JavaDefaultValueSyntaxGenerator(private vararg val defaultValues: Any?) : 
         return true
     }
 
-    override fun hashCode(): Int {
-        return Arrays.hashCode(defaultValues)
-    }
+    override fun hashCode(): Int = Arrays.hashCode(defaultValues)
 
-    override fun toString(): String {
-        return "JavaDefaultValueSyntaxGenerator(defaultValues=${Arrays.toString(defaultValues)})"
-    }
+    override fun toString(): String = "JavaDefaultValueSyntaxGenerator(defaultValues=${Arrays.toString(defaultValues)})"
 }
