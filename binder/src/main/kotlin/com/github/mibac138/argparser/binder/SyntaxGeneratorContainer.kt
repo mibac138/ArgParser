@@ -50,26 +50,31 @@ class SyntaxGeneratorContainer() : SyntaxGenerator {
     }
 
     @Contract(pure = true)
+    @JvmName("concat")
     operator fun plus(generator: SyntaxGenerator): SyntaxGeneratorContainer
             = SyntaxGeneratorContainer(this, generator)
 
     @Contract(pure = true)
+    @JvmName("deconcat") /* https://english.stackexchange.com/a/53821/251410 */
     operator fun minus(generator: SyntaxGenerator): SyntaxGeneratorContainer
             = SyntaxGeneratorContainer(generators.except(generator))
 
-
+    @JvmName("add")
     operator fun plusAssign(generator: SyntaxGenerator) {
         this.generators.add(generator)
     }
 
+    @JvmName("addAll")
     operator fun plusAssign(generators: Iterable<SyntaxGenerator>) {
         this.generators.addAll(generators)
     }
 
+    @JvmName("remove")
     operator fun minusAssign(generator: SyntaxGenerator) {
         this.generators.remove(generator)
     }
 
+    @JvmName("removeAll")
     operator fun minusAssign(generators: Iterable<SyntaxGenerator>) {
         this.generators.removeAll(generators)
     }
