@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/mibac138/ArgParser.svg?branch=master)](https://travis-ci.org/mibac138/ArgParser) 
 
-[Javadoc](https://mibac138.github.com/ArgParser/javadoc/binder)
+Documentation: [stable](https://mibac138.github.com/ArgParser/docs/stable/core), [nightly](https://mibac138.github.com/ArgParser/docs/nightly/core)
 
 ## Getting started
 
@@ -16,7 +16,6 @@ compile 'com.github.mibac138.argparser:argparser-core:1.0.0'
 ## Communication
 
 - [GitHub Issues](https://github.com/mibac138/ArgParser/issues)
-- [Discord](https://discord.gg/9wxjQuv)
 
 ## Bugs and Feedback
 

@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/mibac138/ArgParser.svg?branch=master)](https://travis-ci.org/mibac138/ArgParser) 
 
-[Javadoc](https://mibac138.github.io/ArgParser/)
+[Documentation](https://mibac138.github.io/ArgParser/)
 ## Getting started
 
 1. Add ArgParser to your project:
@@ -19,13 +19,13 @@ compile 'com.github.mibac138.argparser:argparser-binder:1.0.0'
 public class Example {
 
     public Example() {
-    	Binding binding = Binder.bind(this).get("method");
+    	BoundMethod boundMethod = MethodBinder.bindMethod(this, "methodName");
     	
     	// Invoke binding
-    	binding.invoke(asReader("text true"), new SimpleParserRegistry());
+    	invoke(boundMethod, asReader("text true"), new SimpleParserRegistry());
     }
 
-    @BindMethod("method")
+    @BindMethod("methodName")
     public void method(String input1, boolean someBoolean) {
     	System.out.println("Input: " + input1);
     	System.out.println("Bool:  " + someBoolean);
@@ -36,10 +36,10 @@ public class Example {
 - in Kotlin:
 ```kotlin
 fun main(args: Array<String>) {
-  val binding = Binder.bind(::method)
+  val boundMethod = MethodBinder.bindMethod(::method)
   
   // Invoke binding
-  binding.invoke("text true".asReader(), SimpleParserRegistry())
+  boundMethod.invoke("text true".asReader(), SimpleParserRegistry())
 }
 
 fun method(input1: String, someBoolean: Boolean) {
@@ -58,7 +58,6 @@ fun method(input1: String, someBoolean: Boolean) {
 ## Communication
 
 - [GitHub Issues](https://github.com/mibac138/ArgParser/issues)
-- [Discord](https://discord.gg/9wxjQuv)
 
 ## Bugs and Feedback
 

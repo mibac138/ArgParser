@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/mibac138/ArgParser.svg?branch=master)](https://travis-ci.org/mibac138/ArgParser) 
 
-[Javadoc](https://mibac138.github.com/ArgParser/javadoc/binder)
+Documentation: [stable](https://mibac138.github.com/ArgParser/docs/stable/binder), [nightly](https://mibac138.github.com/ArgParser/docs/nightly/binder)
 
 Binder is a layer on top of ArgParser to make working with it easier and more comfy
 
@@ -17,24 +17,22 @@ compile 'com.github.mibac138.argparser:argparser-binder:1.0.0'
 ```
 
 2. Bind your method(s). You have several options at this point:
-- bind a specific method (`Binder.bind(object, object.class.getMethod("name", /* params */))`),
-- bind a specific method using Kotlin (`Binder.bind(object::method)`),
-- or bind the whole class (`Binder.bind(object)`, every method meant to be bound must be annotated with `@BindMethod`)
+- bind a specific method (`MethodBinder.bindMethod(object, "name")`),
+- bind a specific method using Kotlin (`MethodBinder.bindMethod(object::method)`),
 
 3. Invoke your binding
 - from Java
 ```java
-binding.invoke(asReader("args"), /* parser */ new SimpleParserRegistry())
+ invoke(boundMethod, asReader("args"), /* parser */ new SimpleParserRegistry())
  ```
  - from Kotlin
  ```kotlin
- binding.invoke("args".asReader(), /* parser */ SimpleParserRegistry())
+ boundMethod.invoke("args".asReader(), /* parser */ SimpleParserRegistry())
  ```
 
 ## Communication
 
 - [GitHub Issues](https://github.com/mibac138/ArgParser/issues)
-- [Discord](https://discord.gg/9wxjQuv)
 
 ## Bugs and Feedback
 
