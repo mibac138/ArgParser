@@ -42,4 +42,12 @@ class IndexComponentTest {
             element(Any::class.java) { index = -2 }
         }
     }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun theSameIndex() {
+        syntaxContainer {
+            element(Any::class.java) { index = 0 }
+            element(Any::class.java) { index = 0 }
+        }
+    }
 }

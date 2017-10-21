@@ -23,6 +23,7 @@
 package com.github.mibac138.argparser.syntax
 
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
+import kotlin.reflect.KProperty
 
 data class IndexComponent(val index: Int) : SyntaxComponent {
     init {
@@ -43,34 +44,42 @@ val SyntaxElement?.index: Int?
  * Use `index = <int >= 0>` to define a index. If you want to auto assign an index just write `autoIndex()`
  * (assigns index based on the highest one already assigned plus 1 or 0 if there are no indexed syntax elements yet)
  */
-var SyntaxElementDSL.index: Int? by /*object :*/ SyntaxDSLComponentProperty<Int?, IndexComponent>(
+var SyntaxElementDSL.index: Int? by object : SyntaxDSLComponentProperty<Int?, IndexComponent>(
         IndexComponent::class.java,
         {
             this?.let {
                 IndexComponent(it)
             }
         },
-        { this?.index }) /*{
+        { this?.index }) {
 
-    override fun getValue(thisRef: SyntaxElementDSL, property: KProperty<*>): Int {
-        if (thisRef.parent == null) throw IllegalArgumentException(
-                "Can't auto-assign an index to a single syntax element")
+    override fun setValue(thisRef: SyntaxElementDSL, property: KProperty<*>, value: Int?) {
+        if (value != null && thisRef.parent?.let { it.elements.any { it.index == value } } == true)
+            throw IllegalArgumentException("There can't be two elements with the same index ($value)")
 
-        val highestIndex = thisRef.parent.elements.maxBy {
-            it.index ?: -1
-        }.index
 
-        val nextIndex =
-                if (highestIndex != null) {
-                    highestIndex + 1
-                } else {
-                    0
-                }
-
-        setValue(thisRef, property, nextIndex)
-        return nextIndex
+        super.setValue(thisRef, property, value)
     }
-}*/
+
+    /*override fun getValue(thisRef: SyntaxElementDSL, property: KProperty<*>): Int {
+          if (thisRef.parent == null) throw IllegalArgumentException(
+                  "Can't auto-assign an index to a single syntax element")
+
+          val highestIndex = thisRef.parent.elements.maxBy {
+              it.index ?: -1
+          }.index
+
+          val nextIndex =
+                  if (highestIndex != null) {
+                      highestIndex + 1
+                  } else {
+                      0
+                  }
+
+          setValue(thisRef, property, nextIndex)
+          return nextIndex
+      }*/
+}
 
 
 inline fun SyntaxElementDSL.index(init: SyntaxElementDSL.() -> Int) = apply {
@@ -89,13 +98,6 @@ fun SyntaxElementDSL.autoIndex() = apply {
         it.index ?: -1
     }.index
 
-    val nextIndex =
-            if (highestIndex != null) {
-                highestIndex + 1
-            } else {
-                0
-            }
-
-    index = nextIndex
+    index = (highestIndex ?: -1) + 1
 }
 
