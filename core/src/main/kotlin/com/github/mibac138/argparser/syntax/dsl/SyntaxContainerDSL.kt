@@ -84,6 +84,7 @@ fun <T> syntaxContainer(type: Class<T>, init: Consumer<SyntaxContainerDSL<T>>): 
     return element.build()
 }
 
+
 fun <T> SyntaxContainerDSL<*>.element(type: Class<T>) = apply {
     elements.add(syntaxElement(type, this))
 }
@@ -97,4 +98,20 @@ fun <T> SyntaxContainerDSL<*>.element(type: Class<T>, init: SyntaxElementDSL.() 
 
 fun <T> SyntaxContainerDSL<*>.element(type: Class<T>, init: Consumer<SyntaxElementDSL>) = apply {
     elements.add(syntaxElement(type, this, init))
+}
+
+/**
+ * Works like [syntaxElement] with `type` and `parent` but this one is preferred as it
+ * will automatically add the element to the syntax container as soon as it's built
+ */
+fun <T> SyntaxContainerDSL<*>.elementDsl(type: Class<T>): SyntaxElementDSL =
+        ChildSyntaxElementDSL(type, this)
+
+
+private class ChildSyntaxElementDSL(type: Class<*>, parent: SyntaxContainerDSL<*>) : SyntaxElementDSL(type, parent) {
+    override fun build(): SyntaxElement {
+        val element = super.build()
+        parent!!.add(element)
+        return element
+    }
 }
