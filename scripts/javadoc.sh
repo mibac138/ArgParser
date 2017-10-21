@@ -21,9 +21,9 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
   cd gh-pages
   if [ "$TRAVIS_TAG" == "" ]; then
     git rm -rf ./doc/nightly
-    cp -Rf $HOME/javadoc-latest "./doc/nightly"
+    cp -Rf $HOME/javadoc-latest "./doc/nightly/"
   else
-    cp -Rf $HOME/javadoc-latest "./doc/$TRAVIS_TAG"
+    cp -Rf $HOME/javadoc-latest "./doc/$TRAVIS_TAG/"
   fi
 
 
