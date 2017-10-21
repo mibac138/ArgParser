@@ -3,12 +3,12 @@ set -v
 
 if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
 
-  echo -e "Generating javadoc\n"
+  echo -e "Generating Javadoc\n"
 
   ./gradlew dokka
   
-  echo -e "Generated javadoc\n"
-  echo -e "Publishing javadoc\n"
+  echo -e "Generated Javadoc\n"
+  echo -e "Publishing Javadoc\n"
 
   cp -R "build/javadoc/" $HOME/javadoc-latest
 
@@ -17,12 +17,22 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
   git config --global user.name "travis-ci"
   git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/mibac138/ArgParser gh-pages > /dev/null
 
+
   cd gh-pages
-  git rm -rf ./javadoc
-  cp -Rf $HOME/javadoc-latest ./javadoc
-  
+  if [ "$TRAVIS_TAG" == "" ]; then
+    git rm -rf ./doc/nightly
+    cp -Rf $HOME/javadoc-latest "./doc/nightly"
+  else
+    cp -Rf $HOME/javadoc-latest "./doc/$TRAVIS_TAG"
+  fi
+
+
   git add -f .
-  git commit -m ":sparkles: Auto pushed commit $TRAVIS_COMMIT"
+  if [ "$TRAVIS_TAG" == "" ]; then
+    git commit -m ":sparkles: Auto pushed commit $TRAVIS_COMMIT"
+  else
+    git commit -m ":bookmark: Auto pushed tag $TRAVIS_TAG (commit $TRAVIS_COMMIT)"
+  fi
   git push -fq origin gh-pages > /dev/null
 
   echo -e "Published Javadoc to gh-pages.\n"
