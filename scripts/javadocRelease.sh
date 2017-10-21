@@ -27,12 +27,12 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
 
 
   git add -f .
-  git commit -m ":label: 1/2 Auto pushed tag $TRAVIS_TAG (commit $TRAVIS_COMMIT)"
+  git commit -m ":bookmark: 1/2 Auto pushed tag $TRAVIS_TAG (commit $TRAVIS_COMMIT)"
   git push -fq origin gh-pages > /dev/null
   echo -e "Published Core Javadoc to gh-pages.\n"
 
 #-----------------
-
+  cd $HOME
   echo -e "Generating Javadoc\n"
 
   ./gradlew dokka -x :argparser-core:dokka
@@ -48,7 +48,7 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
 
 
   git add -f .
-  git commit -m ":label: 2/2 Auto pushed tag $TRAVIS_TAG (commit $TRAVIS_COMMIT)"
+  git commit -m ":bookmark: 2/2 Auto pushed tag $TRAVIS_TAG (commit $TRAVIS_COMMIT)"
   git push -fq origin gh-pages > /dev/null
   echo -e "Published Javadoc to gh-pages.\n"
 fi
