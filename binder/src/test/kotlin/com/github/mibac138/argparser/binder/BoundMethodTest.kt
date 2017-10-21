@@ -1,9 +1,11 @@
 package com.github.mibac138.argparser.binder
 
+import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.parser.*
 import com.github.mibac138.argparser.reader.asReader
-import com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSL
 import com.github.mibac138.argparser.syntax.dsl.element
+import com.github.mibac138.argparser.syntax.dsl.syntaxContainer
+import com.github.mibac138.argparser.syntax.index
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -92,11 +94,23 @@ class BoundMethodTest(private val producer: (KFunction<*>) -> BoundMethod) {
     }
 
     @Test
-    fun testSyntax() {
-        assertEquals(SyntaxContainerDSL()
-                             .element(String::class.java)
-                             .element(Int::class.javaObjectType)
-                             .build(), method.syntax)
+    fun testSyntax1() {
+        // fun method(name: String, num: Int)
+
+        assertEquals(syntaxContainer {
+            element(String::class.java) { index = 0 }
+            element(Int::class.javaObjectType) { index = 1 }
+        }, method.syntax)
+    }
+
+    @Test
+    fun testSyntax2() {
+        //fun defaultValues(name: String = "Hiya", @Name("num") num: Int = 5)
+
+        assertEquals(syntaxContainer {
+            element(String::class.java) { index = 0; required = false }
+            element(Int::class.javaObjectType) { name = "num"; required = false }
+        }, producer(Tested()::defaultValues).syntax)
     }
 
     @Test
@@ -120,4 +134,5 @@ class BoundMethodTest(private val producer: (KFunction<*>) -> BoundMethod) {
 
 }
 
+@Suppress("unused")
 fun String.extension(name: String, num: Int) = Pair(name, num)
