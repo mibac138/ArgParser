@@ -38,22 +38,21 @@ class BoundMethodTest(private val producer: (KFunction<*>) -> BoundMethod) {
     }
 
     private val method = producer(kMethod)
-    private val binding = Binder.bind(method)
 
     @Test
     fun testValid() {
-        assertEquals(Pair("Hello!", 10), binding.invoke("Hello! 10".asReader(), SimpleParserRegistry()))
-        assertEquals(Pair("Hi!", -90), binding.invoke("Hi! -90".asReader(), SimpleParserRegistry()))
+        assertEquals(Pair("Hello!", 10), method.invoke("Hello! 10".asReader(), SimpleParserRegistry()))
+        assertEquals(Pair("Hi!", -90), method.invoke("Hi! -90".asReader(), SimpleParserRegistry()))
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun testInvalid() {
-        binding.invoke("".asReader(), SimpleParserRegistry())
+        method.invoke("".asReader(), SimpleParserRegistry())
     }
 
     @Test
     fun testDefaultValues() {
-        val binding = Binder.bind(producer(obj::defaultValues))
+        val binding = producer(obj::defaultValues)
 
         assertEquals(Pair("Hello!", 10), binding.invoke("Hello! 10".asReader(), SimpleParserRegistry()))
         assertEquals(Pair("Hello!", 5), binding.invoke("Hello!".asReader(), SimpleParserRegistry()))
@@ -66,14 +65,14 @@ class BoundMethodTest(private val producer: (KFunction<*>) -> BoundMethod) {
 
     @Test
     fun testInstanceParameterWithOwner() {
-        val binding = Binder.bind(CallableBoundMethod(Tested()::method))
+        val binding = CallableBoundMethod(Tested()::method)
 
         assertEquals(Pair("Hello!", 10), binding.invoke("Hello! 10".asReader(), SimpleParserRegistry()))
     }
 
     @Test
     fun testExtensionParameterWithOwner() {
-        val binding = Binder.bind(CallableBoundMethod("Instance param"::extension))
+        val binding = CallableBoundMethod("Instance param"::extension)
 
         assertEquals(Pair("Hello!", 10), binding.invoke("Hello! 10".asReader(), SimpleParserRegistry()))
     }

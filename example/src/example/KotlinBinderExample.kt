@@ -1,11 +1,13 @@
 package example
 
+import com.github.mibac138.argparser.binder.MethodBinder
+import com.github.mibac138.argparser.binder.invoke
 import com.github.mibac138.argparser.parser.SimpleParserRegistry
 import com.github.mibac138.argparser.reader.asReader
 
 
 fun main(args: Array<String>) {
-    val binding = Binder.bind(KotlinBinderExample()::lendMoney)
+    val binding = MethodBinder.bindMethod(KotlinBinderExample()::lendMoney)
 
     val lent = binding.invoke("Luke 100".asReader(), SimpleParserRegistry()) as Boolean
 
@@ -17,12 +19,12 @@ fun main(args: Array<String>) {
 
 class KotlinBinderExample {
     fun lendMoney(name: String, amount: Int): Boolean {
-        if (amount < 200) {
+        return if (amount < 200) {
             System.out.println("Lent $$amount to $name")
-            return true
+            true
         } else {
             System.out.println("Didn't lend $$amount to $name")
-            return false
+            false
         }
     }
 }

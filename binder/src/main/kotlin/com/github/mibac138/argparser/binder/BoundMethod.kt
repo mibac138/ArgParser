@@ -22,6 +22,9 @@
 
 package com.github.mibac138.argparser.binder
 
+import com.github.mibac138.argparser.parser.Parser
+import com.github.mibac138.argparser.parser.parseReturnSyntaxLinkedMap
+import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import kotlin.reflect.KCallable
 
@@ -45,3 +48,6 @@ interface BoundMethod {
      */
     val method: KCallable<*>
 }
+
+fun BoundMethod.invoke(reader: ArgumentReader, parser: Parser): Any?
+        = this.invoke(parser.parseReturnSyntaxLinkedMap(reader, this.syntax).syntaxToValueMap)

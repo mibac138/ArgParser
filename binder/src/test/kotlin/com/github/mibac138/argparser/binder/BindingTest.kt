@@ -12,11 +12,9 @@ import kotlin.test.assertEquals
  * Created by mibac138 on 14-04-2017.
  */
 class BindingTest {
-    @Test fun annotations() {
-        val bound = Binder.bind(this)
-
-        assertEquals(1, bound.size)
-        val hi = bound["Hi"]!!
+    @Test
+    fun annotations() {
+        val hi = MethodBinder.bindMethod(this, "Hi")
 
         assertEquals("Hiya" to true, hi.invoke("Hiya true".asReader(), SimpleParserRegistry()))
     }
@@ -25,20 +23,23 @@ class BindingTest {
     fun hi(a: String, bool: Boolean) = Pair(a, bool)
 
 
-    @Test fun invokeUnnamedWithValidInput() {
-        val binding = Binder.bind(Tester()::method)
+    @Test
+    fun invokeUnnamedWithValidInput() {
+        val binding = MethodBinder.bindMethod(Tester()::method)
 
         assertEquals(Pair(10, "hi!"), binding.invoke("10 hi!".asReader(), SimpleParserRegistry()))
     }
 
-    @Test(expected = IllegalArgumentException::class) fun invokeUnnamedWithInvalidInput() {
-        val binding = Binder.bind(Tester()::method)
+    @Test(expected = IllegalArgumentException::class)
+    fun invokeUnnamedWithInvalidInput() {
+        val binding = MethodBinder.bindMethod(Tester()::method)
 
         binding.invoke("hello! 11".asReader(), SimpleParserRegistry())
     }
 
-    @Test fun invokeNamed() {
-        val binding = Binder.bind(Tester()::method)
+    @Test
+    fun invokeNamed() {
+        val binding = MethodBinder.bindMethod(Tester()::method)
 
         val parser = NamedParserRegistryImpl()
         parser.registerParser(SequenceParser())
@@ -55,8 +56,9 @@ class BindingTest {
                 binding.invoke("--greeting:HelloWorld! --number:123456".asReader(), parser))
     }
 
-    @Test(expected = IllegalArgumentException::class) fun invokeNamedWithInvalidInput() {
-        val binding = Binder.bind(UnnamedTester()::method)
+    @Test(expected = IllegalArgumentException::class)
+    fun invokeNamedWithInvalidInput() {
+        val binding = MethodBinder.bindMethod(UnnamedTester()::method)
 
         val parser = NamedParserRegistryImpl()
         parser.registerParser(SequenceParser())
