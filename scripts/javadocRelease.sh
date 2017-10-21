@@ -8,7 +8,7 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
 
   echo -e "Generating Core Javadoc\n"
 
-  ./gradlew :core:dokka
+  ./gradlew :argparser-core:dokka
 
   echo -e "Generated Core Javadoc\n"
   echo -e "Publishing Core Javadoc\n"
@@ -35,7 +35,7 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
 
   echo -e "Generating Javadoc\n"
 
-  ./gradlew dokka -x :core:dokka
+  ./gradlew dokka -x :argparser-core:dokka
 
   echo -e "Generated Javadoc\n"
   echo -e "Publishing Javadoc\n"
