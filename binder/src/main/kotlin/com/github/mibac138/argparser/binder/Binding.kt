@@ -23,15 +23,35 @@
 package com.github.mibac138.argparser.binder
 
 import com.github.mibac138.argparser.parser.Parser
+import com.github.mibac138.argparser.parser.parseReturnSyntaxLinkedMap
 import com.github.mibac138.argparser.reader.ArgumentReader
+import com.github.mibac138.argparser.syntax.SyntaxElement
 
 /**
  * Binding is a connector between [Parser]'s output, [SyntaxLinker]'s linking and [BoundMethod]'s invoke
  */
+@Deprecated("Limit usage of this class. See: https://github.com/mibac138/ArgParser/issues/27")
 interface Binding {
 
     /**
      * Calls the underlying method using output from [parser].
      */
     fun invoke(reader: ArgumentReader, parser: Parser): Any?
+}
+
+/**
+ * Default [Binding] implementation.
+ */
+@Deprecated("Limit usage of this class. See: https://github.com/mibac138/ArgParser/issues/27")
+open class BindingImpl constructor(
+        protected val boundMethod: BoundMethod
+                                  ) : Binding {
+    private var syntax: SyntaxElement = boundMethod.syntax
+
+
+    override fun invoke(reader: ArgumentReader, parser: Parser): Any? {
+        val parsed = parser.parseReturnSyntaxLinkedMap(reader, syntax)
+
+        return boundMethod.invoke(parsed.syntaxToValueMap)
+    }
 }
