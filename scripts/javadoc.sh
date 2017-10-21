@@ -24,6 +24,7 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
     mkdir -p "./docs/nightly" && cp -Rf $HOME/javadoc-latest/. "$_"
   else
     mkdir -p "./docs/$TRAVIS_TAG" && cp -Rf $HOME/javadoc-latest/. "$_"
+    mkdir -p "./docs/stable" && cp -Rf $HOME/javadoc-latest/. "$_"
   fi
 
 
@@ -31,10 +32,8 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
   if [ "$TRAVIS_TAG" == "" ]; then
     git commit -m ":sparkles: Auto pushed commit $TRAVIS_COMMIT"
   else
-    git commit -m ":bookmark: Auto pushed tag $TRAVIS_TAG (commit $TRAVIS_COMMIT)"
+    git commit -m ":label: Auto pushed tag $TRAVIS_TAG (commit $TRAVIS_COMMIT)"
   fi
   git push -fq origin gh-pages > /dev/null
-
   echo -e "Published Javadoc to gh-pages.\n"
-
 fi
