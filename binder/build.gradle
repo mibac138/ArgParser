@@ -8,7 +8,7 @@ dependencies {
 dokka {
     externalDocumentationLink {
         def tag = System.getenv("TRAVIS_TAG")
-        if (tag == null)
+        if (tag == null || tag.isEmpty())
             url = new URL("https://mibac138.github.io/ArgParser/docs/nightly/core/")
         else
             url = new URL("https://mibac138.github.io/ArgParser/docs/$tag/core/")
