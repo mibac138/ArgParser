@@ -22,14 +22,35 @@
 
 package com.github.mibac138.argparser.binder
 
-import com.github.mibac138.argparser.named.name
+import com.github.mibac138.argparser.syntax.autoIndex
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
+import com.github.mibac138.argparser.syntax.index
+import kotlin.reflect.KParameter
+
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Index(val value: Int)
+
+const val AUTO: Int = -1
+
+class IndexSyntaxGenerator : AnnotationBasedSyntaxGenerator<Index>(Index::class.java) {
+    override fun generate(dsl: SyntaxElementDSL, annotation: Index) {
+        if (annotation.value == AUTO)
+            dsl.autoIndex()
+        else
+            dsl.index = annotation.value
+    }
+}
 
 /**
- * Generates relevant syntax using [Name] annotation
+ * Generates syntax for element's which have neither [@Name][Name] nor [@Index][Index] annotations using [auto index][autoIndex]
  */
-class NameSyntaxGenerator : AnnotationBasedSyntaxGenerator<Name>(Name::class.java) {
-    override fun generate(dsl: SyntaxElementDSL, annotation: Name) {
-        dsl.name = annotation.value
+class AutoIndexSyntaxGenerator : SyntaxGenerator {
+    override fun generate(dsl: SyntaxElementDSL, param: KParameter) {
+        if (param.annotations.any(this::isInapplicable)) return
+
+        dsl.autoIndex()
     }
+
+    private fun isInapplicable(a: Annotation) = Name::class.java.isInstance(a) || Index::class.java.isInstance(a)
 }

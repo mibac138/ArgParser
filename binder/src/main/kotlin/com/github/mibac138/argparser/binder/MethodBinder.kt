@@ -41,6 +41,8 @@ object MethodBinder {
     @JvmStatic
     val generator = SyntaxGeneratorContainer(
             NameSyntaxGenerator(),
+            IndexSyntaxGenerator(),
+            AutoIndexSyntaxGenerator(),
             KotlinDefaultValueSyntaxGenerator()/*,
             Disabled by default as it might cause
             unexpected results

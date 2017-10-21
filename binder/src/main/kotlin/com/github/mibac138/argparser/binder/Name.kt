@@ -22,9 +22,35 @@
 
 package com.github.mibac138.argparser.binder
 
+import com.github.mibac138.argparser.named.name
+import com.github.mibac138.argparser.syntax.autoIndex
+import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
+
+// TODO rewrite; kind of outdated
 /**
- *Annotation used by some binders in order to automagically generate syntax
+ * Annotation used by some binders in order to automagically generate syntax
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Name(val value: String)
+annotation class Name(
+        /**
+         *
+         */
+        val value: String,
+        /**
+         * if true (auto) assigns an index to the parameter.
+         * <b>Do not use this and [@Index][Index] simultaneously</b>
+         */
+        val ordered: Boolean = false)
+
+/**
+ * Generates relevant syntax using [Name] annotation
+ */
+class NameSyntaxGenerator : AnnotationBasedSyntaxGenerator<Name>(Name::class.java) {
+    override fun generate(dsl: SyntaxElementDSL, annotation: Name) {
+        dsl.name = annotation.value
+
+        if (annotation.ordered)
+            dsl.autoIndex()
+    }
+}

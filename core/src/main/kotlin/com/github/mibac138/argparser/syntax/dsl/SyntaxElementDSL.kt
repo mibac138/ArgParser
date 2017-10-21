@@ -33,31 +33,44 @@ import java.util.function.Consumer
  * Created by mibac138 on 07-05-2017.
  */
 @SyntaxDSL
-open class SyntaxElementDSL(val type: Class<*>) {
+open class SyntaxElementDSL(val type: Class<*>, val parent: SyntaxContainerDSL<*>? = null) {
     var required: Boolean = true
+    // TODO shouldn't `components` be val?
     var components: MutableList<SyntaxComponent> = ArrayList()
 
     inline fun required(init: SyntaxElementDSL.() -> Boolean) = apply { required = init() }
     inline fun component(init: SyntaxElementDSL.() -> SyntaxComponent) = apply { components.add(init()) }
-    inline fun components(init: SyntaxElementDSL.() -> Collection<SyntaxComponent>) = apply { components.addAll(init()) }
+    inline fun components(init: SyntaxElementDSL.() -> Collection<SyntaxComponent>) = apply {
+        components.addAll(init())
+    }
 
     open fun build(): SyntaxElement {
         return SyntaxElementImpl(type, required, components)
     }
 }
 
-fun <T> syntaxElement(type: Class<T>): SyntaxElement
+fun syntaxElement(type: Class<*>): SyntaxElement
         = SyntaxElementImpl(type)
 
-fun <T> syntaxElement(type: Class<T>, init: SyntaxElementDSL.() -> Unit): SyntaxElement {
-    val element = SyntaxElementDSL(type)
+fun syntaxElement(type: Class<*>, init: SyntaxElementDSL.() -> Unit): SyntaxElement
+        = syntaxElement(type, null, init)
+
+fun syntaxElement(type: Class<*>, init: Consumer<SyntaxElementDSL>): SyntaxElement
+        = syntaxElement(type, null, init)
+
+fun syntaxElement(type: Class<*>,
+                  parent: SyntaxContainerDSL<*>?,
+                  init: SyntaxElementDSL.() -> Unit): SyntaxElement {
+    val element = SyntaxElementDSL(type, parent)
     element.init()
     return element.build()
 }
 
-
-fun <T> syntaxElement(type: Class<T>, init: Consumer<SyntaxElementDSL>): SyntaxElement {
-    val element = SyntaxElementDSL(type)
+@JvmOverloads
+fun syntaxElement(type: Class<*>,
+                  parent: SyntaxContainerDSL<*>?,
+                  init: Consumer<SyntaxElementDSL> = Consumer {}): SyntaxElement {
+    val element = SyntaxElementDSL(type, parent)
     init.accept(element)
     return element.build()
 }

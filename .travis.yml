@@ -22,5 +22,7 @@ deploy:
     repo: "mibac138/ArgParser"
     tags: true
     branch: master
+before_deploy:
+  - ./scripts/javadocRelease.sh
 after_success:
   - ./scripts/javadoc.sh
