@@ -88,7 +88,7 @@ class BoundMethodTest(private val producer: (KFunction<*>) -> BoundMethod) {
 
     @Test(expected = IllegalArgumentException::class)
     fun testWithWrongOwner() {
-        CallableBoundMethod(String::extension.withInstance(123456))
+        MethodBinder.bindMethod(String::extension, 123456)
     }
 
     @Test
