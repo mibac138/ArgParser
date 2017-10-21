@@ -29,12 +29,10 @@ object EmptySyntaxContainer : SyntaxContainer {
     override fun <T : SyntaxComponent> get(clazz: Class<T>): T?
             = null
 
-    override val content: List<SyntaxElement>
-        get() = emptyList()
+    override val content: List<SyntaxElement> = emptyList()
 
     override val required: Boolean
         get() = false
 
-    override val outputType: Class<Any>
-        get() = Any::class.java
+    override val outputType: Class<Any> = Any::class.java
 }
