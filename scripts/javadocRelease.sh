@@ -14,7 +14,7 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
   echo -e "Generated Core Javadoc\n"
   echo -e "Publishing Core Javadoc\n"
 
-  cp -R "build/javadoc/" $HOME/javadoc-latest
+  cp -a build/javadoc/. $HOME/javadoc-latest/
 
   cd $HOME
   git config --global user.email "travis@travis-ci.org"
@@ -41,7 +41,7 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
   echo -e "Generated Javadoc\n"
   echo -e "Publishing Javadoc\n"
 
-  cp -R "build/javadoc/" $HOME/javadoc-latest
+  cp -a build/javadoc/. $HOME/javadoc-latest/
 
   cd $HOME
   git config --global user.email "travis@travis-ci.org"

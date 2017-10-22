@@ -1,3 +1,7 @@
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'org.jetbrains.dokka'
+
 buildscript {
     ext.kotlinVersion = '1.1.51'
 
@@ -73,6 +77,16 @@ subprojects {
             dir = 'src/main/kotlin'
             url = "https://github.com/mibac138/ArgParser/blob/master/$project.ext.simpleName/src/main/kotlin"
         }
+
+        if (project.ext.simpleName != "core") {
+            externalDocumentationLink {
+                def tag = System.getenv("TRAVIS_TAG")
+                if (tag == null || tag.isEmpty())
+                    url = new URL("https://mibac138.github.io/ArgParser/docs/nightly/core/")
+                else
+                    url = new URL("https://mibac138.github.io/ArgParser/docs/$tag/core/")
+            }
+        }
     }
 
     task javadocJar(type: Jar, dependsOn: dokka) {
@@ -141,4 +155,46 @@ subprojects {
             }
         }
     }
+}
+
+
+group 'com.github.mibac138.argparser'
+
+project.version = getProjectVersion(this)
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_6
+targetCompatibility = JavaVersion.VERSION_1_6
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+    testCompile 'junit:junit:4.12'
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+    testCompile 'org.mockito:mockito-core:2.7.21'
+    testCompile 'com.nhaarman:mockito-kotlin:1.4.0'
+}
+
+ext.javadocOutput = "$rootProject.buildDir/javadoc/$project.ext.simpleName"
+
+dokka {
+    outputFormat = 'javadoc'
+    outputDirectory = project.ext.javadocOutput
+    sourceDirs = files(subprojects.collectMany { it.sourceSets.main.java.srcDirs + it.sourceSets.main.kotlin.srcDirs })
+    jdkVersion = 6
+    reportNotDocumented = false
+}
+
+task javadocJar(type: Jar, dependsOn: dokka) {
+    classifier 'javadoc'
+    from project.ext.javadocOutput
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
 }

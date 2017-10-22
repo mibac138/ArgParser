@@ -3,14 +3,3 @@ dependencies {
     compile project(':argparser-core')
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlinVersion
 }
-
-
-dokka {
-    externalDocumentationLink {
-        def tag = System.getenv("TRAVIS_TAG")
-        if (tag == null || tag.isEmpty())
-            url = new URL("https://mibac138.github.io/ArgParser/docs/nightly/core/")
-        else
-            url = new URL("https://mibac138.github.io/ArgParser/docs/$tag/core/")
-    }
-}
