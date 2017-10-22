@@ -33,7 +33,7 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
   echo -e "Published Core Javadoc to gh-pages.\n"
 
 #-----------------
-  cd home2
+  cd ${home2}
   echo -e "Generating Javadoc\n"
 
   ./gradlew dokka -x :argparser-core:dokka
