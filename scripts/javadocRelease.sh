@@ -29,7 +29,7 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
 
   git add -f .
   git commit -m ":bookmark: 1/2 Auto pushed tag $TRAVIS_TAG (commit $TRAVIS_COMMIT)"
-  git push -fq origin gh-pages > /dev/null
+  git push -fq origin HEAD:gh-pages > /dev/null
   echo -e "Published Core Javadoc to gh-pages.\n"
 
 #-----------------
@@ -50,6 +50,6 @@ if [ "$TRAVIS_REPO_SLUG" == "mibac138/ArgParser" ] && [ "$TRAVIS_PULL_REQUEST" =
 
   git add -f .
   git commit -m ":bookmark: 2/2 Auto pushed tag $TRAVIS_TAG (commit $TRAVIS_COMMIT)"
-  git push -fq origin gh-pages > /dev/null
+  git push -fq origin HEAD:gh-pages > /dev/null
   echo -e "Published Javadoc to gh-pages.\n"
 fi
