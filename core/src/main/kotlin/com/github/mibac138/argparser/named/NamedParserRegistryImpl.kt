@@ -24,6 +24,7 @@ package com.github.mibac138.argparser.named
 
 import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.parser.SyntaxLinkedMap
+import com.github.mibac138.argparser.parser.exception.ValueReassignmentException
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.skipChar
 import com.github.mibac138.argparser.syntax.*
@@ -64,13 +65,14 @@ class NamedParserRegistryImpl : NamedParserRegistry {
             val parser = getParserForElement(element)
             val parsed = parseElement(matched.value, element, parser)
 
-            valuesMap[name] = parsed
+            valuesMap.putOrThrow(name, parsed)
             syntaxMap[element] = parsed
             unprocessedSyntax -= element
         }
 
         for (element in unprocessedSyntax) {
             // Every element here *must* have a name
+            // TODO better exception?
             val name = element.name!!
 
             val parser = getParserForElement(element)
@@ -81,6 +83,11 @@ class NamedParserRegistryImpl : NamedParserRegistry {
         }
 
         return SyntaxLinkedMap(valuesMap, syntaxMap)
+    }
+
+    private fun <V> MutableMap<String, V>.putOrThrow(key: String, value: V) {
+        if (put(key, value) != null)
+            throw ValueReassignmentException.of(key)
     }
 
     private fun parseElement(input: ArgumentReader, element: SyntaxElement, parser: Parser): Any? {
@@ -168,7 +175,7 @@ class NamedParserRegistryImpl : NamedParserRegistry {
                 return element
         }
 
-        throw Exception("Couldn't find syntax element with name '$name'")
+        throw /*IllegalArgument?*/Exception("Couldn't find syntax element with name '$name'")
     }
 
     override fun equals(other: Any?): Boolean {
