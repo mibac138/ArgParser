@@ -26,15 +26,14 @@ import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.syntax.autoIndex
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 
-// TODO rewrite; kind of outdated
 /**
- * Annotation used by some binders in order to automagically generate syntax
+ * Annotation used to [automagically][CallableBoundMethod] generate [named][SyntaxElement.name] syntax elements
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Name(
         /**
-         *
+         * The name you want the parameter to have
          */
         val value: String,
         /**
