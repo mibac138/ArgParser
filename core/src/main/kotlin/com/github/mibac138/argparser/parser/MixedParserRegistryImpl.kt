@@ -25,14 +25,19 @@ package com.github.mibac138.argparser.parser
 import com.github.mibac138.argparser.named.ArgumentMatcher
 import com.github.mibac138.argparser.named.PatternArgumentMatcher
 import com.github.mibac138.argparser.named.name
+import com.github.mibac138.argparser.parser.exception.ValueReassignmentException
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.skipChar
 import com.github.mibac138.argparser.syntax.*
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 
 /**
  * Can parse mixed syntax (i.e. with both named and unnamed elements)
+ *
+ * Supports [syntax elements][SyntaxElement] which are both [named][SyntaxElement.name] and [ordered][SyntaxElement.index].
+ * Can throw [IllegalArgumentException] if a given syntax element is defined twice
  */
 class MixedParserRegistryImpl : MixedParserRegistry {
     private val nameToParserMap: MutableMap<String, Parser> = HashMap()
@@ -48,11 +53,14 @@ class MixedParserRegistryImpl : MixedParserRegistry {
             return output
         }
 
+    @Throws(IllegalArgumentException::class)
     override fun parse(input: ArgumentReader, syntax: SyntaxElement): SyntaxLinkedMap<String?, *> {
         val valuesMap = mutableMapOf<String?, Any?>()
         val syntaxMap = mutableMapOf<SyntaxElement, Any?>()
 
         val unnamed = mutableListOf<Any?>()
+        val orderedSyntax = syntax.content.filterTo(ArrayList()) { it.index != null }
+        orderedSyntax.sortBy { it.index }
         // LinkedList has O(1) add, remove and Iterator.next (the only used methods here)
         // TODO is it really better?
         val unprocessedSyntax = LinkedList(syntax.content)
@@ -61,22 +69,33 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         for (i in 0 until syntax.size) {
 
             input.skipChar(' ')
+            if (!input.hasNext()) break
+
             val matched = matcher.match(input)
 
             if (matched == null) {
-                val element = syntax.findElementById(index)
-                val parsed = element.parseAtPosition(index++, input)
+                val element = orderedSyntax[index]
+                val parsed = element.parseAtPosition(index, input)
 
-                syntaxMap[element] = parsed
-                unnamed += parsed
+                syntaxMap.putOrThrow(element, parsed, index)
+                val name = element.name
+                if (name != null)
+                    valuesMap[name] = parsed
+                else
+                    unnamed += parsed
+
                 unprocessedSyntax -= element
+                index += 1
             } else {
                 val element = syntax.findElementByName(matched.name)
                 val parsed = element.parse(matched.value)
 
+                syntaxMap.putOrThrow(element, parsed, matched.name)
                 valuesMap[matched.name] = parsed
-                syntaxMap[element] = parsed
                 unprocessedSyntax -= element
+
+                if (element.index != null)
+                    orderedSyntax.remove(element)
             }
         }
 
@@ -84,20 +103,32 @@ class MixedParserRegistryImpl : MixedParserRegistry {
             val name = element.name
 
             if (name == null) {
-                val parsed = element.parseAtPosition(index++, input)
+                val parsed = element.parseAtPosition(index, input)
 
-                syntaxMap[element] = parsed
+                syntaxMap.putOrThrow(element, parsed, index)
                 unnamed += parsed
+                index += 1
             } else {
                 val parsed = element.parse(input)
 
+                syntaxMap.putOrThrow(element, parsed, name)
                 valuesMap[name] = parsed
-                syntaxMap[element] = parsed
             }
         }
 
-        valuesMap[null] = unnamed
+        if (!unnamed.isEmpty())
+            valuesMap[null] = unnamed
         return SyntaxLinkedMap(valuesMap, syntaxMap)
+    }
+
+    private fun <K, V> MutableMap<K, V>.putOrThrow(key: K, value: V, index: Int) {
+        if (put(key, value) != null)
+            throw ValueReassignmentException.of(index)
+    }
+
+    private fun <K, V> MutableMap<K, V>.putOrThrow(key: K, value: V, name: String) {
+        if (put(key, value) != null)
+            throw ValueReassignmentException.of(name)
     }
 
     private fun SyntaxElement.parseAtPosition(index: Int, input: ArgumentReader): Any?
@@ -164,17 +195,13 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         throw IllegalArgumentException("Couldn't find parser for name '$name'")
     }
 
-    private fun SyntaxElement.findElementById(id: Int): SyntaxElement =
-            this.content.filter { it.name == null }.getOrNull(id) ?:
-                    throw Exception("Couldn't find syntax element with id $id inside $this")
-
     private fun SyntaxElement.findElementByName(name: String): SyntaxElement {
         for (element in iterator()) {
             if (element.name == name)
                 return element
         }
 
-        throw Exception("Couldn't find syntax element with name '$name' inside $this")
+        throw /*IllegalArgument?*/Exception("Couldn't find syntax element with name '$name' inside $this")
     }
 
     override fun equals(other: Any?): Boolean {
@@ -197,7 +224,6 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         return result
     }
 
-    override fun toString(): String {
-        return "MixedParserRegistryImpl(nameToParserMap=$nameToParserMap, positionToParserMap=$positionToParserMap, matcher=$matcher)"
-    }
+    override fun toString(): String =
+            "MixedParserRegistryImpl(nameToParserMap=$nameToParserMap, positionToParserMap=$positionToParserMap, matcher=$matcher)"
 }

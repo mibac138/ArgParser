@@ -1,11 +1,14 @@
 package com.github.mibac138.argparser.parser
 
 import com.github.mibac138.argparser.named.name
+import com.github.mibac138.argparser.named.withNamedParsers
+import com.github.mibac138.argparser.parser.exception.ValueReassignmentException
 import com.github.mibac138.argparser.reader.asReader
 import com.github.mibac138.argparser.syntax.defaultValue
 import com.github.mibac138.argparser.syntax.dsl.element
 import com.github.mibac138.argparser.syntax.dsl.syntaxContainer
 import com.github.mibac138.argparser.syntax.dsl.syntaxElement
+import com.github.mibac138.argparser.syntax.index
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -48,12 +51,18 @@ class MixedParserRegistryImplTest {
 
     @Test
     fun complexTest() {
-        parser.registerParser(BooleanParser(), 0)
-        parser.registerParser(IntParser(), 1)
-        parser.registerParser(BooleanParser(), 2)
-        parser.registerParser(SequenceParser(), "seq1")
-        parser.registerParser(SequenceParser(), "seq2")
-        parser.registerParser(SequenceParser(), "seq3")
+        parser.
+                withOrderedParsers(
+                        BooleanParser(),
+                        IntParser(),
+                        BooleanParser()
+                                  ).
+                withNamedParsers(
+                        SequenceParser() to "seq1",
+                        SequenceParser() to "seq2",
+                        SequenceParser() to "seq3"
+                                )
+
         val syntax = syntaxContainer {
             element(Boolean::class.java)
             element(Int::class.java)
@@ -74,6 +83,24 @@ class MixedParserRegistryImplTest {
     }
 
 
+    @Test(expected = ValueReassignmentException.Named::class)
+    fun namedElementReassign() {
+        parser.
+                withNamedParsers(
+                        IntParser() to "a"
+                                ).
+                withOrderedParsers(
+                        IntParser() to 0
+                                  )
+
+        val syntax = syntaxContainer {
+            element(Int::class.java) { name = "a" }
+            element(Int::class.java)
+        }
+
+        parser.parse("--a: 1 --a=2".asReader(), syntax)
+    }
+
     @Test
     fun issue10() {
         parser.registerParser(SequenceParser(), 0)
@@ -82,7 +109,7 @@ class MixedParserRegistryImplTest {
         val syntax = syntaxContainer {
             element(String::class.java) { name = "seq" }
             element(String::class.java) /*{ autoIndex() } // implicit*/
-            element(String::class.java) { required = false; defaultValue = "default"}
+            element(String::class.java) { required = false; defaultValue = "default" }
         }
 
         val output = parser.parse("yes --seq:sequence".asReader(), syntax)
@@ -111,4 +138,133 @@ class MixedParserRegistryImplTest {
                      ),
                 output.keyToValueMap)
     }
+
+    @Suppress("FunctionName")
+    @Test
+    fun issue29_1() {
+        val somethingParser = SequenceParser()
+        parser.registerParser(somethingParser, "name")
+        parser.registerParser(somethingParser, 0)
+
+        val syntax = syntaxElement(String::class.java) { name = "name" }
+
+        assertEquals<Map<String?, *>>(
+                mapOf("name" to "123"),
+                parser.parse("--name:123".asReader(), syntax).keyToValueMap)
+    }
+
+    @Suppress("FunctionName")
+    @Test
+    fun issue29_2() {
+        val somethingParser = SequenceParser()
+        parser.registerParser(somethingParser, "name")
+        parser.registerParser(somethingParser, 0)
+
+        val syntax = syntaxElement(String::class.java) { name = "name"; index = 0 }
+
+        assertEquals<Map<String?, *>>(
+                mapOf("name" to "123"),
+                parser.parse("123".asReader(), syntax).keyToValueMap)
+    }
+
+    @Suppress("FunctionName")
+    @Test
+    fun issue29_3() {
+        val somethingParser = SequenceParser()
+        parser.registerParser(somethingParser, "name")
+        parser.registerParser(somethingParser, 0)
+
+        val syntax = syntaxContainer {
+            element(String::class.java) { name = "name" }
+            element(String::class.java)
+        }
+
+        assertEquals(
+                mapOf(null to listOf("123"), "name" to ""),
+                parser.parse("123".asReader(), syntax).keyToValueMap)
+    }
+
+    @Test
+    fun complexTestLevel2() {
+        parser.
+                withNamedParsers(
+                        SequenceParser() to "a",
+                        SequenceParser() to "b"
+                                ).
+                withOrderedParsers(
+                        SequenceParser(),
+                        SequenceParser()
+                                  )
+
+        val syntax = syntaxContainer {
+            element(String::class.java) { name = "a"; index = 0 }
+            element(String::class.java) { name = "b"; index = 1 }
+        }
+
+        assertEquals<Map<String?, Any?>>(
+                mapOf(
+                        "a" to "Hi",
+                        "b" to "Hello"
+                     ),
+                parser.parse("--a: Hi Hello".asReader(), syntax).keyToValueMap)
+
+    }
+
+    @Test
+    fun complexTestLevel3() {
+        parser.
+                withNamedParsers(
+                        SequenceParser() to "a",
+                        SequenceParser() to "b"
+                                ).
+                withOrderedParsers(
+                        SequenceParser(),
+                        SequenceParser(),
+                        SequenceParser()
+                                  )
+
+        val syntax = syntaxContainer {
+            element(String::class.java) { index = 0 }
+            element(String::class.java) { name = "a"; index = 1 }
+            element(String::class.java) { name = "b"; index = 2 }
+        }
+
+        assertEquals(
+                mapOf(
+                        "a" to "Hi",
+                        "b" to "Hello",
+                        null to listOf("ordered")
+                     ),
+                parser.parse("--b: Hello ordered Hi".asReader(), syntax).keyToValueMap)
+
+    }
+
+    @Suppress("FunctionName")
+    @Test
+    fun issue29_reassignGood() {
+        val nameParser = SequenceParser()
+        parser.registerParser(nameParser, "name")
+        parser.registerParser(nameParser, 0)
+
+        val syntax = syntaxContainer {
+            element(String::class.java) { name = "name"; index = 0 }
+        }
+
+        parser.parse("aa --name:aa".asReader(), syntax)
+    }
+
+    @Test(expected = ValueReassignmentException.Named::class)
+    fun issue29_reassignBad() {
+        val nameParser = SequenceParser()
+        parser.registerParser(nameParser, "name")
+        parser.registerParser(nameParser, 0)
+
+        val syntax = syntaxContainer {
+            element(String::class.java) { name = "name"; index = 0 }
+            element(Any::class.java)
+        }
+
+        parser.parse("aa --name:aa".asReader(), syntax)
+    }
 }
+
