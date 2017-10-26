@@ -26,7 +26,10 @@ import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.index
 
-sealed class ValueReassignmentException(s: String) : IllegalArgumentException(s) {
+sealed class ValueReassignmentException(s: String,
+                                        val element: SyntaxElement,
+                                        val originalValue: Any?,
+                                        val reassignedValue: Any?) : IllegalArgumentException(s) {
 
     companion object {
         @JvmStatic
@@ -38,18 +41,11 @@ sealed class ValueReassignmentException(s: String) : IllegalArgumentException(s)
                 }
     }
 
-    class Named(val element: SyntaxElement,
-                val originalValue: Any?,
-                val reassignedValue: Any?) : ValueReassignmentException(
-            "Tried to reassign element's (${element::class.java.name}) value (name:\"${element.name}\") from $originalValue to $reassignedValue") {
-        val elementName = element.name!!
-    }
+    class Named(element: SyntaxElement, originalValue: Any?, reassignedValue: Any?) : ValueReassignmentException(
+            "Tried to reassign element's (${element::class.java.name}) value (name: \"${element.name}\") from $originalValue to $reassignedValue",
+            element, originalValue, reassignedValue)
 
-    class Indexed(val element: SyntaxElement,
-                  val originalValue: Any?,
-                  val reassignedValue: Any?) : ValueReassignmentException(
-            "Tried to reassign element's (${element::class.java.name}) value (position: ${element.index}) from $originalValue to $reassignedValue") {
-        val elementIndex = element.index!!
-    }
-
+    class Indexed(element: SyntaxElement, originalValue: Any?, reassignedValue: Any?) : ValueReassignmentException(
+            "Tried to reassign element's (${element::class.java.name}) value (position: ${element.index}) from $originalValue to $reassignedValue",
+            element, originalValue, reassignedValue)
 }
