@@ -26,13 +26,34 @@ import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.index
 
+/**
+ * Thrown to indicate that a value linked to a [element][SyntaxElement] has been reassigned
+ */
 sealed class ValueReassignmentException(s: String,
+                                        /**
+                                         * The element of which the value has been reassigned
+                                         */
                                         val element: SyntaxElement,
+                                        /**
+                                         * The original value of the [element]
+                                         */
                                         val originalValue: Any?,
+                                        /**
+                                         * The reassigned value of the [element]
+                                         */
                                         val reassignedValue: Any?) : IllegalArgumentException(s) {
 
     companion object {
+        /**
+         * Factory method to create [ValueReassignmentException].
+         * Creates a [named exception][ValueReassignmentException.Named] if the [element] is [named][SyntaxElement.name] or
+         * a [indexed exception][ValueReassignmentException.Indexed]  if the [element] is [ordered][SyntaxElement.index]
+         *
+         * If the [element] is both [named][SyntaxElement.name] and [ordered][SyntaxElement.index] then
+         * a [named exception][ValueReassignmentException.Named] is created
+         */
         @JvmStatic
+        @Throws(IllegalArgumentException::class)
         fun of(element: SyntaxElement, originalValue: Any?, reassignedValue: Any?) =
                 when {
                     element.name != null -> Named(element, originalValue, reassignedValue)
@@ -41,10 +62,18 @@ sealed class ValueReassignmentException(s: String,
                 }
     }
 
+    /**
+     * Thrown to indicate that a value linked to a *[named][SyntaxElement.name]* [element][SyntaxElement] has
+     * been reassigned
+     */
     class Named(element: SyntaxElement, originalValue: Any?, reassignedValue: Any?) : ValueReassignmentException(
             "Tried to reassign element's (${element::class.java.name}) value (name: \"${element.name}\") from $originalValue to $reassignedValue",
             element, originalValue, reassignedValue)
 
+    /**
+     * Thrown to indicate that a value linked to a *[ordered][SyntaxElement.index]* [element][SyntaxElement] has
+     * been reassigned
+     */
     class Indexed(element: SyntaxElement, originalValue: Any?, reassignedValue: Any?) : ValueReassignmentException(
             "Tried to reassign element's (${element::class.java.name}) value (position: ${element.index}) from $originalValue to $reassignedValue",
             element, originalValue, reassignedValue)

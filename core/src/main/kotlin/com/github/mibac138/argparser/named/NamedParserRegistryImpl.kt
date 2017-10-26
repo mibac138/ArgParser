@@ -131,14 +131,14 @@ class NamedParserRegistryImpl : NamedParserRegistry {
                 it.remove()
     }
 
-    override fun removeAllParsers() {
-        typeToParserMap.clear()
-        nameToParserMap.clear()
-    }
-
     private fun <K, V> MutableMap<K, V>.removeIfMatches(key: K, value: V) {
         if (this[key] == value)
             remove(key)
+    }
+
+    override fun removeAllParsers() {
+        typeToParserMap.clear()
+        nameToParserMap.clear()
     }
 
     override fun removeParser(name: String) {
@@ -154,6 +154,14 @@ class NamedParserRegistryImpl : NamedParserRegistry {
             = element.parser ?:
             getParserForName(element.name ?: throw IllegalArgumentException())
 
+    private fun getParserForName(name: String): Parser {
+        val parser = nameToParserMap[name]
+        if (parser != null)
+            return parser
+
+        throw IllegalArgumentException("Couldn't find parser for name '$name'")
+    }
+
     private fun getParserForType(type: Class<*>): Parser {
         val parser = typeToParserMap[type]
         if (parser != null)
@@ -162,13 +170,6 @@ class NamedParserRegistryImpl : NamedParserRegistry {
         throw IllegalArgumentException("Couldn't find parser supporting type '$type'")
     }
 
-    private fun getParserForName(name: String): Parser {
-        val parser = nameToParserMap[name]
-        if (parser != null)
-            return parser
-
-        throw IllegalArgumentException("Couldn't find parser for name '$name'")
-    }
 
     private fun SyntaxElement.findElementByName(name: String): SyntaxElement {
         for (element in iterator()) {
