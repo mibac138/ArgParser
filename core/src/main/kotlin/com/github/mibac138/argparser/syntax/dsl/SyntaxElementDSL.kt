@@ -77,3 +77,7 @@ fun syntaxElement(type: Class<*>,
     init.accept(element)
     return element.build()
 }
+
+fun SyntaxContainerDSL<*>.syntaxElement(type: Class<*>) = element(type)
+fun SyntaxContainerDSL<*>.syntaxElement(type: Class<*>, init: SyntaxElementDSL.() -> Unit) = element(type, init)
+fun SyntaxContainerDSL<*>.syntaxElement(type: Class<*>, init: Consumer<SyntaxElementDSL>) = element(type, init)
