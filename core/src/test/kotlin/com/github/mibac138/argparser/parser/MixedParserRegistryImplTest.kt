@@ -3,6 +3,7 @@ package com.github.mibac138.argparser.parser
 import com.github.mibac138.argparser.named.name
 import com.github.mibac138.argparser.named.withNamedParsers
 import com.github.mibac138.argparser.parser.exception.ValueReassignmentException
+import com.github.mibac138.argparser.reader.EmptyArgumentReader
 import com.github.mibac138.argparser.reader.asReader
 import com.github.mibac138.argparser.syntax.defaultValue
 import com.github.mibac138.argparser.syntax.dsl.element
@@ -209,6 +210,23 @@ class MixedParserRegistryImplTest {
                 parser.parse("--a: Hi Hello".asReader(), syntax).keyToValueMap)
 
     }
+
+    @Test
+    fun namingISHard() {
+        parser.
+                withNamedParsers(
+                        SequenceParser() to "a",
+                        SequenceParser() to "b"
+                                )
+
+        val syntax = syntaxContainer {
+            element(String::class.java) { name = "a" }
+            element(String::class.java) { name = "b" }
+        }
+
+        parser.parse(EmptyArgumentReader, syntax)
+    }
+
 
     @Test
     fun complexTestLevel3() {
