@@ -32,7 +32,10 @@ import kotlin.reflect.jvm.jvmErasure
 import kotlin.reflect.jvm.kotlinFunction
 
 /**
- * Created by mibac138 on 10-05-2017.
+ * Factory class for creating [BoundMethod].
+ * This is the recommended way for most people
+ * to create their [BoundMethod] instances.
+ * Creating instances on your own is not advised
  */
 object MethodBinder {
     /**
