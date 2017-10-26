@@ -24,9 +24,8 @@
 
 package com.github.mibac138.argparser.syntax.dsl
 
-import com.github.mibac138.argparser.syntax.SyntaxComponent
-import com.github.mibac138.argparser.syntax.SyntaxElement
-import com.github.mibac138.argparser.syntax.SyntaxElementImpl
+import com.github.mibac138.argparser.named.name
+import com.github.mibac138.argparser.syntax.*
 import java.util.function.Consumer
 
 /**
@@ -45,12 +44,16 @@ open class SyntaxElementDSL(val type: Class<*>, val parent: SyntaxContainerDSL<*
     }
 
     open fun build(): SyntaxElement {
+        if (this.index == null && this.name == null)
+            this.autoIndex()
         return SyntaxElementImpl(type, required, components)
     }
 }
 
+// Doesn't call SyntaxElementImpl directly because of
+// autoIndexing (see SyntaxElementDSL.build)
 fun syntaxElement(type: Class<*>): SyntaxElement
-        = SyntaxElementImpl(type)
+        = SyntaxElementDSL(type).build()
 
 fun syntaxElement(type: Class<*>, init: SyntaxElementDSL.() -> Unit): SyntaxElement
         = syntaxElement(type, null, init)

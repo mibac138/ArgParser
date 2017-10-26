@@ -81,8 +81,8 @@ class MixedParserRegistryImplTest {
         parser.registerParser(SequenceParser(), "seq")
         val syntax = syntaxContainer {
             element(String::class.java) { name = "seq" }
-            element(String::class.java)
-            element(String::class.java) { required = false; defaultValue = "default" }
+            element(String::class.java) /*{ autoIndex() } // implicit*/
+            element(String::class.java) { required = false; defaultValue = "default"}
         }
 
         val output = parser.parse("yes --seq:sequence".asReader(), syntax)
