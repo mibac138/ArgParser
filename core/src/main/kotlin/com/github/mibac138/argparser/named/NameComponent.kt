@@ -50,7 +50,8 @@ var SyntaxElementDSL.name by SyntaxDSLComponentProperty<String?, NameComponent>(
                 NameComponent(this)
             }
         },
-        { this?.name })
+        { this?.name },
+        allowDuplicates = false)
 
 inline fun SyntaxElementDSL.name(init: SyntaxElementDSL.() -> String) = apply {
     name = init()

@@ -30,7 +30,12 @@ open class SyntaxDSLComponentProperty<T, COMPONENT : SyntaxComponent>(
         protected val componentType: Class<COMPONENT>,
         protected var toComponent: T?.() -> COMPONENT?,
         protected var toValue: COMPONENT?.() -> T?,
-        protected val allowReassigning: Boolean = false
+        protected val allowReassigning: Boolean = false,
+        /**
+         * If false values must be unique across the parent syntax element or the parent element and it's [children][SyntaxContainer.content]
+         * if it's a [container][SyntaxContainer]
+         */
+        protected val allowDuplicates: Boolean = true
                                                                      ) : ReadWriteProperty<SyntaxElementDSL, T?> {
 
     @Suppress("UNCHECKED_CAST")
@@ -42,6 +47,11 @@ open class SyntaxDSLComponentProperty<T, COMPONENT : SyntaxComponent>(
             thisRef.components.removeIf { componentType.isInstance(it) }
         else if (thisRef.components.firstOrNull { componentType.isInstance(it) } != null)
             throw IllegalStateException("Can't reassign ${componentType.simpleName}'s value")
+
+        if (!allowDuplicates && value != null && thisRef.parent?.let { it.elements.any { it.index == value } } == true)
+            throw IllegalArgumentException(
+                    "There can't be two elements with the same component ($componentType) value ($value)")
+
 
         value.toComponent()?.let {
             thisRef.components.add(it)

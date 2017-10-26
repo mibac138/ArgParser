@@ -23,7 +23,6 @@
 package com.github.mibac138.argparser.syntax
 
 import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
-import kotlin.reflect.KProperty
 
 data class IndexComponent(val index: Int) : SyntaxComponent {
     init {
@@ -44,24 +43,15 @@ val SyntaxElement?.index: Int?
  * Use `index = <int >= 0>` to define a index. If you want to auto assign an index just write `autoIndex()`
  * (assigns index based on the highest one already assigned plus 1 or 0 if there are no indexed syntax elements yet)
  */
-var SyntaxElementDSL.index: Int? by object : SyntaxDSLComponentProperty<Int?, IndexComponent>(
+var SyntaxElementDSL.index: Int? by SyntaxDSLComponentProperty<Int?, IndexComponent>(
         IndexComponent::class.java,
         {
             this?.let {
                 IndexComponent(it)
             }
         },
-        { this?.index }) {
-
-    override fun setValue(thisRef: SyntaxElementDSL, property: KProperty<*>, value: Int?) {
-        if (value != null && thisRef.parent?.let { it.elements.any { it.index == value } } == true)
-            throw IllegalArgumentException("There can't be two elements with the same index ($value)")
-
-
-        super.setValue(thisRef, property, value)
-    }
-}
-
+        { this?.index },
+        allowDuplicates = false)
 
 inline fun SyntaxElementDSL.index(init: SyntaxElementDSL.() -> Int) = apply {
     index = init()
