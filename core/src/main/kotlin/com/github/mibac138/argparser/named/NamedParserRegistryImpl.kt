@@ -72,8 +72,9 @@ class NamedParserRegistryImpl : NamedParserRegistry {
 
         for (element in unprocessedSyntax) {
             // Every element here *must* have a name
-            // TODO better exception?
-            val name = element.name!!
+            val name = element.name
+                    ?: throw IllegalArgumentException(
+                    "SyntaxElement $element is unnamed. I accept *only* named syntax elements")
 
             val parser = getParserForElement(element)
             val parsed = parseElement(input, element, parser)
