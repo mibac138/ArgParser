@@ -27,12 +27,21 @@ import com.github.mibac138.argparser.syntax.dsl.SyntaxElementDSL
 import com.github.mibac138.argparser.syntax.index
 import kotlin.reflect.KParameter
 
+/**
+ * Annotation used to [automagically][CallableBoundMethod] generate [indexed][SyntaxElement.index] syntax elements
+ */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Index(val value: Int)
 
+/**
+ * Use this to value to generate index using [autoIndex] instead of stating index
+ */
 const val AUTO: Int = -1
 
+/**
+ * Generates [indexed][SyntaxElement.index] syntax by using the [`@Index`][Index] annotation
+ */
 class IndexSyntaxGenerator : AnnotationBasedSyntaxGenerator<Index>(Index::class.java) {
     override fun generate(dsl: SyntaxElementDSL, annotation: Index) {
         if (annotation.value == AUTO)
@@ -43,7 +52,10 @@ class IndexSyntaxGenerator : AnnotationBasedSyntaxGenerator<Index>(Index::class.
 }
 
 /**
- * Generates syntax for element's which have neither [@Name][Name] nor [@Index][Index] annotations using [auto index][autoIndex]
+ * Generates [indexed][SyntaxElement.index] syntax
+ * for elements which have neither [`@Name`][Name]
+ * nor [`@Index`][Index] annotations by using the
+ * [auto index][autoIndex] function
  */
 class AutoIndexSyntaxGenerator : SyntaxGenerator {
     override fun generate(dsl: SyntaxElementDSL, param: KParameter) {

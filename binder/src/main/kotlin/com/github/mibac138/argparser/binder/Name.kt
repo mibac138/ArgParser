@@ -43,7 +43,7 @@ annotation class Name(
         val ordered: Boolean = false)
 
 /**
- * Generates relevant syntax using [Name] annotation
+ * Generates [named][SyntaxElement.name] syntax by using the [`@Name`][Name] annotation
  */
 class NameSyntaxGenerator : AnnotationBasedSyntaxGenerator<Name>(Name::class.java) {
     override fun generate(dsl: SyntaxElementDSL, annotation: Name) {
