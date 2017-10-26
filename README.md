@@ -1,3 +1,4 @@
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/mibac138/ArgParser.png?columns=all)](https://waffle.io/mibac138/ArgParser?utm_source=badge)
 # ArgParser
 
 [![Build Status](https://travis-ci.org/mibac138/ArgParser.svg?branch=master)](https://travis-ci.org/mibac138/ArgParser) 
