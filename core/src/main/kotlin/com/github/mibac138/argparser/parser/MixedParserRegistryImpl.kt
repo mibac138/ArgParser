@@ -77,7 +77,7 @@ class MixedParserRegistryImpl : MixedParserRegistry {
                 val element = orderedSyntax[index]
                 val parsed = element.parseAtPosition(index, input)
 
-                syntaxMap.putOrThrow(element, parsed, index)
+                syntaxMap.putOrThrow(element, parsed)
                 val name = element.name
                 if (name != null)
                     valuesMap[name] = parsed
@@ -90,7 +90,7 @@ class MixedParserRegistryImpl : MixedParserRegistry {
                 val element = syntax.findElementByName(matched.name)
                 val parsed = element.parse(matched.value)
 
-                syntaxMap.putOrThrow(element, parsed, matched.name)
+                syntaxMap.putOrThrow(element, parsed)
                 valuesMap[matched.name] = parsed
                 unprocessedSyntax -= element
 
@@ -105,13 +105,13 @@ class MixedParserRegistryImpl : MixedParserRegistry {
             if (name == null) {
                 val parsed = element.parseAtPosition(index, input)
 
-                syntaxMap.putOrThrow(element, parsed, index)
+                syntaxMap.putOrThrow(element, parsed, isIndexed = true)
                 unnamed += parsed
                 index += 1
             } else {
                 val parsed = element.parse(input)
 
-                syntaxMap.putOrThrow(element, parsed, name)
+                syntaxMap.putOrThrow(element, parsed)
                 valuesMap[name] = parsed
             }
         }
@@ -121,14 +121,15 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         return SyntaxLinkedMap(valuesMap, syntaxMap)
     }
 
-    private fun <K, V> MutableMap<K, V>.putOrThrow(key: K, value: V, index: Int) {
-        if (put(key, value) != null)
-            throw ValueReassignmentException.of(index)
-    }
-
-    private fun <K, V> MutableMap<K, V>.putOrThrow(key: K, value: V, name: String) {
-        if (put(key, value) != null)
-            throw ValueReassignmentException.of(name)
+    private fun <V> MutableMap<SyntaxElement, V>.putOrThrow(key: SyntaxElement,
+                                                            value: V,
+                                                            isIndexed: Boolean = false) {
+        val previous = put(key, value)
+        if (previous != null)
+            when (isIndexed) {
+                true -> throw ValueReassignmentException.Indexed(key, previous, value)
+                false -> throw ValueReassignmentException.of(key, previous, value)
+            }
     }
 
     private fun SyntaxElement.parseAtPosition(index: Int, input: ArgumentReader): Any?

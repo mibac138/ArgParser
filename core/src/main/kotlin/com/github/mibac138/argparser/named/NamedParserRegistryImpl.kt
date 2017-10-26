@@ -65,7 +65,7 @@ class NamedParserRegistryImpl : NamedParserRegistry {
             val parser = getParserForElement(element)
             val parsed = parseElement(matched.value, element, parser)
 
-            valuesMap.putOrThrow(name, parsed)
+            valuesMap.putOrThrow(element, name, parsed)
             syntaxMap[element] = parsed
             unprocessedSyntax -= element
         }
@@ -85,9 +85,10 @@ class NamedParserRegistryImpl : NamedParserRegistry {
         return SyntaxLinkedMap(valuesMap, syntaxMap)
     }
 
-    private fun <V> MutableMap<String, V>.putOrThrow(key: String, value: V) {
-        if (put(key, value) != null)
-            throw ValueReassignmentException.of(key)
+    private fun <V> MutableMap<String, V>.putOrThrow(element: SyntaxElement, key: String, value: V) {
+        val previous = put(key, value)
+        if (previous != null)
+            throw ValueReassignmentException.of(element, previous, value)
     }
 
     private fun parseElement(input: ArgumentReader, element: SyntaxElement, parser: Parser): Any? {

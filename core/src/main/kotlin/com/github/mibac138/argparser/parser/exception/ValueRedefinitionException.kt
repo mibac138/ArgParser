@@ -22,22 +22,34 @@
 
 package com.github.mibac138.argparser.parser.exception
 
+import com.github.mibac138.argparser.named.name
+import com.github.mibac138.argparser.syntax.SyntaxElement
+import com.github.mibac138.argparser.syntax.index
+
 sealed class ValueReassignmentException(s: String) : IllegalArgumentException(s) {
 
     companion object {
         @JvmStatic
-        fun of(valueName: String)
-                = Named(valueName)
-
-        @JvmStatic
-        fun of(index: Int)
-                = Indexed(index)
+        fun of(element: SyntaxElement, originalValue: Any?, reassignedValue: Any?) =
+                when {
+                    element.name != null -> Named(element, originalValue, reassignedValue)
+                    element.index != null -> Indexed(element, originalValue, reassignedValue)
+                    else -> throw IllegalArgumentException()
+                }
     }
 
-    class Named(val valueName: String) : ValueReassignmentException(
-            "Tried to reassign value with name $valueName")
+    class Named(val element: SyntaxElement,
+                val originalValue: Any?,
+                val reassignedValue: Any?) : ValueReassignmentException(
+            "Tried to reassign element's (${element::class.java.name}) value (name:\"${element.name}\") from $originalValue to $reassignedValue") {
+        val elementName = element.name!!
+    }
 
-    class Indexed(val index: Int) : ValueReassignmentException(
-            "Tried to reassign value at position $index")
+    class Indexed(val element: SyntaxElement,
+                  val originalValue: Any?,
+                  val reassignedValue: Any?) : ValueReassignmentException(
+            "Tried to reassign element's (${element::class.java.name}) value (position: ${element.index}) from $originalValue to $reassignedValue") {
+        val elementIndex = element.index!!
+    }
 
 }
