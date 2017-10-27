@@ -33,8 +33,7 @@ object EmptyArgumentReader : ArgumentReader {
     override fun hasNext(): Boolean
             = false
 
-    override fun next(): Char = throw IllegalArgumentException("I'm EmptyArgumentReader. That means that I have no " +
-            "content (length and available count always equals 0, skip and read throw if count > 0)")
+    override fun next(): Char = throwIf(true)!!
 
     override fun getLength(): Int
             = 0

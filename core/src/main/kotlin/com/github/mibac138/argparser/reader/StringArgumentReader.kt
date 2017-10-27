@@ -145,4 +145,10 @@ class StringArgumentReader(private var string: String) : ArgumentReader {
     override fun toString(): String {
         return "StringArgumentReader(string='$string', position=$position, minPosition=$minPosition, length=$length, marks=$marks)"
     }
+
+    private fun MutableList<Int>.shift/*Left*/(amount: Int) {
+        for (i in this.indices) {
+            this[i] = this[i] - amount
+        }
+    }
 }

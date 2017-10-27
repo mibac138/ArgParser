@@ -25,7 +25,7 @@ package com.github.mibac138.argparser.syntax
 /**
  * Created by mibac138 on 05-05-2017.
  */
-class SyntaxElementImpl<T> : SyntaxElement {
+internal class SyntaxElementImpl<T> : SyntaxElement {
     override val outputType: Class<T>
     override val required: Boolean
     private val components: Map<Class<out SyntaxComponent>, SyntaxComponent>
@@ -38,7 +38,7 @@ class SyntaxElementImpl<T> : SyntaxElement {
         this.components = emptyMap()
     }
 
-    @JvmOverloads
+    /*@JvmOverloads
     constructor(outputType: Class<T>, required: Boolean = true, vararg components: SyntaxComponent) {
         this.outputType = outputType
         this.required = required
@@ -47,7 +47,7 @@ class SyntaxElementImpl<T> : SyntaxElement {
             checkInstance(it)
             this.components[it.id] = it
         }
-    }
+    }*/
 
     @JvmOverloads
     constructor(outputType: Class<T>, required: Boolean = true, components: Collection<SyntaxComponent>) {

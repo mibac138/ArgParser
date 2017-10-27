@@ -63,7 +63,6 @@ class PatternArgumentMatcher @JvmOverloads constructor(
         return result
     }
 
-    override fun toString(): String {
-        return "PatternArgumentMatcher(pattern=$pattern)"
-    }
+    override fun toString(): String
+            = "PatternArgumentMatcher(pattern=$pattern)"
 }

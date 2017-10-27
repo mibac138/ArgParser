@@ -41,7 +41,6 @@ class IntParser : Parser {
         return input.readUntilCharOrDefault(syntax, { Integer.parseInt(it) })
     }
 
-    override fun toString(): String {
-        return "IntParser()"
-    }
+    override fun toString(): String
+            = "IntParser()"
 }

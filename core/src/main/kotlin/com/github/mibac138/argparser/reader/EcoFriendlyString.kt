@@ -48,11 +48,10 @@ class EcoFriendlyString(private val recyclingThreshold: Int = 80) : RegularStrin
     override fun getLength(): Int
             = length
 
-    private fun eligibleForRecycling(): Int {
-        when (minPos) {
-            NOT_REQUIRED -> return pos
-            else -> return Math.min(minPos, pos)
-        }
+    private fun eligibleForRecycling(): Int
+            = when (minPos) {
+        NOT_REQUIRED -> pos
+        else -> Math.min(minPos, pos)
     }
 
     override fun markRequiredPosition() {
@@ -71,9 +70,8 @@ class EcoFriendlyString(private val recyclingThreshold: Int = 80) : RegularStrin
         return result
     }
 
-    override fun getPosition(): Int {
-        return super.getPosition() + offset
-    }
+    override fun getPosition(): Int
+            = super.getPosition() + offset
 
     override fun getRequiredPosition(): Int {
         if (minPos == NOT_REQUIRED)

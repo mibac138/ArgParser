@@ -115,7 +115,9 @@ class CallableBoundMethod(override val method: KCallable<*>,
         return true
     }
 
-    override fun hashCode(): Int = method.hashCode()
+    override fun hashCode(): Int
+            = method.hashCode()
 
-    override fun toString(): String = "CallableBoundMethod(method=$method, syntax=$syntax)"
+    override fun toString(): String
+            = "CallableBoundMethod(method=$method, syntax=$syntax)"
 }

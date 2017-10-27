@@ -33,11 +33,11 @@ interface SyntaxLinkedMap<K, out V> : Map<K, V> {
 val <K, V> SyntaxLinkedMap<K, V>.keyToValueMap: Map<K, V>
     get() = this
 
-fun <K, V> SyntaxLinkedMap(keyToValueMap: Map<K, V>, syntaxToValueMap: Map<SyntaxElement, V>)
+fun <K, V> SyntaxLinkedMap(keyToValueMap: Map<K, V>, syntaxToValueMap: Map<SyntaxElement, V>): SyntaxLinkedMap<K, V>
         = SyntaxLinkedMapImpl(keyToValueMap, syntaxToValueMap)
 
-data class SyntaxLinkedMapImpl<K, out V>(
+private data class SyntaxLinkedMapImpl<K, out V>(
         private val keyToValueMap: Map<K, V>,
         override val syntaxToValueMap: Map<SyntaxElement, V>
-                                        ) : SyntaxLinkedMap<K, V>, Map<K, V> by keyToValueMap
+                                                ) : SyntaxLinkedMap<K, V>, Map<K, V> by keyToValueMap
 

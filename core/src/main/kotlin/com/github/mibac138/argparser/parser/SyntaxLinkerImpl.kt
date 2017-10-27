@@ -107,7 +107,7 @@ class SyntaxLinkerImpl(syntax: SyntaxElement) : ReusableSyntaxLinker {
         return null
     }
 
-// endregion
+    // endregion
 
     // region Iteration
 

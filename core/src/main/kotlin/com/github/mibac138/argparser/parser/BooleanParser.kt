@@ -67,7 +67,6 @@ class BooleanParser : Parser {
         return values.hashCode()
     }
 
-    override fun toString(): String {
-        return "BooleanParser(values=$values)"
-    }
+    override fun toString(): String
+            = "BooleanParser(values=$values)"
 }

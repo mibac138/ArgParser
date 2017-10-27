@@ -72,5 +72,6 @@ class JavaDefaultValueSyntaxGenerator(private vararg val defaultValues: Any?) : 
 
     override fun hashCode(): Int = Arrays.hashCode(defaultValues)
 
-    override fun toString(): String = "JavaDefaultValueSyntaxGenerator(defaultValues=${Arrays.toString(defaultValues)})"
+    override fun toString(): String
+            = "JavaDefaultValueSyntaxGenerator(defaultValues=${Arrays.toString(defaultValues)})"
 }

@@ -22,7 +22,7 @@
 
 package com.github.mibac138.argparser.syntax
 
-data class SyntaxContainerImpl(private val base: SyntaxElement, override val content: List<SyntaxElement>) :
+internal data class SyntaxContainerImpl(private val base: SyntaxElement, override val content: List<SyntaxElement>) :
         SyntaxContainer, SyntaxElement by base {
 
     constructor(base: SyntaxElement, vararg content: SyntaxElement) : this(base, listOf(*content))

@@ -135,9 +135,8 @@ class ReaderArgumentReader(private val stream: Reader, private var buffer: Argum
     private fun getAccessibleBufferLength(): Int
             = buffer.getAvailableAmount()
 
-    private fun readBuffer(amount: Int): String {
-        return buffer.read(amount)
-    }
+    private fun readBuffer(amount: Int): String
+            = buffer.read(amount)
 
     private fun isBufferBigEnough(requiredLength: Int): Boolean
             = buffer.getAvailableAmount() > requiredLength
@@ -176,7 +175,6 @@ class ReaderArgumentReader(private val stream: Reader, private var buffer: Argum
         return result
     }
 
-    override fun toString(): String {
-        return "ReaderArgumentReader(stream=$stream, buffer=$buffer, marks=$marks, streamEmptyForSure=$streamEmptyForSure)"
-    }
+    override fun toString(): String
+            = "ReaderArgumentReader(stream=$stream, buffer=$buffer, marks=$marks, streamEmptyForSure=$streamEmptyForSure)"
 }
