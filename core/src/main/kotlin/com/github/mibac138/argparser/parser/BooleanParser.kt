@@ -54,7 +54,7 @@ class BooleanParser(private val caseSensitive: Boolean = false) : Parser {
     }
 
     private fun String.lowerCaseIfApplicable(): String =
-            if (caseSensitive) this else toLowerCase()
+            if (caseSensitive) this else this.toLowerCase()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -33,11 +33,9 @@ internal class SingleSyntaxElementIterator(syntax: SyntaxElement) : Iterator<Syn
             = syntax != null
 
     override fun next(): SyntaxElement {
-        syntax?.let {
-            return it
-        }
-
-        throw NoSuchElementException()
+        val syntax = syntax ?: throw NoSuchElementException()
+        this.syntax = null
+        return syntax
     }
 }
 
