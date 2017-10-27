@@ -22,7 +22,7 @@
 
 package com.github.mibac138.argparser.named
 
-import com.github.mibac138.argparser.named.ArgumentMatcher.ArgumentMatchResult
+import com.github.mibac138.argparser.named.ArgumentMatcher.Result
 import com.github.mibac138.argparser.reader.ArgumentReader
 
 /**
@@ -32,7 +32,7 @@ interface ArgumentMatcher {
     /**
      * Result of argument matching.
      */
-    interface ArgumentMatchResult {
+    interface Result {
         /**
          * Represents found name (used for identification purposes)
          */
@@ -48,7 +48,7 @@ interface ArgumentMatcher {
      * Tries to find a match in the given [reader]. If the attempt
      * failed returns null.
      */
-    fun match(reader: ArgumentReader): ArgumentMatchResult?
+    fun match(reader: ArgumentReader): Result?
 }
 
-data class BasicArgumentMatchResult(override val name: String, override val value: ArgumentReader) : ArgumentMatchResult
+data class BasicArgumentMatchResult(override val name: String, override val value: ArgumentReader) : Result

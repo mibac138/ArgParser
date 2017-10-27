@@ -22,7 +22,6 @@
 
 package com.github.mibac138.argparser.named
 
-import com.github.mibac138.argparser.named.ArgumentMatcher.ArgumentMatchResult
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.matchPattern
 import java.util.regex.Pattern
@@ -36,7 +35,7 @@ class PatternArgumentMatcher @JvmOverloads constructor(
         private val group: Int = 1)
     : ArgumentMatcher {
 
-    override fun match(reader: ArgumentReader): ArgumentMatchResult? {
+    override fun match(reader: ArgumentReader): ArgumentMatcher.Result? {
         val result = reader.matchPattern(pattern) ?: return null
 
         return BasicArgumentMatchResult(result.group(group), reader)
