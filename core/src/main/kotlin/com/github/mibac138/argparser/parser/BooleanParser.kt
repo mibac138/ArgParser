@@ -29,10 +29,10 @@ import com.github.mibac138.argparser.syntax.SyntaxElement
 /**
  * Created by mibac138 on 06-04-2017.
  */
-class BooleanParser : Parser {
+class BooleanParser(private val caseSensitive: Boolean = false) : Parser {
     override val supportedTypes = setOf(Boolean::class.java, Boolean::class.javaObjectType)
 
-    private val values = mapOf(
+    val values = mutableMapOf(
             "yes" to true,
             "y" to true,
             "true" to true,
@@ -44,13 +44,17 @@ class BooleanParser : Parser {
             "false" to false,
             "f" to false,
             "0" to false
-    )
+                                                          )
 
     override fun parse(input: ArgumentReader, syntax: SyntaxElement): Boolean? {
         return input.readUntilCharOrDefault(syntax, {
-            values[it] ?: throw ParserInvalidInputException("Couldn't match text \"$it\". Valid values are: $values")
+            values[it.lowerCaseIfApplicable()] ?: throw ParserInvalidInputException(
+                    "Couldn't match text \"$it\". Valid values are: $values")
         })
     }
+
+    private fun String.lowerCaseIfApplicable(): String =
+            if (caseSensitive) this else toLowerCase()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -63,9 +67,8 @@ class BooleanParser : Parser {
         return true
     }
 
-    override fun hashCode(): Int {
-        return values.hashCode()
-    }
+    override fun hashCode(): Int
+            = values.hashCode()
 
     override fun toString(): String
             = "BooleanParser(values=$values)"
