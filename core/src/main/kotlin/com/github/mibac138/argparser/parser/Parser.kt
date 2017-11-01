@@ -37,6 +37,23 @@ interface Parser {
     fun parse(input: ArgumentReader, syntax: SyntaxElement): Any?
 }
 
+
+inline fun <reified T> Parser.map(supportedType: Class<T> = T::class.java,
+                                  crossinline transform: (Any?, ArgumentReader, SyntaxElement) -> T): Parser =
+        this.map(setOf(supportedType), transform)
+
+/**
+ * @param transform Any? is the output of the original parser
+ */
+inline fun Parser.map(supportedTypes: Set<Class<*>>,
+                      crossinline transform: (Any?, ArgumentReader, SyntaxElement) -> Any?): Parser =
+        object : Parser {
+            override val supportedTypes: Set<Class<*>> = supportedTypes
+
+            override fun parse(input: ArgumentReader, syntax: SyntaxElement): Any?
+                    = transform(this@map.parse(input, syntax), input, syntax)
+        }
+
 fun Parser.parseReturnSyntaxLinkedMap(input: ArgumentReader, syntax: SyntaxElement): SyntaxLinkedMap<*, *> {
     if (this is ParserRegistry) return parse(input, syntax)
 
