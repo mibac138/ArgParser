@@ -24,6 +24,7 @@ package com.github.mibac138.argparser.named
 
 import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.parser.SyntaxLinkedMap
+import com.github.mibac138.argparser.parser.exception.UnknownSyntaxElementException
 import com.github.mibac138.argparser.parser.exception.ValueReassignmentException
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.skipChar
@@ -57,7 +58,7 @@ class NamedParserRegistryImpl : NamedParserRegistry {
 
             input.skipChar(' ')
             val matched = matcher.match(input)
-                    ?: throw IllegalArgumentException("Matcher didn't match input")
+                    ?: throw IllegalArgumentException("Matcher didn't match input (input incorrectly formatted?)")
 
             val name = matched.name
 
@@ -114,7 +115,7 @@ class NamedParserRegistryImpl : NamedParserRegistry {
             typeToParserMap[type] = parser
     }
 
-    override fun registerParser(parser: Parser, name: String) {
+    override fun registerParser(name: String, parser: Parser) {
         nameToParserMap[name] = parser
 
         for (type in parser.supportedTypes)
@@ -172,14 +173,8 @@ class NamedParserRegistryImpl : NamedParserRegistry {
     }
 
 
-    private fun SyntaxElement.findElementByName(name: String): SyntaxElement {
-        for (element in iterator()) {
-            if (element.name == name)
-                return element
-        }
-
-        throw /*IllegalArgument?*/Exception("Couldn't find syntax element with name '$name'")
-    }
+    private fun SyntaxElement.findElementByName(name: String): SyntaxElement =
+            content.firstOrNull { it.name == name } ?: throw UnknownSyntaxElementException.Named(name)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

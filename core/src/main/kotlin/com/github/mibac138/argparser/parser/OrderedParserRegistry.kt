@@ -35,7 +35,7 @@ interface OrderedParserRegistry : ParserRegistry {
      *
      * @param position must be `>= 0`, otherwise a exception will be thrown (commonly `ArrayIndexOutOfBoundsException`)
      */
-    fun registerParser(parser: Parser, position: Position)
+    fun registerParser(position: Position, parser: Parser)
 
     /**
      *
@@ -44,16 +44,16 @@ interface OrderedParserRegistry : ParserRegistry {
     fun removeParser(position: Position)
 }
 
-fun <T : OrderedParserRegistry> T.withOrderedParsers(vararg parsers: Pair<Parser, Position>): T {
-    for ((parser, pos) in parsers)
-        registerParser(parser, pos)
+fun <T : OrderedParserRegistry> T.withOrderedParsers(vararg parsers: Pair<Position, Parser>): T {
+    for ((pos, parser) in parsers)
+        registerParser(pos, parser)
 
     return this
 }
 
 fun <T : OrderedParserRegistry> T.withOrderedParsers(vararg parsers: Parser, offset: Position = 0): T {
     for (i in 0 until parsers.size)
-        registerParser(parsers[i], i + offset)
+        registerParser(i + offset, parsers[i])
 
     return this
 }

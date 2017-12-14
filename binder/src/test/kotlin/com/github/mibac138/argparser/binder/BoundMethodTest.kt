@@ -59,7 +59,7 @@ class BoundMethodTest(private val producer: (KFunction<*>) -> BoundMethod) {
 
         val parser = MixedParserRegistryImpl()
         parser.registerParser(SequenceParser())
-        parser.registerParser(IntParser(), "num")
+        parser.registerParser("num", IntParser())
         assertEquals(Pair("Hiya", 10), binding.invoke("--num: 10".asReader(), parser))
     }
 

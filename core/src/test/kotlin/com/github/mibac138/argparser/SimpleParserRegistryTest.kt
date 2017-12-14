@@ -174,7 +174,7 @@ class SimpleParserRegistryTest {
     @Test
     fun testOrderedParser() {
         registry.registerParser(SequenceParser())
-        registry.registerParser(customSequenceParser(), 0)
+        registry.registerParser(0, customSequenceParser())
 
         val output = registry.parse("!Hello, World!".asReader(), syntaxElement(String::class.java))
 

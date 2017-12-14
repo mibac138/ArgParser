@@ -29,7 +29,7 @@ import com.github.mibac138.argparser.syntax.iterator
 import com.github.mibac138.argparser.syntax.parser
 
 /**
- * Created by mibac138 on 05-04-2017.
+ * The simplest [ParserRegistry]. It only supports [ordered][SyntaxElement.index] [elements][SyntaxElement].
  */
 class SimpleParserRegistry : OrderedParserRegistry {
     private val classToParserMap = mutableMapOf<Class<*>, Parser>()
@@ -43,7 +43,7 @@ class SimpleParserRegistry : OrderedParserRegistry {
     }
 
 
-    override fun registerParser(parser: Parser, position: Int) {
+    override fun registerParser(position: Position, parser: Parser) {
         positionToParserMap[position] = parser
     }
 
@@ -68,8 +68,7 @@ class SimpleParserRegistry : OrderedParserRegistry {
     override fun parse(input: ArgumentReader, syntax: SyntaxElement): SyntaxLinkedMap<Int, *>
             = parse(input, syntax.iterator())
 
-    private fun parse(input: ArgumentReader, iterator: Iterator<SyntaxElement>)
-            : SyntaxLinkedMap<Int, *> {
+    private fun parse(input: ArgumentReader, iterator: Iterator<SyntaxElement>): SyntaxLinkedMap<Int, *> {
         val syntaxMap = mutableMapOf<SyntaxElement, Any?>()
         val valuesMap = mutableMapOf<Int, Any?>()
 

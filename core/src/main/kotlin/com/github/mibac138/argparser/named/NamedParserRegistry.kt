@@ -25,20 +25,25 @@ package com.github.mibac138.argparser.named
 import com.github.mibac138.argparser.parser.Parser
 import com.github.mibac138.argparser.parser.ParserRegistry
 
+
+/**
+ *
+ */
+typealias Name = String
+
 /**
  *
  */
 interface NamedParserRegistry : ParserRegistry {
     var matcher: ArgumentMatcher
 
-    fun registerParser(parser: Parser, name: String)
-    fun removeParser(name: String)
+    fun registerParser(name: Name, parser: Parser)
+    fun removeParser(name: Name)
 }
 
-typealias Name = String
-fun <T : NamedParserRegistry> T.withNamedParsers(vararg parsers: Pair<Parser, Name>): T {
-    for ((parser, name) in parsers)
-        registerParser(parser, name)
+fun <T : NamedParserRegistry> T.withNamedParsers(vararg parsers: Pair<Name, Parser>): T {
+    for ((name, parser) in parsers)
+        registerParser(name, parser)
 
     return this
 }

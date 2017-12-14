@@ -52,7 +52,7 @@ class NamedParserRegistryImplTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun testRemoveParserWithAssociatedNames() {
-        parser.registerParser(BooleanParser(), "bool")
+        parser.registerParser("bool", BooleanParser())
         parser.associateParserWithName(Boolean::class.java, "value")
         parser.associateParserWithName(Boolean::class.java, "boolean")
 
@@ -84,12 +84,12 @@ class NamedParserRegistryImplTest {
 
     @Test(expected = Exception::class)
     fun testProblematicParser1() {
-        parser.registerParser(object : Parser {
+        parser.registerParser("color", object : Parser {
             override val supportedTypes = setOf(Any::class.java)
 
             override fun parse(input: ArgumentReader, syntax: SyntaxElement): Any
                     = throw Exception()
-        }, "color")
+        })
 
         parser.parse("--color:".asReader(), syntaxElement(Any::class.java) { name = "color" })
     }
@@ -97,20 +97,20 @@ class NamedParserRegistryImplTest {
 
     @Test(expected = ParserInvalidInputException::class)
     fun testProblematicParser2() {
-        parser.registerParser(object : Parser {
+        parser.registerParser("color", object : Parser {
             override val supportedTypes = setOf(Any::class.java)
 
             override fun parse(input: ArgumentReader, syntax: SyntaxElement): Any
                     = throw ParserInvalidInputException()
-        }, "color")
+        })
 
         parser.parse("--color:".asReader(), syntaxElement(Any::class.java) { name = "color" })
     }
 
     @Test
     fun issue10() {
-        parser.registerParser(SequenceParser(), "arg1")
-        parser.registerParser(SequenceParser(), "arg2")
+        parser.registerParser("arg1", SequenceParser())
+        parser.registerParser("arg2", SequenceParser())
         val syntax = syntaxContainer {
             element(String::class.java) { name = "arg1" }
             element(String::class.java) { name = "arg2"; required = false; defaultValue = "default" }
@@ -133,8 +133,8 @@ class NamedParserRegistryImplTest {
         assertEquals(a.hashCode(), b.hashCode())
         assertEquals(a.toString(), b.toString())
 
-        a.registerParser(BooleanParser(), "bool")
-        b.registerParser(BooleanParser(), "bool")
+        a.registerParser("bool", BooleanParser())
+        b.registerParser("bool", BooleanParser())
 
         assertEquals(a, b)
         assertEquals(a.hashCode(), b.hashCode())

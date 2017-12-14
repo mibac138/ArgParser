@@ -21,8 +21,8 @@ class MixedParserRegistryImplTest {
 
     @Test
     fun basicTest() {
-        parser.registerParser(SequenceParser(), 0)
-        parser.registerParser(SequenceParser(), 1)
+        parser.registerParser(0, SequenceParser())
+        parser.registerParser(1, SequenceParser())
         val output = parser.parse("Hello! :)".asReader(), syntaxContainer {
             element(String::class.java)
             element(String::class.java)
@@ -35,8 +35,8 @@ class MixedParserRegistryImplTest {
 
     @Test
     fun mediumTest() {
-        parser.registerParser(IntParser(), 0)
-        parser.registerParser(SequenceParser(), "name")
+        parser.registerParser(0, IntParser())
+        parser.registerParser("name", SequenceParser())
         val syntax = syntaxContainer {
             element(Int::class.java)
             element(String::class.java, { name = "name" })
@@ -59,9 +59,9 @@ class MixedParserRegistryImplTest {
                         BooleanParser()
                                   ).
                 withNamedParsers(
-                        SequenceParser() to "seq1",
-                        SequenceParser() to "seq2",
-                        SequenceParser() to "seq3"
+                        "seq1" to SequenceParser(),
+                        "seq2" to SequenceParser(),
+                        "seq3" to SequenceParser()
                                 )
 
         val syntax = syntaxContainer {
@@ -88,11 +88,9 @@ class MixedParserRegistryImplTest {
     fun namedElementReassign() {
         parser.
                 withNamedParsers(
-                        IntParser() to "a"
-                                ).
+                        "a" to IntParser()).
                 withOrderedParsers(
-                        IntParser() to 0
-                                  )
+                        0 to IntParser())
 
         val syntax = syntaxContainer {
             element(Int::class.java) { name = "a" }
@@ -104,9 +102,9 @@ class MixedParserRegistryImplTest {
 
     @Test
     fun issue10() {
-        parser.registerParser(SequenceParser(), 0)
-        parser.registerParser(SequenceParser(), 1)
-        parser.registerParser(SequenceParser(), "seq")
+        parser.registerParser(0, SequenceParser())
+        parser.registerParser(1, SequenceParser())
+        parser.registerParser("seq", SequenceParser())
         val syntax = syntaxContainer {
             element(String::class.java) { name = "seq" }
             element(String::class.java) /*{ autoIndex() } // implicit*/
@@ -125,7 +123,7 @@ class MixedParserRegistryImplTest {
 
     @Test
     fun issue9() {
-        parser.registerParser(SequenceParser(), 0)
+        parser.registerParser(0, SequenceParser())
 
         val syntax = syntaxElement(String::class.java) {
             required = false
@@ -144,8 +142,8 @@ class MixedParserRegistryImplTest {
     @Test
     fun issue29_1() {
         val somethingParser = SequenceParser()
-        parser.registerParser(somethingParser, "name")
-        parser.registerParser(somethingParser, 0)
+        parser.registerParser("name", somethingParser)
+        parser.registerParser(0, somethingParser)
 
         val syntax = syntaxElement(String::class.java) { name = "name" }
 
@@ -158,8 +156,8 @@ class MixedParserRegistryImplTest {
     @Test
     fun issue29_2() {
         val somethingParser = SequenceParser()
-        parser.registerParser(somethingParser, "name")
-        parser.registerParser(somethingParser, 0)
+        parser.registerParser("name", somethingParser)
+        parser.registerParser(0, somethingParser)
 
         val syntax = syntaxElement(String::class.java) { name = "name"; index = 0 }
 
@@ -172,8 +170,8 @@ class MixedParserRegistryImplTest {
     @Test
     fun issue29_3() {
         val somethingParser = SequenceParser()
-        parser.registerParser(somethingParser, "name")
-        parser.registerParser(somethingParser, 0)
+        parser.registerParser("name", somethingParser)
+        parser.registerParser(0, somethingParser)
 
         val syntax = syntaxContainer {
             element(String::class.java) { name = "name" }
@@ -189,13 +187,11 @@ class MixedParserRegistryImplTest {
     fun complexTestLevel2() {
         parser.
                 withNamedParsers(
-                        SequenceParser() to "a",
-                        SequenceParser() to "b"
-                                ).
+                        "a" to SequenceParser(),
+                        "b" to SequenceParser()).
                 withOrderedParsers(
                         SequenceParser(),
-                        SequenceParser()
-                                  )
+                        SequenceParser())
 
         val syntax = syntaxContainer {
             element(String::class.java) { name = "a"; index = 0 }
@@ -215,9 +211,8 @@ class MixedParserRegistryImplTest {
     fun namingISHard() {
         parser.
                 withNamedParsers(
-                        SequenceParser() to "a",
-                        SequenceParser() to "b"
-                                )
+                        "a" to SequenceParser(),
+                        "b" to SequenceParser())
 
         val syntax = syntaxContainer {
             element(String::class.java) { name = "a" }
@@ -232,14 +227,12 @@ class MixedParserRegistryImplTest {
     fun complexTestLevel3() {
         parser.
                 withNamedParsers(
-                        SequenceParser() to "a",
-                        SequenceParser() to "b"
-                                ).
+                        "a" to SequenceParser(),
+                        "b" to SequenceParser()).
                 withOrderedParsers(
                         SequenceParser(),
                         SequenceParser(),
-                        SequenceParser()
-                                  )
+                        SequenceParser())
 
         val syntax = syntaxContainer {
             element(String::class.java) { index = 0 }
@@ -261,8 +254,8 @@ class MixedParserRegistryImplTest {
     @Test
     fun issue29_reassignGood() {
         val nameParser = SequenceParser()
-        parser.registerParser(nameParser, "name")
-        parser.registerParser(nameParser, 0)
+        parser.registerParser("name", nameParser)
+        parser.registerParser(0, nameParser)
 
         val syntax = syntaxContainer {
             element(String::class.java) { name = "name"; index = 0 }
@@ -274,8 +267,8 @@ class MixedParserRegistryImplTest {
     @Test(expected = ValueReassignmentException.Named::class)
     fun issue29_reassignBad() {
         val nameParser = SequenceParser()
-        parser.registerParser(nameParser, "name")
-        parser.registerParser(nameParser, 0)
+        parser.registerParser("name", nameParser)
+        parser.registerParser(0, nameParser)
 
         val syntax = syntaxContainer {
             element(String::class.java) { name = "name"; index = 0 }

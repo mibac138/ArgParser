@@ -25,6 +25,7 @@ package com.github.mibac138.argparser.parser
 import com.github.mibac138.argparser.named.ArgumentMatcher
 import com.github.mibac138.argparser.named.PatternArgumentMatcher
 import com.github.mibac138.argparser.named.name
+import com.github.mibac138.argparser.parser.exception.UnknownSyntaxElementException
 import com.github.mibac138.argparser.parser.exception.ValueReassignmentException
 import com.github.mibac138.argparser.reader.ArgumentReader
 import com.github.mibac138.argparser.reader.skipChar
@@ -65,6 +66,8 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         // TODO is it really better?
         val unprocessedSyntax = LinkedList(syntax.content)
 
+        // Just in case to prevent changing a matcher mid-way during parsing
+        val matcher = matcher
         var index = 0
         for (i in 0 until syntax.size) {
 
@@ -156,7 +159,7 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         return parsed
     }
 
-    override fun registerParser(parser: Parser, name: String) {
+    override fun registerParser(name: String, parser: Parser) {
         nameToParserMap[name] = parser
     }
 
@@ -168,7 +171,8 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         positionToParserMap[positionToParserMap.size] = parser
     }
 
-    override fun registerParser(parser: Parser, position: Int) {
+    override fun registerParser(position: Position,
+                                parser: Parser) {
         positionToParserMap[position] = parser
     }
 
@@ -196,14 +200,8 @@ class MixedParserRegistryImpl : MixedParserRegistry {
         throw IllegalArgumentException("Couldn't find parser for name '$name'")
     }
 
-    private fun SyntaxElement.findElementByName(name: String): SyntaxElement {
-        for (element in iterator()) {
-            if (element.name == name)
-                return element
-        }
-
-        throw /*IllegalArgument?*/Exception("Couldn't find syntax element with name '$name' inside $this")
-    }
+    private fun SyntaxElement.findElementByName(name: String): SyntaxElement
+            = content.firstOrNull { it.name == name } ?: throw UnknownSyntaxElementException.Named(name)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
