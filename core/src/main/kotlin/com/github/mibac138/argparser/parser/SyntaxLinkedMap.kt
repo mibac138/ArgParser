@@ -33,6 +33,7 @@ interface SyntaxLinkedMap<K, out V> : Map<K, V> {
 val <K, V> SyntaxLinkedMap<K, V>.keyToValueMap: Map<K, V>
     get() = this
 
+@Suppress("FunctionName")
 fun <K, V> SyntaxLinkedMap(keyToValueMap: Map<K, V>, syntaxToValueMap: Map<SyntaxElement, V>): SyntaxLinkedMap<K, V>
         = SyntaxLinkedMapImpl(keyToValueMap, syntaxToValueMap)
 
