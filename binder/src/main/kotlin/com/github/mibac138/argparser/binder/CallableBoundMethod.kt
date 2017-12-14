@@ -25,7 +25,6 @@ package com.github.mibac138.argparser.binder
 import com.github.mibac138.argparser.syntax.SyntaxElement
 import com.github.mibac138.argparser.syntax.dsl.SyntaxContainerDSL
 import com.github.mibac138.argparser.syntax.dsl.elementDsl
-import java.util.*
 import kotlin.collections.set
 import kotlin.reflect.KCallable
 import kotlin.reflect.KParameter
@@ -69,7 +68,7 @@ class CallableBoundMethod(override val method: KCallable<*>,
                     "CallableBoundMethod doesn't accept methods with instance (or extension) params")
 
         val builder = SyntaxContainerDSL(Any::class.java)
-        val mutableSyntaxToParamMap = IdentityHashMap<SyntaxElement, KParameter>()
+        val syntaxToParamMap = HashMap<SyntaxElement, KParameter>()
 
         for (parameter in method.valueParameters) {
             val type = parameter.type.jvmErasure.javaObjectType
@@ -77,46 +76,39 @@ class CallableBoundMethod(override val method: KCallable<*>,
 
             generator.generate(element, parameter)
 
-            mutableSyntaxToParamMap[element.build()] = parameter
+            syntaxToParamMap[element.build()] = parameter
         }
 
-        syntax = builder.build()
-        syntaxToParamMap = mutableSyntaxToParamMap
+        this.syntax = builder.build()
+        this.syntaxToParamMap = syntaxToParamMap
     }
 
     override fun invoke(parameters: Map<SyntaxElement, Any?>): Any?
-            = method.callBy(mapSyntaxMapToParamMap(parameters))
-
-    private fun mapSyntaxMapToParamMap(syntax: Map<SyntaxElement, Any?>): Map<KParameter, Any?> {
-        val paramMap = mutableMapOf<KParameter, Any?>()
-
-        for ((element, value) in syntax) {
-            val param = syntaxToParamMap[element] ?:
-                    throw IllegalArgumentException("Can't map syntax element ($element) to params ($syntaxToParamMap)")
-
-            if (param.isOptional && value == null) continue
-
-            paramMap[param] = value
-
-        }
-
-        return paramMap
-    }
-
+            = method.callBy(
+            parameters
+                    .mapKeys { (element, _) ->
+                        syntaxToParamMap[element] ?:
+                                throw IllegalArgumentException(
+                                        "Can't map syntax element ($element) to params ($syntaxToParamMap)")
+                    }.filterNot { (param, value) -> param.isOptional && value == null })
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other?.javaClass != javaClass) return false
+        if (javaClass != other?.javaClass) return false
 
         other as CallableBoundMethod
 
         if (method != other.method) return false
+        if (syntax != other.syntax) return false
 
         return true
     }
 
-    override fun hashCode(): Int
-            = method.hashCode()
+    override fun hashCode(): Int {
+        var result = method.hashCode()
+        result = 31 * result + syntax.hashCode()
+        return result
+    }
 
     override fun toString(): String
             = "CallableBoundMethod(method=$method, syntax=$syntax)"

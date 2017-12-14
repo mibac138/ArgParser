@@ -52,7 +52,7 @@ class StringArgumentReader(private var string: String) : ArgumentReader {
 
     override fun next(): Char {
         ensureLength(1)
-        val read = string.elementAt(position++)
+        val read = string[position++]
         cleanBuffer()
         return read
     }
@@ -115,7 +115,8 @@ class StringArgumentReader(private var string: String) : ArgumentReader {
         if (count < 0)
             throw IllegalArgumentException("Count can't be negative")
         if (position + count > string.length)
-            throw IllegalArgumentException("Trying to access more than available")
+            throw IllegalArgumentException(
+                    "Trying to access (${position + count}) more than available (${string.length})")
     }
 
     override fun equals(other: Any?): Boolean {
@@ -142,9 +143,8 @@ class StringArgumentReader(private var string: String) : ArgumentReader {
         return result
     }
 
-    override fun toString(): String {
-        return "StringArgumentReader(string='$string', position=$position, minPosition=$minPosition, length=$length, marks=$marks)"
-    }
+    override fun toString(): String =
+            "StringArgumentReader(string='$string', position=$position, minPosition=$minPosition, length=$length, marks=$marks)"
 
     private fun MutableList<Int>.shift/*Left*/(amount: Int) {
         for (i in this.indices) {
