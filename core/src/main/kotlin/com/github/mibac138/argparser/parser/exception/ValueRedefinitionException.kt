@@ -41,7 +41,7 @@ sealed class ValueReassignmentException(s: String,
                                         /**
                                          * The reassigned value of the [element]
                                          */
-                                        val reassignedValue: Any?) : IllegalArgumentException(s) {
+                                        val reassignedValue: Any?) : RuntimeException(s) {
 
     companion object {
         /**
