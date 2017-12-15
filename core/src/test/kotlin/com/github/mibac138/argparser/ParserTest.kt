@@ -15,8 +15,8 @@ abstract class ParserTest {
             override val outputType: Class<T>
                 get() = TODO()
 
-            override fun <T : SyntaxComponent> get(clazz: Class<T>): T?
-                    =
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : SyntaxComponent> get(clazz: Class<T>): T? =
                     if (clazz == DefaultValueComponent::class.java) DefaultValueComponent(default) as T?
                     else null
         }

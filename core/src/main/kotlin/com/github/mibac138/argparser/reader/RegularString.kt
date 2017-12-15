@@ -25,7 +25,7 @@ package com.github.mibac138.argparser.reader
 import com.github.mibac138.argparser.reader.ArgumentString.Companion.NOT_REQUIRED
 
 open class RegularString : ArgumentString {
-    protected var content: String = ""
+    protected var content: StringBuilder = StringBuilder()
     protected var pos: Int = 0
     protected var minPos: Int = NOT_REQUIRED
 
@@ -54,7 +54,7 @@ open class RegularString : ArgumentString {
     }
 
     protected open fun append(string: String) {
-        content += string
+        content.append(string)
     }
 
     override fun read(amount: Int): String {
@@ -106,7 +106,8 @@ open class RegularString : ArgumentString {
 
         other as RegularString
 
-        if (content != other.content) return false
+        // StringBuilder doesn't implement equals
+        if (content.toString() != other.content.toString()) return false
         if (pos != other.pos) return false
         if (minPos != other.minPos) return false
 
@@ -114,7 +115,8 @@ open class RegularString : ArgumentString {
     }
 
     override fun hashCode(): Int {
-        var result = content.hashCode()
+        // StringBuilder doesn't implement hashCode
+        var result = content.toString().hashCode()
         result = 31 * result + pos
         result = 31 * result + minPos
         return result

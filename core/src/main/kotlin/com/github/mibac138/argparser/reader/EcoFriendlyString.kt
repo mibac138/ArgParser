@@ -31,7 +31,7 @@ class EcoFriendlyString(private val recyclingThreshold: Int = 80) : RegularStrin
     override fun recycle() {
         val eligible = eligibleForRecycling()
         if (eligible > recyclingThreshold) {
-            content = content.substring(eligible)
+            content.delete(0, eligible)
             offset += eligible
             pos -= eligible
 
